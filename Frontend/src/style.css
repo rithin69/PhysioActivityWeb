@@ -1,0 +1,9 @@
+/* styles.css or tailwind.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.active-link {
+  background-color: white;
+  color: #4db6c3;
+}
