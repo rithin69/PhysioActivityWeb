@@ -26,10 +26,23 @@ const ProfileCreation = () => {
     }
   };
 
+  const handleSampleProfileClick = () => {
+    window.open('https://physioactivity.com/physio/ashley/', '_blank');
+  };
+
   return (
     <div className="min-h-screen bg-gray-100 p-4 font-sans">
       <div className="bg-white rounded-lg shadow-lg p-6 max-w-4xl mx-auto">
-        <h2 className="text-2xl font-semibold mb-4">Create Your Profile</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-2xl font-semibold">Create Your Profile</h2>
+          <button 
+            type="button" 
+            onClick={handleSampleProfileClick} 
+            className="px-4 py-2 bg-green-500 text-white rounded-md"
+          >
+            Sample Profile
+          </button>
+        </div>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 mb-2">Upload Photo:</label>

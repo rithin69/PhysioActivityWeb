@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ChatAltIcon, PhoneIcon, XIcon, PencilAltIcon, CheckIcon } from '@heroicons/react/outline';
+import { XIcon, PencilAltIcon, PlusIcon } from '@heroicons/react/outline';
 import Modal from 'react-modal';
+import QRCode from 'qrcode.react';
 
 // import './tailwind.output.css'; // Ensure Tailwind CSS is included
 
@@ -116,6 +117,7 @@ const Patients = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [sortOption, setSortOption] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [qrModalIsOpen, setQrModalIsOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [notes, setNotes] = useState('');
 
@@ -126,24 +128,9 @@ const Patients = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const cancelAppointment = (index, tab) => {
-    if (tab === 'Today') {
-      const updatedAppointments = todayAppointments.filter((_, i) => i !== index);
-      setTodayAppointments(updatedAppointments);
-    } else {
-      const updatedAppointments = tomorrowAppointments.filter((_, i) => i !== index);
-      setTomorrowAppointments(updatedAppointments);
-    }
-  };
-
-  const approveAppointment = (index, tab) => {
-    if (tab === 'Today') {
-      const updatedAppointments = todayAppointments.filter((_, i) => i !== index);
-      setTodayAppointments(updatedAppointments);
-    } else {
-      const updatedAppointments = tomorrowAppointments.filter((_, i) => i !== index);
-      setTomorrowAppointments(updatedAppointments);
-    }
+  const rescheduleAppointment = (index, tab) => {
+    // Logic for rescheduling appointment goes here
+    // alert(`Reschedule appointment for ${tab} at index ${index}`);
   };
 
   const handleTabClick = (tab) => {
@@ -180,34 +167,42 @@ const Patients = () => {
     closeModal();
   };
 
+  const openQrModal = () => {
+    setQrModalIsOpen(true);
+  };
+
+  const closeQrModal = () => {
+    setQrModalIsOpen(false);
+  };
+
   const currentAppointments = selectedTab === 'Today' ? todayAppointments : tomorrowAppointments;
   const sortedAppointments = sortAppointments(currentAppointments);
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 font-sans">
       <div className="bg-white rounded-lg shadow-lg p-6">
-      <div className="flex justify-between items-center mb-2">
-  <h2 className="text-xl font-semibold flex items-center">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      strokeWidth="1.5"
-      stroke="currentColor"
-      className="w-6 h-6 mr-2"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"
-      />
-    </svg>
-    Appointments ({sortedAppointments.length})
-  </h2>
-  <span className="text-gray-500">
-  {currentTime.toLocaleDateString()} - {currentTime.toLocaleTimeString()} 
-  </span>
-</div>
+        <div className="flex justify-between items-center mb-2">
+          <h2 className="text-xl font-semibold flex items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="w-6 h-6 mr-2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"
+              />
+            </svg>
+            Appointments ({sortedAppointments.length})
+          </h2>
+          <span className="text-gray-500">
+            {currentTime.toLocaleDateString()} - {currentTime.toLocaleTimeString()}
+          </span>
+        </div>
 
         <div className="mb-4 text-gray-700">
           You have the following appointments.
@@ -254,97 +249,80 @@ const Patients = () => {
                   <p className="text-gray-400">{appointment.date} - {appointment.time}</p>
                 </div>
               </div>
-              <div className="flex space-x-2 mb-2">
-                <button className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-md">
-                  <ChatAltIcon className="w-5 h-5 mr-1" />
-                  Chat
-                </button>
-                <button className="flex items-center px-4 py-2 bg-green-500 text-white rounded-md">
-                  <PhoneIcon className="w-5 h-5 mr-1" />
-                  Call
-                </button>
+              <div className="flex space-x-2 mb-4">
                 <button
                   onClick={() => openModal(appointment)}
-                  className="flex items-center px-4 py-2 bg-yellow-500 text-white rounded-md"
+                  className="w-full px-4 py-2 bg-yellow-500 text-white rounded-md flex items-center justify-center"
                 >
                   <PencilAltIcon className="w-5 h-5 mr-1" />
                   Add Notes
                 </button>
-              </div>
-              <div className="flex space-x-2">
                 <button
-                  onClick={() => cancelAppointment(index, selectedTab)}
-                  className="flex items-center px-4 py-2 bg-red-500 text-white rounded-md"
+                  onClick={() => rescheduleAppointment(index, selectedTab)}
+                  className="w-full px-4 py-2 bg-[#16a34a] text-white rounded-md flex items-center justify-center"
                 >
-                  <XIcon className="w-5 h-5 mr-1" />
-                  Cancel Appointment
-                </button>
-                <button
-                  onClick={() => approveAppointment(index, selectedTab)}
-                  className="flex items-center px-4 py-2 bg-green-500 text-white rounded-md"
-                >
-                  <CheckIcon className="w-5 h-5 mr-1" />
-                  Approve Appointment
+                  Reschedule
                 </button>
               </div>
+            
             </div>
           ))}
         </div>
       </div>
 
+      {/* Floating "+" Button */}
+      <button
+        onClick={openQrModal}
+        className="fixed bottom-8 right-8 bg-[#e11d48] text-white rounded-full p-4 shadow-lg focus:outline-none"
+      >
+        <PlusIcon className="w-6 h-6" />
+      </button>
+
+      {/* QR Code Modal */}
+      <Modal
+        isOpen={qrModalIsOpen}
+        onRequestClose={closeQrModal}
+        className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50"
+      >
+        <div className="bg-white p-8 rounded-lg shadow-lg">
+          <h2 className="text-xl font-semibold mb-4">Scan this QR Code</h2>
+          <QRCode value="https://www.google.com" size={256} />
+          <button
+            onClick={closeQrModal}
+            className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
+          >
+            Close
+          </button>
+        </div>
+      </Modal>
+
+      {/* Notes Modal */}
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
-        contentLabel="Add Notes Modal"
-        className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center"
+        className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50"
       >
-        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-          <h2 className="text-xl font-semibold mb-4">Add Notes</h2>
-          {selectedAppointment && (
-            <div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Appointment Date:</label>
-                <input
-                  type="text"
-                  value={selectedAppointment.date}
-                  readOnly
-                  className="w-full px-4 py-2 bg-gray-100 rounded-md"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Appointment Time:</label>
-                <input
-                  type="text"
-                  value={selectedAppointment.time}
-                  readOnly
-                  className="w-full px-4 py-2 bg-gray-100 rounded-md"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Notes:</label>
-                <textarea
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  className="w-full px-4 py-2 bg-gray-100 rounded-md"
-                  rows="5"
-                ></textarea>
-              </div>
-              <div className="flex justify-end space-x-2">
-                <button
-                  onClick={closeModal}
-                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={saveNotes}
-                  className="px-4 py-2 bg-blue-500 text-white rounded-md"
-                >
-                  Save
-                </button>
-              </div>
-            </div>
-          )}
+        <div className="bg-white p-8 rounded-lg shadow-lg">
+          <h2 className="text-xl font-semibold mb-4">Notes for {selectedAppointment?.name}</h2>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            className="w-full h-32 p-2 border border-gray-300 rounded-md"
+          />
+          <div className="flex space-x-2 mt-4">
+            <button
+              onClick={saveNotes}
+              className="px-4 py-2 bg-green-500 text-white rounded-md flex-1"
+            >
+              Save
+            </button>
+            <button
+              onClick={closeModal}
+              className="px-4 py-2 bg-red-500 text-white rounded-md flex-1"
+            >
+              Close
+            </button>
+          </div>
         </div>
       </Modal>
     </div>
