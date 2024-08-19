@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useRole } from './RoleContext';
 
 const ProfileCreation = () => {
   const [photo, setPhoto] = useState(null);
@@ -7,6 +8,9 @@ const ProfileCreation = () => {
   const [testimonials, setTestimonials] = useState('');
   const [additionalDetails, setAdditionalDetails] = useState('');
   const navigate = useNavigate();
+  const { role } = useRole();
+  const baseUrl = `/${role}`;
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -17,7 +21,7 @@ const ProfileCreation = () => {
       additionalDetails,
     };
     localStorage.setItem('profileData', JSON.stringify(profileData));
-    navigate('/profilepage');
+    navigate(`${baseUrl}/profilepage`);
   };
 
   const handlePhotoChange = (e) => {
@@ -27,7 +31,7 @@ const ProfileCreation = () => {
   };
 
   const handleSampleProfileClick = () => {
-    window.open('https://physioactivity.com/physio/ashley/', '_blank');
+    window.open('https://physioactivity-1.web.app/physio/siri', '_blank');
   };
 
   return (

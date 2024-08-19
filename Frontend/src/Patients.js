@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { XIcon, PencilAltIcon, PlusIcon } from '@heroicons/react/outline';
 import Modal from 'react-modal';
 import QRCode from 'qrcode.react';
+import { useNavigate } from 'react-router-dom';
+import { useRole } from './RoleContext';
+
+// Inside your Patients component
+
 
 // import './tailwind.output.css'; // Ensure Tailwind CSS is included
 
@@ -11,7 +16,7 @@ const todayAppointmentsInitial = [
     date: '2024-07-28',
     name: 'Zoe Miller',
     age: 30,
-    condition: 'Diabetis',
+    condition: 'Osteoporosis',
     image: '/images/patient.jpg',
   },
   {
@@ -19,7 +24,7 @@ const todayAppointmentsInitial = [
     date: '2024-07-28',
     name: 'John Smith',
     age: 22,
-    condition: 'Allergy',
+    condition: 'Osteoarthritis',
     image: '/images/patient.jpg',
   },
   {
@@ -27,7 +32,7 @@ const todayAppointmentsInitial = [
     date: '2024-07-28',
     name: 'Sergio Pliego',
     age: 33,
-    condition: 'Asthma',
+    condition: 'Rheumatoid Arthritis',
     image: '/images/patient.jpg',
   },
   {
@@ -35,7 +40,7 @@ const todayAppointmentsInitial = [
     date: '2024-07-28',
     name: 'Shirline Dungey',
     age: 45,
-    condition: 'Mammogram results',
+    condition: 'Osteomyelitis',
     image: '/images/patient.jpg',
   },
   {
@@ -43,7 +48,7 @@ const todayAppointmentsInitial = [
     date: '2024-07-28',
     name: 'Ashley Graham',
     age: 8,
-    condition: 'Flu',
+    condition: 'Pagets Disease of Bone',
     image: '/images/patient.jpg',
   },
   {
@@ -51,7 +56,7 @@ const todayAppointmentsInitial = [
     date: '2024-07-28',
     name: 'Frank Boehm',
     age: 55,
-    condition: 'Cardiac arrhythmia',
+    condition: 'Osteogenesis Imperfecta',
     image: '/images/patient.jpg',
   }
 ];
@@ -62,7 +67,7 @@ const tomorrowAppointmentsInitial = [
     date: '2024-07-29',
     name: 'Emily Clark',
     age: 28,
-    condition: 'Diabetes',
+    condition: 'Osteosarcoma',
     image: '/images/patient2.jpeg',
   },
   {
@@ -70,7 +75,7 @@ const tomorrowAppointmentsInitial = [
     date: '2024-07-29',
     name: 'Michael Johnson',
     age: 35,
-    condition: 'Hypertension',
+    condition: 'Rickets',
     image: '/images/patient2.jpeg',
   },
   {
@@ -78,7 +83,7 @@ const tomorrowAppointmentsInitial = [
     date: '2024-07-29',
     name: 'Samantha Brown',
     age: 42,
-    condition: 'Asthma',
+    condition: 'Spondylitis',
     image: '/images/patient2.jpeg',
   },
   {
@@ -86,7 +91,7 @@ const tomorrowAppointmentsInitial = [
     date: '2024-07-29',
     name: 'Gregory Wilson',
     age: 50,
-    condition: 'Cholesterol',
+    condition: 'Fractures',
     image: '/images/patient2.jpeg',
   },
   {
@@ -94,7 +99,7 @@ const tomorrowAppointmentsInitial = [
     date: '2024-07-29',
     name: 'Alice Morgan',
     age: 19,
-    condition: 'Flu',
+    condition: 'Osteomalacia',
     image: '/images/patient2.jpeg',
   },
   {
@@ -102,7 +107,7 @@ const tomorrowAppointmentsInitial = [
     date: '2024-07-29',
     name: 'George Brown',
     age: 60,
-    condition: 'Heart Disease',
+    condition: 'Bone Metastases',
     image: '/images/patient2.jpeg',
   },
   
@@ -120,6 +125,23 @@ const Patients = () => {
   const [qrModalIsOpen, setQrModalIsOpen] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [notes, setNotes] = useState('');
+
+  const { role } = useRole();
+  const baseUrl = `/${role}`;
+  const navigate = useNavigate();
+
+  // ************************countdown*********************
+  const [countdownTime, setCountdownTime] = useState(54000); // Initial time in seconds (15 hours)
+const [appointmentTime] = useState(new Date(new Date().getTime() + 54000 * 1000)); // 15 hours from now
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setCountdownTime(prevTime => prevTime > 0 ? prevTime - 1 : 0);
+  }, 1000);
+
+  return () => clearInterval(interval);
+}, []);
+  // ************************countdown*********************
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -140,6 +162,14 @@ const Patients = () => {
   const handleSortChange = (e) => {
     setSortOption(e.target.value);
   };
+
+  const formatTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+  
 
   const sortAppointments = (appointments) => {
     if (sortOption === 'time') {
@@ -180,6 +210,24 @@ const Patients = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-4 font-sans">
+      {/* Reminder Container */}
+      <div className="mb-6 p-4 bg-blue-100 text-blue-800 rounded-lg shadow-md flex items-center justify-between">
+  <div className="flex items-center">
+    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mr-2" viewBox="0 0 20 20" fill="currentColor">
+      <path fillRule="evenodd" d="M10 18a2 2 0 002-2H8a2 2 0 002 2zm6-6V9a6 6 0 10-12 0v3a2 2 0 01-1 1.732V15h14v-1.268A2 2 0 0116 12z" clipRule="evenodd" />
+    </svg>
+    <div>
+      <h3 className="text-lg font-semibold">Appointment with Zoe Miller</h3>
+      <p>In {formatTime(countdownTime)}</p>
+    </div>
+  </div>
+  <button className="flex items-center bg-red-500 text-white px-4 py-2 rounded-md shadow-md" onClick={()=>{navigate(`${baseUrl}/dashboard`);}}>
+  
+    Open
+  </button>
+</div>
+
+
       <div className="bg-white rounded-lg shadow-lg p-6">
         <div className="flex justify-between items-center mb-2">
           <h2 className="text-xl font-semibold flex items-center">
@@ -282,7 +330,7 @@ const Patients = () => {
       <Modal
         isOpen={qrModalIsOpen}
         onRequestClose={closeQrModal}
-        className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50"
+        className="fixed inset-0 flex items-center justify-center bg-stone-50 bg-opacity-90"
       >
         <div className="bg-white p-8 rounded-lg shadow-lg">
           <h2 className="text-xl font-semibold mb-4">Scan this QR Code</h2>

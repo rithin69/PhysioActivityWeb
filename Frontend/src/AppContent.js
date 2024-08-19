@@ -11,11 +11,12 @@ import Login from './Login';
 import { useRole } from './RoleContext';
 import Dashboard from './Dashboard';
 import Settings from './Settings';
+import SiriAdPage from './SiriAdPage';
 
 const AppContent = () => {
   const location = useLocation();
   const { role } = useRole();
-  const showSidebar = location.pathname !== '/';
+  const showSidebar = location.pathname !== '/' && location.pathname !== "/physio/siri" ;
 
   const baseUrl = `/${role}`;
   const mockData = {
@@ -39,13 +40,17 @@ const AppContent = () => {
       <main className="flex-grow p-4 overflow-auto">
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/physio/siri" element={<SiriAdPage/>} />
+
           <Route path={`${baseUrl}/dashboard`} element={<Dashboard data={mockData} />} />
           <Route path={`${baseUrl}/patients`} element={<Patients />} />
-          <Route path={`${baseUrl}/profile`} element={<ProfileCreation />} />
           <Route path={`${baseUrl}/profilepage`} element={<ProfilePage />} />
+          <Route path={`${baseUrl}/profile`} element={<ProfileCreation />} />
+          
           <Route path={`${baseUrl}/connectors`} element={<Connector />} />
           <Route path={`${baseUrl}/lab`} element={<Lab />} />
           <Route path={`${baseUrl}/settings`} element={<Settings />} />
+
         </Routes>
       </main>
     </div>

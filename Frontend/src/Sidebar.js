@@ -37,7 +37,7 @@ const Sidebar = () => {
           }
         >
           <FontAwesomeIcon icon={faTachometerAlt} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Dashboard</span>
+          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Overview</span>
         </NavLink>
 
         <NavLink
@@ -48,7 +48,7 @@ const Sidebar = () => {
           }
         >
           <FontAwesomeIcon icon={faUserFriends} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Patients</span>
+          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Manage Patients</span>
         </NavLink>
 
         <NavLink
@@ -59,7 +59,7 @@ const Sidebar = () => {
           }
         >
           <FontAwesomeIcon icon={faUser} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Profile</span>
+          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Edit Profile</span>
         </NavLink>
         <a
           href="http://51.89.139.42/"
@@ -68,7 +68,7 @@ const Sidebar = () => {
           rel="noopener noreferrer"
         >
           <FontAwesomeIcon icon={faBook} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Library</span>
+          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Exercises</span>
         </a>
         <NavLink
           to={`${baseUrl}/connectors`}
@@ -78,7 +78,7 @@ const Sidebar = () => {
           }
         >
           <FontAwesomeIcon icon={faPlug} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Connectors</span>
+          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Connect</span>
         </NavLink>
         <NavLink 
           to={`${baseUrl}/lab`} 
@@ -88,7 +88,7 @@ const Sidebar = () => {
           }
         >
           <FontAwesomeIcon icon={faFlask} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Lab</span>
+          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Conduct Labs</span>
         </NavLink>
         <NavLink 
           to={`${baseUrl}/settings`} 
@@ -98,7 +98,7 @@ const Sidebar = () => {
           }
         >
           <FontAwesomeIcon icon={faCogs} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Settings</span>
+          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Configure Settings</span>
         </NavLink>
       </nav>
     </aside>

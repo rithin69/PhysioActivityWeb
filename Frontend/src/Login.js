@@ -28,7 +28,7 @@ const Login = () => {
     <div className="bg-blue-100 min-h-screen flex">
       <div className="w-1/2 h-screen flex items-center justify-center p-0 m-0">
         <img
-          src="/images/physio_login.jpg"
+          src="/images/logiphy.png"
           alt="Medical Professional"
           className="w-full h-full object-cover"
         />
@@ -81,13 +81,13 @@ const Login = () => {
                     onChange={(e) => setRole(e.target.value)}
                   >
                     <option value="">Select Role</option>
-                    <option value="patient">Patient</option>
-                    <option value="family">Family</option>
-                    <option value="gp">GP</option>
-                    <option value="physio">Physio</option>
-                    <option value="surgeon">Surgeon</option>
-                    <option value="occupational therapist">Occupational Therapist</option>
-                    <option value="academic and research">Academic and Research</option>
+                    {/* <option value="patient">Patient</option> */}
+                    {/* <option value="family">Family</option> */}
+                    {/* <option value="gp">GP</option> */}
+                    <option value="physio">Physiotherapist</option>
+                    {/* <option value="surgeon">Surgeon</option> */}
+                    {/* <option value="occupational therapist">Occupational Therapist</option> */}
+                    {/* <option value="academic and research">Academic and Research</option> */}
                   </select>
                 </div>
               </div>

@@ -2,6 +2,7 @@ import React from 'react';
 
 const ProfilePage = () => {
   const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
+  console.log(profileData)
 
   return (
     <div className="min-h-screen flex bg-gray-100">
