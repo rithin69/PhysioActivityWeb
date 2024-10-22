@@ -43,22 +43,7 @@ const todayAppointmentsInitial = [
     condition: 'Osteomyelitis',
     image: '/images/patient.jpg',
   },
-  {
-    time: '11:45 AM',
-    date: '2024-07-28',
-    name: 'Ashley Graham',
-    age: 8,
-    condition: 'Pagets Disease of Bone',
-    image: '/images/patient.jpg',
-  },
-  {
-    time: '12:30 PM',
-    date: '2024-07-28',
-    name: 'Frank Boehm',
-    age: 55,
-    condition: 'Osteogenesis Imperfecta',
-    image: '/images/patient.jpg',
-  }
+  
 ];
 
 const tomorrowAppointmentsInitial = [
@@ -94,23 +79,8 @@ const tomorrowAppointmentsInitial = [
     condition: 'Fractures',
     image: '/images/patient2.jpeg',
   },
-  {
-    time: '11:45 AM',
-    date: '2024-07-29',
-    name: 'Alice Morgan',
-    age: 19,
-    condition: 'Osteomalacia',
-    image: '/images/patient2.jpeg',
-  },
-  {
-    time: '12:30 PM',
-    date: '2024-07-29',
-    name: 'George Brown',
-    age: 60,
-    condition: 'Bone Metastases',
-    image: '/images/patient2.jpeg',
-  },
   
+
 ];
 
 Modal.setAppElement('#root');
@@ -132,15 +102,15 @@ const Patients = () => {
 
   // ************************countdown*********************
   const [countdownTime, setCountdownTime] = useState(54000); // Initial time in seconds (15 hours)
-const [appointmentTime] = useState(new Date(new Date().getTime() + 54000 * 1000)); // 15 hours from now
+  const [appointmentTime] = useState(new Date(new Date().getTime() + 54000 * 1000)); // 15 hours from now
 
-useEffect(() => {
-  const interval = setInterval(() => {
-    setCountdownTime(prevTime => prevTime > 0 ? prevTime - 1 : 0);
-  }, 1000);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCountdownTime(prevTime => prevTime > 0 ? prevTime - 1 : 0);
+    }, 1000);
 
-  return () => clearInterval(interval);
-}, []);
+    return () => clearInterval(interval);
+  }, []);
   // ************************countdown*********************
 
   useEffect(() => {
@@ -169,7 +139,7 @@ useEffect(() => {
     const secs = seconds % 60;
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
-  
+
 
   const sortAppointments = (appointments) => {
     if (sortOption === 'time') {
@@ -207,30 +177,34 @@ useEffect(() => {
 
   const currentAppointments = selectedTab === 'Today' ? todayAppointments : tomorrowAppointments;
   const sortedAppointments = sortAppointments(currentAppointments);
+  const handlePatientClick = (appointment) => {
+    // Only passing the name here
+    navigate(`/Patientdashboard`, { state: { name: appointment.name } });
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 font-sans">
+    <div className=" bg-gray-100 p-4 font-sans">
       {/* Reminder Container */}
-      <div className="mb-6 p-4 bg-blue-100 text-blue-800 rounded-lg shadow-md flex items-center justify-between">
-  <div className="flex items-center">
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mr-2" viewBox="0 0 20 20" fill="currentColor">
-      <path fillRule="evenodd" d="M10 18a2 2 0 002-2H8a2 2 0 002 2zm6-6V9a6 6 0 10-12 0v3a2 2 0 01-1 1.732V15h14v-1.268A2 2 0 0116 12z" clipRule="evenodd" />
-    </svg>
-    <div>
-      <h3 className="text-lg font-semibold">Appointment with Zoe Miller</h3>
-      <p>In {formatTime(countdownTime)}</p>
-    </div>
-  </div>
-  <button className="flex items-center bg-red-500 text-white px-4 py-2 rounded-md shadow-md" onClick={()=>{navigate(`${baseUrl}/dashboard`);}}>
-  
-    Open
-  </button>
-</div>
+      {/* <div className="mb-6 p-4 bg-blue-100 text-blue-800 rounded-lg shadow-md flex items-center justify-between">
+        <div className="flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M10 18a2 2 0 002-2H8a2 2 0 002 2zm6-6V9a6 6 0 10-12 0v3a2 2 0 01-1 1.732V15h14v-1.268A2 2 0 0116 12z" clipRule="evenodd" />
+          </svg>
+          <div>
+            <h3 className="text-lg font-semibold">Appointment with Zoe Miller</h3>
+            <p>In {formatTime(countdownTime)}</p>
+          </div>
+        </div>
+        <button className="flex items-center bg-red-500 text-white px-4 py-2 rounded-md shadow-md" onClick={() => { navigate(`${baseUrl}/dashboard`); }}>
+
+          Open
+        </button>
+      </div> */}
 
 
       <div className="bg-white rounded-lg shadow-lg p-6">
         <div className="flex justify-between items-center mb-2">
-          <h2 className="text-xl font-semibold flex items-center">
+          {/* <h2 className="text-xl font-semibold flex items-center">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -246,16 +220,16 @@ useEffect(() => {
               />
             </svg>
             Appointments ({sortedAppointments.length})
-          </h2>
-          <span className="text-gray-500">
+          </h2> */}
+          {/* <span className="text-gray-500">
             {currentTime.toLocaleDateString()} - {currentTime.toLocaleTimeString()}
-          </span>
+          </span> */}
         </div>
 
-        <div className="mb-4 text-gray-700">
+        {/* <div className="mb-4 text-gray-700">
           You have the following appointments.
-        </div>
-        <div className="flex mb-4">
+        </div> */}
+        {/* <div className="flex mb-4">
           <button
             onClick={() => handleTabClick('Today')}
             className={`px-4 py-2 ${selectedTab === 'Today' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} rounded-l-md`}
@@ -276,12 +250,14 @@ useEffect(() => {
             <option value="time">Time</option>
             <option value="name">Name</option>
           </select>
-        </div>
+        </div> */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {sortedAppointments.map((appointment, index) => (
-            <div
+
+           <div
               key={index}
-              className="bg-white p-4 rounded-lg shadow-md flex flex-col"
+              className="bg-white p-4 rounded-lg shadow-md flex flex-col cursor-pointer"
+              onClick={() => handlePatientClick(appointment)} // Navigate on patient click
             >
               <div className="flex items-center mb-4">
                 <img
@@ -312,7 +288,7 @@ useEffect(() => {
                   Reschedule
                 </button>
               </div>
-            
+
             </div>
           ))}
         </div>

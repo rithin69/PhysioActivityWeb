@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { FaMapMarkerAlt, FaFire, FaSmile, FaHeartbeat, FaMoon, FaWeight, FaUsers, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { IoFootsteps } from "react-icons/io5";
-import Patients from './Patients';
+import { useLocation } from 'react-router-dom';
 
 const Dashboard = () => {
   // State to handle the collapse/expand functionality, set to false by default
   const [isFitbitExpanded, setFitbitExpanded] = useState(false);
   const [isGarminExpanded, setGarminExpanded] = useState(false);
   const [isStravaExpanded, setStravaExpanded] = useState(false);
+  const location = useLocation();
+  const { name } = location.state || {}; // Fallback in case state is undefined
 
   // Dummy Data
   const mockData = {
@@ -29,10 +31,10 @@ const Dashboard = () => {
     <div className="container mx-auto p-4">
       {/* Patient Overview */}
       <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8">
-         <h2 className="text-2xl font-bold text-gray-900 mb-4">Summary</h2>
-        {/*<div className="flex flex-col space-y-4 text-gray-700 text-lg">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Patient Overview</h2>
+        <div className="flex flex-col space-y-4 text-gray-700 text-lg">
           <div>
-            <span className="font-semibold text-gray-900">Patient Name:</span> Zoe Miller
+            <span className="font-semibold text-gray-900">Patient Name:</span> {name}
           </div>
           <div>
             <span className="font-semibold text-gray-900">Age:</span> 29
@@ -44,26 +46,18 @@ const Dashboard = () => {
             <span className="font-semibold text-gray-900">Weight:</span> 70 kg
           </div>
         </div>
-        <p className="text-gray-500 font-bold text-lg mt-6"> Patient progress:</p> */}
+        <p className="text-gray-500 font-bold text-lg mt-6"> Patient progress:</p>
         
         {/* Status Bars */}
-        {/* <div className="mt-4 space-y-4">
+        <div className="mt-4 space-y-4">
           <StatusBar label="Total Steps" value={mockData.totalSteps} maxValue={100000} color="bg-green-500" />
           <StatusBar label="Total Active Minutes" value={mockData.totalActiveMinutes} maxValue={600} color="bg-blue-500" />
           <StatusBar label="Avg. Restful Sleep" value={7} maxValue={8} color="bg-purple-500" />
-        </div> */}
-      </section>
-      <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8">
-         <h2 className="text-2xl font-bold text-gray-900 mb-4">Anonymized  Patients</h2>
-         <Patients></Patients>
-      </section>
-      <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8">
-         <h2 className="text-2xl font-bold text-gray-900 mb-4">My Patients </h2>
-         <Patients></Patients>
+        </div>
       </section>
 
       {/* Fitbit Section */}
-      {/* <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
         <div className="flex justify-between items-center cursor-pointer" onClick={() => setFitbitExpanded(!isFitbitExpanded)}>
           <h3 className="text-xl font-bold text-gray-800">Fitbit</h3>
           <button className="text-gray-800">
@@ -80,10 +74,10 @@ const Dashboard = () => {
             <Detail icon={<IoFootsteps className="text-green-600" />} value={mockData.totalSteps} label="Total Steps" comparison={mockData.stepsComparison} />
           </div>
         )}
-      </section> */}
+      </section>
 
       {/* Garmin Section */}
-      {/* <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
         <div className="flex justify-between items-center cursor-pointer" onClick={() => setGarminExpanded(!isGarminExpanded)}>
           <h3 className="text-xl font-bold text-gray-800">Garmin</h3>
           <button className="text-gray-800">
@@ -100,10 +94,10 @@ const Dashboard = () => {
             <Detail icon={<IoFootsteps className="text-green-600" />} value={mockData.totalSteps} label="Total Steps" comparison={mockData.stepsComparison} />
           </div>
         )}
-      </section> */}
+      </section>
 
       {/* Strava Section */}
-      {/* <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
         <div className="flex justify-between items-center cursor-pointer" onClick={() => setStravaExpanded(!isStravaExpanded)}>
           <h3 className="text-xl font-bold text-gray-800">Strava</h3>
           <button className="text-gray-800">
@@ -120,7 +114,7 @@ const Dashboard = () => {
             <Detail icon={<IoFootsteps className="text-green-600" />} value={mockData.totalSteps} label="Total Steps" comparison={mockData.stepsComparison} />
           </div>
         )}
-      </section> */}
+      </section>
     </div>
   );
 };

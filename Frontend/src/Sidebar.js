@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faUserFriends, faUser, faBook, faPlug, faFlask, faCogs } from '@fortawesome/free-solid-svg-icons';
-import { useRole } from './RoleContext';
+// import { useRole } from './RoleContext';
 
 const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(true);
-  const { role } = useRole();
+  // const { role } = useRole();
 
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
   };
 
-  const baseUrl = `/${role}`;
+  // const baseUrl = `/${role}`;
 
   return (
     <aside className={`bg-[#4db6c3] h-screen p-4 flex flex-col items-center transition-all duration-300 ${isExpanded ? 'w-64' : 'w-20'}`}>
@@ -30,36 +30,36 @@ const Sidebar = () => {
       )}
       <nav className="flex flex-col w-full space-y-4">
         <NavLink
-          to={`${baseUrl}/dashboard`}
+          to="/dashboard"
           end
           className={({ isActive }) =>
             `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${isActive ? 'active-link' : ''}`
           }
         >
           <FontAwesomeIcon icon={faTachometerAlt} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Overview</span>
+          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Dashboard</span>
         </NavLink>
 
         <NavLink
-          to={`${baseUrl}/patients`}
+          to="/Patientdashboard"
           end
           className={({ isActive }) =>
             `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${isActive ? 'active-link' : ''}`
           }
         >
           <FontAwesomeIcon icon={faUserFriends} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Manage Patients</span>
+          <span className={`${isExpanded ? 'block' : 'hidden'}`}> Patients</span>
         </NavLink>
 
         <NavLink
-          to={`${baseUrl}/profile`}
+          to="/profile"
           end
           className={({ isActive }) =>
             `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${isActive ? 'active-link' : ''}`
           }
         >
           <FontAwesomeIcon icon={faUser} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Edit Profile</span>
+          <span className={`${isExpanded ? 'block' : 'hidden'}`}>My Page</span>
         </NavLink>
         <a
           href="http://51.89.139.42/"
@@ -71,7 +71,7 @@ const Sidebar = () => {
           <span className={`${isExpanded ? 'block' : 'hidden'}`}>Exercises</span>
         </a>
         <NavLink
-          to={`${baseUrl}/connectors`}
+          to="/connectors"
           end
           className={({ isActive }) =>
             `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${isActive ? 'active-link' : ''}`
@@ -81,17 +81,17 @@ const Sidebar = () => {
           <span className={`${isExpanded ? 'block' : 'hidden'}`}>Connect</span>
         </NavLink>
         <NavLink 
-          to={`${baseUrl}/lab`} 
+          to="/lab"
           end
           className={({ isActive }) => 
             `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${isActive ? 'active-link' : ''}`
           }
         >
           <FontAwesomeIcon icon={faFlask} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Conduct Labs</span>
+          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Research Labs</span>
         </NavLink>
-        <NavLink 
-          to={`${baseUrl}/settings`} 
+        {/* <NavLink 
+          to="/settings"
           end
           className={({ isActive }) => 
             `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${isActive ? 'active-link' : ''}`
@@ -99,7 +99,7 @@ const Sidebar = () => {
         >
           <FontAwesomeIcon icon={faCogs} className="mr-3" />
           <span className={`${isExpanded ? 'block' : 'hidden'}`}>Configure Settings</span>
-        </NavLink>
+        </NavLink> */}
       </nav>
     </aside>
   );
