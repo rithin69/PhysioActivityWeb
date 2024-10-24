@@ -30,7 +30,7 @@ const Sidebar = () => {
       )}
       <nav className="flex flex-col w-full space-y-4">
         <NavLink
-          to="/dashboard"
+          to="/"
           end
           className={({ isActive }) =>
             `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${isActive ? 'active-link' : ''}`

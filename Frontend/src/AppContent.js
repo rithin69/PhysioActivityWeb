@@ -56,7 +56,7 @@ const AppContent = () => {
 
           <Route path="/Patientdashboard" element={<Patientdashboard/>} />
 
-          <Route path="/dashboard" element={<Dashboard data={mockData} />} />
+          <Route path="/" element={<Dashboard data={mockData} />} />
           <Route path="/patients" element={<Patients />} />
           <Route path="/profilepage" element={<ProfilePage />} />
           <Route path="/profile" element={<ProfileCreation />} />
