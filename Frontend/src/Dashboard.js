@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FaMapMarkerAlt, FaFire, FaSmile, FaHeartbeat, FaMoon, FaWeight, FaUsers, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { IoFootsteps } from "react-icons/io5";
 import Patients from './Patients';
+import Anonypatients from './Anonypatients';
 
 const Dashboard = () => {
   // State to handle the collapse/expand functionality, set to false by default
@@ -54,8 +55,8 @@ const Dashboard = () => {
         </div> */}
       </section>
       <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8">
-         <h2 className="text-2xl font-bold text-gray-900 mb-4">Anonymized  Patients</h2>
-         <Patients></Patients>
+         <h2 className="text-2xl font-bold text-gray-900 mb-4">New  Patients</h2>
+         <Anonypatients ></Anonypatients>
       </section>
       <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8">
          <h2 className="text-2xl font-bold text-gray-900 mb-4">My Patients </h2>

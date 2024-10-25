@@ -281,12 +281,12 @@ const Patients = () => {
                   <PencilAltIcon className="w-5 h-5 mr-1" />
                   Add Notes
                 </button>
-                <button
+                {/* <button
                   onClick={() => rescheduleAppointment(index, selectedTab)}
                   className="w-full px-4 py-2 bg-[#16a34a] text-white rounded-md flex items-center justify-center"
                 >
                   Reschedule
-                </button>
+                </button> */}
               </div>
 
             </div>
