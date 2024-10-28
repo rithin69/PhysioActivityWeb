@@ -3,6 +3,7 @@ import { FaMapMarkerAlt, FaFire, FaSmile, FaHeartbeat, FaMoon, FaWeight, FaUsers
 import { IoFootsteps } from "react-icons/io5";
 import Patients from './Patients';
 import Anonypatients from './Anonypatients';
+import Navbar from './Navbar';
 
 const Dashboard = () => {
   // State to handle the collapse/expand functionality, set to false by default
@@ -27,33 +28,39 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    
+    <div className="container mx-auto ">
+      <Navbar></Navbar>
+
       {/* Patient Overview */}
       <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8">
-         <h2 className="text-2xl font-bold text-gray-900 mb-4">Summary</h2>
-        {/*<div className="flex flex-col space-y-4 text-gray-700 text-lg">
-          <div>
-            <span className="font-semibold text-gray-900">Patient Name:</span> Zoe Miller
-          </div>
-          <div>
-            <span className="font-semibold text-gray-900">Age:</span> 29
-          </div>
-          <div>
-            <span className="font-semibold text-gray-900">Height:</span> 175 cm
-          </div>
-          <div>
-            <span className="font-semibold text-gray-900">Weight:</span> 70 kg
-          </div>
-        </div>
-        <p className="text-gray-500 font-bold text-lg mt-6"> Patient progress:</p> */}
-        
-        {/* Status Bars */}
-        {/* <div className="mt-4 space-y-4">
-          <StatusBar label="Total Steps" value={mockData.totalSteps} maxValue={100000} color="bg-green-500" />
-          <StatusBar label="Total Active Minutes" value={mockData.totalActiveMinutes} maxValue={600} color="bg-blue-500" />
-          <StatusBar label="Avg. Restful Sleep" value={7} maxValue={8} color="bg-purple-500" />
-        </div> */}
-      </section>
+  <h2 className="text-2xl font-bold text-gray-900 mb-4">Summary</h2>
+
+  {/* Tiles Container */}
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {/* Tile 1 */}
+    <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center text-center">
+      <div className="text-4xl text-blue-500 mb-2"></div>
+      <h3 className="text-lg font-semibold text-gray-800">X</h3>
+      <p className="text-gray-600 mt-2"></p>
+    </div>
+
+    {/* Tile 2 */}
+    <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center text-center">
+      <div className="text-4xl text-green-500 mb-2"></div>
+      <h3 className="text-lg font-semibold text-gray-800">Y</h3>
+      <p className="text-gray-600 mt-2"></p>
+    </div>
+
+    {/* Tile 3 */}
+    <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center text-center">
+      <div className="text-4xl text-purple-500 mb-2"></div>
+      <h3 className="text-lg font-semibold text-gray-800">Z</h3>
+      <p className="text-gray-600 mt-2"></p>
+    </div>
+  </div>
+</section>
+
       <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8">
          <h2 className="text-2xl font-bold text-gray-900 mb-4">New  Patients</h2>
          <Anonypatients ></Anonypatients>

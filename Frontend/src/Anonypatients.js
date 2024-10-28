@@ -17,7 +17,7 @@ const todayAppointmentsInitial = [
     name: 'ID : 45454821',
     // age: 30,
     condition: 'Osteoporosis',
-    image: '/images/patient.jpg',
+    image: '/images/profpicfemale.jpg',
   },
   {
     time: '9:30 AM',
@@ -25,7 +25,7 @@ const todayAppointmentsInitial = [
     name: 'ID : 344545689',
     // age: 22,
     condition: 'Osteoarthritis',
-    image: '/images/patient.jpg',
+    image: '/images/profpicmen.png',
   },
   {
     time: '10:30 AM',
@@ -33,7 +33,7 @@ const todayAppointmentsInitial = [
     name: 'ID : 34845459',
     // age: 33,
     condition: 'Rheumatoid Arthritis',
-    image: '/images/patient.jpg',
+    image: '/images/profpicfemale.jpg',
   },
   {
     time: '11:15 AM',
@@ -41,7 +41,7 @@ const todayAppointmentsInitial = [
     name: 'ID : 3487455689',
     // age: 45,
     condition: 'Osteomyelitis',
-    image: '/images/patient.jpg',
+    image: '/images/profpicmen.png',
   },
   
 ];
@@ -269,18 +269,18 @@ const Anonypatients = () => {
                   <h3 className="text-lg font-medium">
                     {appointment.name} {appointment.age}
                   </h3>
-                  <p className="text-gray-500">{appointment.condition}</p>
-                  <p className="text-gray-400">{appointment.date} - {appointment.time}</p>
+                  {/* <p className="text-gray-500">{appointment.condition}</p> */}
+                  {/* <p className="text-gray-400">{appointment.date} - {appointment.time}</p> */}
                 </div>
               </div>
               <div className="flex space-x-2 mb-4">
-                <button
+                {/* <button
                   onClick={() => openModal(appointment)}
                   className="w-full px-4 py-2 bg-yellow-500 text-white rounded-md flex items-center justify-center"
                 >
                   <PencilAltIcon className="w-5 h-5 mr-1" />
                   Add Notes
-                </button>
+                </button> */}
                 {/* <button
                   onClick={() => rescheduleAppointment(index, selectedTab)}
                   className="w-full px-4 py-2 bg-[#16a34a] text-white rounded-md flex items-center justify-center"

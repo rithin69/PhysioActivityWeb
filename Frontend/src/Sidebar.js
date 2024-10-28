@@ -5,7 +5,7 @@ import { faTachometerAlt, faUserFriends, faUser, faBook, faPlug, faFlask, faCogs
 // import { useRole } from './RoleContext';
 
 const Sidebar = () => {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   // const { role } = useRole();
 
   const toggleSidebar = () => {

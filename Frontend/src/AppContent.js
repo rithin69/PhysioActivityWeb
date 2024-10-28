@@ -40,7 +40,7 @@ const AppContent = () => {
     <div className="flex h-screen">
       {<Sidebar />}
       
-      <main className="flex-grow p-4 overflow-auto">
+      <main className="flex-grow  overflow-auto">
         <Routes>
           {/* <Route path="/" element={<Login />} /> */}
           <Route path="/physio/siri" element={<SiriAdPage/>} />

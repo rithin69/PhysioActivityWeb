@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { FaMapMarkerAlt, FaFire, FaSmile, FaHeartbeat, FaMoon, FaWeight, FaUsers, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { IoFootsteps } from "react-icons/io5";
 import { useLocation } from 'react-router-dom';
+import Sidepanel from './Sidepanel'; // Import your SidePanel component
+
 
 const Dashboard = () => {
   // State to handle the collapse/expand functionality, set to false by default
@@ -10,6 +12,7 @@ const Dashboard = () => {
   const [isStravaExpanded, setStravaExpanded] = useState(false);
   const location = useLocation();
   const { name } = location.state || {}; // Fallback in case state is undefined
+  const [isSidePanelOpen, setSidePanelOpen] = useState(false);
 
   // Dummy Data
   const mockData = {
@@ -32,6 +35,13 @@ const Dashboard = () => {
       {/* Patient Overview */}
       <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Patient Overview</h2>
+        {/* Add Notes Button */}
+        <button 
+          className="absolute top-6 right-8 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md transition duration-200"
+          onClick={() => setSidePanelOpen(true)} // Open SidePanel on click
+        >
+          Add Notes
+        </button>
         <div className="flex flex-col space-y-4 text-gray-700 text-lg">
           <div>
             <span className="font-semibold text-gray-900">Patient Name:</span> {name}
@@ -115,6 +125,7 @@ const Dashboard = () => {
           </div>
         )}
       </section>
+      <Sidepanel isOpen={isSidePanelOpen} onClose={() => setSidePanelOpen(false)} />
     </div>
   );
 };
