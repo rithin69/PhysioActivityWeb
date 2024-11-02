@@ -32,11 +32,12 @@ const Dashboard = () => {
 
   return (
     <div className="container mx-auto p-4">
-      {/* Patient Overview */}
+
+      {/* Personal  Information  */}
       <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Patient Overview</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Personal Information</h2>
         {/* Add Notes Button */}
-        <button 
+        <button
           className="absolute top-6 right-8 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md transition duration-200"
           onClick={() => setSidePanelOpen(true)} // Open SidePanel on click
         >
@@ -55,9 +56,57 @@ const Dashboard = () => {
           <div>
             <span className="font-semibold text-gray-900">Weight:</span> 70 kg
           </div>
+          <div>
+            <span className="font-semibold text-gray-900">Blood Type:</span> A+
+          </div>
+
+          {/* <div className="flex items-center"> */}
+          <div>
+          <span className="font-semibold text-gray-900">Needs glasses with an eyesight number</span>
+            <input
+              type="checkbox"
+              checked = {true}
+              // {needsGlasses}
+              // onChange={() => setNeedsGlasses(!needsGlasses)}
+              className="ml-2"
+            />
+            
+          </div>
+        {/* </div> */}
+        <div>
+          <span className="font-semibold text-gray-900">Diagnosed Condition : </span> Osteoarthritis
         </div>
+        </div>
+
+
+      </section>
+
+      {/* Patient Overview */}
+      <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Patient Overview</h2>
+        {/* Add Notes Button */}
+        {/* <button 
+          className="absolute top-6 right-8 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md transition duration-200"
+          onClick={() => setSidePanelOpen(true)} // Open SidePanel on click
+        >
+          Add Notes
+        </button> */}
+        {/* <div className="flex flex-col space-y-4 text-gray-700 text-lg">
+          <div>
+            <span className="font-semibold text-gray-900">Patient Name:</span> {name}
+          </div>
+          <div>
+            <span className="font-semibold text-gray-900">Age:</span> 29
+          </div>
+          <div>
+            <span className="font-semibold text-gray-900">Height:</span> 175 cm
+          </div>
+          <div>
+            <span className="font-semibold text-gray-900">Weight:</span> 70 kg
+          </div>
+        </div> */}
         <p className="text-gray-500 font-bold text-lg mt-6"> Patient progress:</p>
-        
+
         {/* Status Bars */}
         <div className="mt-4 space-y-4">
           <StatusBar label="Total Steps" value={mockData.totalSteps} maxValue={100000} color="bg-green-500" />
