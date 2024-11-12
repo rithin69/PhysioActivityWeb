@@ -62,11 +62,7 @@ const Patientdashboard = () => {
     <div className="container mx-auto p-4">
 
       {/* Personal  Information  */}
-<<<<<<< HEAD
       <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8 relative ">
-=======
-      <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8 relative">
->>>>>>> 79f62f0 (structure changes)
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Personal Information</h2>
         {/* Add Notes Button */}
         <button
