@@ -175,6 +175,24 @@ const Patientdashboard = () => {
         )}
       </section>
 
+      {/* Applewatch Section */}
+      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+        <div className="flex justify-between items-center cursor-pointer" onClick={() => setApplewatchExpanded(!isApplewatchExpanded)}>
+          <h3 className="text-xl font-bold text-gray-800">Apple Watch</h3>
+          <button className="text-gray-800">
+            {isApplewatchExpanded ? <FaChevronUp /> : <FaChevronDown />}
+          </button>
+        </div>
+        {isApplewatchExpanded && (
+          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-6">
+            <Pbi pagename="Apple" />
+
+          </div>
+        )}
+      </section>
+
+
+
       {/* Garmin Section */}
       <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
         <div className="flex justify-between items-center cursor-pointer" onClick={() => setGarminExpanded(!isGarminExpanded)}>
@@ -215,7 +233,7 @@ const Patientdashboard = () => {
         )}
       </section>
       {/* prom Section */}
-      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+      {/* <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
         <div className="flex justify-between items-center cursor-pointer" onClick={() => setPromExpanded(!isPromExpanded)}>
           <h3 className="text-xl font-bold text-gray-800">Prom</h3>
           <button className="text-gray-800">
@@ -228,12 +246,12 @@ const Patientdashboard = () => {
             <Pbi pagename="PROMs" />
           </div>
         )}
-      </section>
+      </section> */}
 
 
 
       {/* Fitbit Section */}
-      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+      {/* <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
         <div className="flex justify-between items-center cursor-pointer" onClick={() => setFitbitExpanded1(!isFitbitExpanded1)}>
           <h3 className="text-xl font-bold text-gray-800">Fitbit</h3>
           <button className="text-gray-800">
@@ -247,10 +265,10 @@ const Patientdashboard = () => {
 
           </div>
         )}
-      </section>
+      </section> */}
 
       {/* Garmin Section */}
-      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+      {/* <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
         <div className="flex justify-between items-center cursor-pointer" onClick={() => setGarminExpanded1(!isGarminExpanded1)}>
           <h3 className="text-xl font-bold text-gray-800">Garmin</h3>
           <button className="text-gray-800">
@@ -264,10 +282,10 @@ const Patientdashboard = () => {
 
           </div>
         )}
-      </section>
+      </section> */}
 
       {/* Strava Section */}
-      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+      {/* <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
         <div className="flex justify-between items-center cursor-pointer" onClick={() => setStravaExpanded1(!isStravaExpanded1)}>
           <h3 className="text-xl font-bold text-gray-800">Strava</h3>
           <button className="text-gray-800">
@@ -280,23 +298,9 @@ const Patientdashboard = () => {
 
           </div>
         )}
-      </section>
+      </section> */}
 
-      {/* Applewatch Section */}
-      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
-        <div className="flex justify-between items-center cursor-pointer" onClick={() => setApplewatchExpanded(!isApplewatchExpanded)}>
-          <h3 className="text-xl font-bold text-gray-800">Apple Watch</h3>
-          <button className="text-gray-800">
-            {isApplewatchExpanded ? <FaChevronUp /> : <FaChevronDown />}
-          </button>
-        </div>
-        {isApplewatchExpanded && (
-          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-6">
-            <Pbi pagename="Apple" />
-
-          </div>
-        )}
-      </section>
+      
 
 
 
@@ -313,7 +317,7 @@ const Patientdashboard = () => {
 
 
       {/* powerbi  plot  Section */}
-      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+      {/* <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
         <div className="flex justify-between items-center cursor-pointer" onClick={() => setdatavisExpanded1(!isdatavisExpanded1)}>
           <h3 className="text-xl font-bold text-gray-800">Embedded Plot</h3>
           <button className="text-gray-800">
@@ -325,7 +329,7 @@ const Patientdashboard = () => {
             <PowerBiembededstatic />
           </div>
         )}
-      </section>
+      </section> */}
 
 
 
@@ -333,7 +337,7 @@ const Patientdashboard = () => {
 
 
       {/* powerbi  report  Section */}
-      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+      {/* <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
         <div className="flex justify-between items-center cursor-pointer" onClick={() => setdatavisExpanded(!isdatavisExpanded)}>
           <h3 className="text-xl font-bold text-gray-800">Embedded Premium Report</h3>
           <button className="text-gray-800">
@@ -347,7 +351,7 @@ const Patientdashboard = () => {
 
           </div>
         )}
-      </section>
+      </section> */}
 
       <Sidepanel isOpen={isSidePanelOpen} onClose={() => setSidePanelOpen(false)} />
     </div>

@@ -11,7 +11,7 @@ const Pbi = ({ pagename }) => {
   useEffect(() => {
     const fetchEmbedToken = async () => {
       try {
-        const response = await axios.get('https://physioactivity-dacvb2fxcjatc8fc.uksouth-01.azurewebsites.net/api/getEmbedToken'); // Adjust URL as needed
+        const response = await axios.get('https://physioactivity-dacvb2fxcjatc8fc.uksouth-01.azurewebsites.net/api/getEmbedToken');
         setEmbedConfig({
           type: 'report',
           embedUrl: response.data.embedUrl,
@@ -23,7 +23,7 @@ const Pbi = ({ pagename }) => {
                 visible: false,  // Hide filters pane
               },
               pageNavigation: {
-                visible: false,  // Hide page navigation if not needed
+                visible: false,  // Hide navigation pane
               },
             },
           },
@@ -36,18 +36,14 @@ const Pbi = ({ pagename }) => {
     fetchEmbedToken();
   }, []);
 
-  // Set the active page based on the pagename prop
   const setActivePage = async (reportRef) => {
-    console.log(pagename);
-    if (reportRef && pagename) {  // Ensure pagename is available
+    if (reportRef && pagename) {
       try {
         const pages = await reportRef.getPages();
-        
-        // Find the specific page by display name
         const specificPage = pages.find(page => page.displayName === pagename);
         
         if (specificPage) {
-          await specificPage.setActive();  // Set the target page as active
+          await specificPage.setActive();
           console.log(`Page '${pagename}' set to active`);
         } else {
           console.error(`Page '${pagename}' not found`);
@@ -58,12 +54,14 @@ const Pbi = ({ pagename }) => {
     }
   };
 
-  // Set the active page whenever pagename or reportRef changes
+  // Set active page after the report is fully loaded
   useEffect(() => {
     if (reportRef) {
-      setActivePage(reportRef);  // Set the page whenever reportRef or pagename changes
+      reportRef.on("loaded", () => {
+        setActivePage(reportRef);
+      });
     }
-  }, [reportRef, pagename]);  // Re-run the effect when pagename changes
+  }, [reportRef, pagename]);
 
   if (!embedConfig) {
     return <div>Loading Power BI report...</div>;
@@ -76,7 +74,7 @@ const Pbi = ({ pagename }) => {
         cssClassName="report-style-class"
         getEmbeddedComponent={(embeddedReport) => {
           console.log('Report embedded:', embeddedReport);
-          setReportRef(embeddedReport);  // Set reference to the embedded report
+          setReportRef(embeddedReport);
         }}
       />
     </div>
