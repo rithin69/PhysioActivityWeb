@@ -1,16 +1,41 @@
 import React, { useState } from 'react';
-import { FaMapMarkerAlt, FaFire, FaSmile, FaHeartbeat, FaMoon, FaWeight, FaUsers, FaChevronDown, FaChevronUp } from 'react-icons/fa';
-import { IoFootsteps } from "react-icons/io5";
 import Patients from './Patients';
 import Anonypatients from './Anonypatients';
 import Navbar from './Navbar';
+import { createEntity, getEntities, updateEntity, deleteEntity } from './Services/api';
+import { useNavigate } from 'react-router-dom';
+
+
 
 const Dashboard = () => {
-  // State to handle the collapse/expand functionality, set to false by default
+
   const [isFitbitExpanded, setFitbitExpanded] = useState(false);
   const [isGarminExpanded, setGarminExpanded] = useState(false);
   const [isStravaExpanded, setStravaExpanded] = useState(false);
+  const [isApplewatchExpanded, setApplewatchExpanded] = useState(false)
+  const [isdatavisExpanded, setdatavisExpanded] = useState(false)
+  const [isdatavisExpanded1, setdatavisExpanded1] = useState(false)
+  const [isPromExpanded, setPromExpanded] = useState(false)
 
+
+  const [filterValue, setFilterValue] = useState("");  // State to hold the textbox input
+  const [appliedValue, setAppliedValue] = useState("");
+  const [userID, setUserID] = useState(''); // State to hold the UserID input
+  const [userData, setUserData] = useState(null); // State to store the queried data by UserID
+
+  const graphData = userData
+    ? [
+      { name: 'Calories', value: parseInt(userData?.Calories || 0) },
+      { name: 'Sleep (hrs)', value: parseFloat(userData?.Sleep || 0) },
+      { name: 'Steps', value: parseInt(userData?.Steps || 0) }
+    ]
+    : [];
+
+  
+
+  const applyFilter = () => {
+    setAppliedValue(filterValue);  
+  };
   // Dummy Data
   const mockData = {
     weekDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -26,40 +51,91 @@ const Dashboard = () => {
     avgRestingHeartRate: 60,
     weight: 70,
   };
+   
+   const navigate = useNavigate(); // Initialize navigate hook
+
+const handleFetchData = async () => {
+   try {
+      const response = await getEntities();
+      const filteredData = response.data.find((entity) => entity.UserID === userID);
+      setUserData(filteredData || { Calories: '-', Sleep: '-', Steps: '-' });
+
+      // Navigate to visualization page with the UserID passed in route state
+      navigate('/Patientdashboard', { state: { userData: filteredData } });
+   } catch (error) {
+      console.error('Error fetching data by UserID:', error);
+      setUserData({ Calories: '-', Sleep: '-', Steps: '-' });
+   }
+};
+
 
   return (
+
+    <div className = "container mx-auto ">
+      <Navbar  ></Navbar >
+    {/* Section for entering UserID and fetching data */ }
     
-    <div className="container mx-auto ">
-      <Navbar></Navbar>
 
-      {/* Patient Overview */}
-      <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8">
-  <h2 className="text-2xl font-bold text-gray-900 mb-4">Summary</h2>
+  {/* Patient Overview */ }
+  < section className = "bg-gray-100 p-6 rounded-lg shadow-lg mb-8" >
+    <h2 className="text-2xl font-bold text-gray-900 mb-4">Summary</h2>
 
-  {/* Tiles Container */}
-  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-    {/* Tile 1 */}
-    <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center text-center">
-      <div className="text-4xl text-blue-500 mb-2"></div>
-      <h3 className="text-lg font-semibold text-gray-800">X</h3>
-      <p className="text-gray-600 mt-2"></p>
-    </div>
-
-    {/* Tile 2 */}
-    <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center text-center">
-      <div className="text-4xl text-green-500 mb-2"></div>
-      <h3 className="text-lg font-semibold text-gray-800">Y</h3>
-      <p className="text-gray-600 mt-2"></p>
-    </div>
-
-    {/* Tile 3 */}
-    <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center text-center">
-      <div className="text-4xl text-purple-500 mb-2"></div>
-      <h3 className="text-lg font-semibold text-gray-800">Z</h3>
-      <p className="text-gray-600 mt-2"></p>
-    </div>
+{/* Tiles Container */ }
+<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+  {/* Tile 1 */}
+  <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center text-center">
+    <div className="text-4xl text-blue-500 mb-2"></div>
+    <h3 className="text-lg font-semibold text-gray-800">X</h3>
+    <p className="text-gray-600 mt-2"></p>
   </div>
-</section>
+
+  {/* Tile 2 */}
+  <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center text-center">
+    <div className="text-4xl text-green-500 mb-2"></div>
+    <h3 className="text-lg font-semibold text-gray-800">Y</h3>
+    <p className="text-gray-600 mt-2"></p>
+  </div>
+
+  {/* Tile 3 */}
+  <div className="bg-white p-4 rounded-lg shadow-md flex flex-col items-center text-center">
+    <div className="text-4xl text-purple-500 mb-2"></div>
+    <h3 className="text-lg font-semibold text-gray-800">Z</h3>
+    <p className="text-gray-600 mt-2"></p>
+  </div>
+</div>
+</ section>
+< section className = "bg-gray-100 p-6 rounded-lg shadow-lg mb-8" >
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Enter UserID</h2>
+        <input
+          type="text"
+          placeholder="Enter UserID"
+          value={userID}
+          onChange={(e) => setUserID(e.target.value)}
+          className="border p-2 rounded mb-4"
+        />
+        <button onClick={handleFetchData} className="bg-blue-500 text-white px-4 py-2 rounded">
+          Enter
+        </button>
+   {/* <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8">  */}
+  <h2 className="text-2xl font-bold text-gray-900 mb-4">Enter FilterID</h2>
+
+  {/* Textbox to enter filter value */ }
+  <input
+    type="text"
+    value={filterValue}
+    onChange={(e) => setFilterValue(e.target.value)}
+    className="border p-2 rounded mb-4"
+
+    placeholder="Enter ID to filter"  // Example placeholder
+  />
+
+  {/* Button to apply the filter */ }
+  <button className="bg-pink-500 text-white px-4 py-2 rounded" onClick={applyFilter}>Apply Filter</button>
+
+  {/* Pass the applied filter value to PowerBiEmbedded as a prop */ }
+
+   </section> 
+
 
       <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8">
          <h2 className="text-2xl font-bold text-gray-900 mb-4">New  Patients</h2>
@@ -70,66 +146,22 @@ const Dashboard = () => {
          <Patients></Patients>
       </section>
 
-      {/* Fitbit Section */}
-      {/* <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
-        <div className="flex justify-between items-center cursor-pointer" onClick={() => setFitbitExpanded(!isFitbitExpanded)}>
-          <h3 className="text-xl font-bold text-gray-800">Fitbit</h3>
-          <button className="text-gray-800">
-            {isFitbitExpanded ? <FaChevronUp /> : <FaChevronDown />}
-          </button>
-        </div>
-        {isFitbitExpanded && (
-          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-6">
-            <Detail icon={<FaSmile className="text-yellow-500" />} value={mockData.totalFloors} label="Total Floors" comparison="100 floors below last week" />
-            <Detail icon={<FaMapMarkerAlt className="text-blue-500" />} value={mockData.totalDistance} label="Total KM" comparison="1.44 km below last week" />
-            <Detail icon={<FaFire className="text-red-500" />} value={mockData.totalCalories} label="Avg. Daily Calorie Burn" comparison="43 cals. over last week" />
-            <Detail icon={<FaHeartbeat className="text-pink-500" />} value={mockData.totalActiveMinutes} label="Total Active Zone Minutes" comparison="33 min since last week" />
-            <Detail icon={<FaMoon className="text-purple-500" />} value={mockData.avgSleepDuration} label="Avg. Restful Sleep" comparison="0 hrs 19 min lower than last week" />
-            <Detail icon={<IoFootsteps className="text-green-600" />} value={mockData.totalSteps} label="Total Steps" comparison={mockData.stepsComparison} />
-          </div>
-        )}
-      </section> */}
 
-      {/* Garmin Section */}
-      {/* <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
-        <div className="flex justify-between items-center cursor-pointer" onClick={() => setGarminExpanded(!isGarminExpanded)}>
-          <h3 className="text-xl font-bold text-gray-800">Garmin</h3>
-          <button className="text-gray-800">
-            {isGarminExpanded ? <FaChevronUp /> : <FaChevronDown />}
-          </button>
-        </div>
-        {isGarminExpanded && (
-          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-6">
-            <Detail icon={<FaSmile className="text-yellow-500" />} value={mockData.totalFloors} label="Total Floors" comparison="100 floors below last week" />
-            <Detail icon={<FaMapMarkerAlt className="text-blue-500" />} value={mockData.totalDistance} label="Total KM" comparison="1.44 km below last week" />
-            <Detail icon={<FaFire className="text-red-500" />} value={mockData.totalCalories} label="Avg. Daily Calorie Burn" comparison="43 cals. over last week" />
-            <Detail icon={<FaHeartbeat className="text-pink-500" />} value={mockData.totalActiveMinutes} label="Total Active Zone Minutes" comparison="33 min since last week" />
-            <Detail icon={<FaMoon className="text-purple-500" />} value={mockData.avgSleepDuration} label="Avg. Restful Sleep" comparison="0 hrs 19 min lower than last week" />
-            <Detail icon={<IoFootsteps className="text-green-600" />} value={mockData.totalSteps} label="Total Steps" comparison={mockData.stepsComparison} />
-          </div>
-        )}
-      </section> */}
 
-      {/* Strava Section */}
-      {/* <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
-        <div className="flex justify-between items-center cursor-pointer" onClick={() => setStravaExpanded(!isStravaExpanded)}>
-          <h3 className="text-xl font-bold text-gray-800">Strava</h3>
-          <button className="text-gray-800">
-            {isStravaExpanded ? <FaChevronUp /> : <FaChevronDown />}
-          </button>
-        </div>
-        {isStravaExpanded && (
-          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-6">
-            <Detail icon={<FaSmile className="text-yellow-500" />} value={mockData.totalFloors} label="Total Floors" comparison="100 floors below last week" />
-            <Detail icon={<FaMapMarkerAlt className="text-blue-500" />} value={mockData.totalDistance} label="Total KM" comparison="1.44 km below last week" />
-            <Detail icon={<FaFire className="text-red-500" />} value={mockData.totalCalories} label="Avg. Daily Calorie Burn" comparison="43 cals. over last week" />
-            <Detail icon={<FaHeartbeat className="text-pink-500" />} value={mockData.totalActiveMinutes} label="Total Active Zone Minutes" comparison="33 min since last week" />
-            <Detail icon={<FaMoon className="text-purple-500" />} value={mockData.avgSleepDuration} label="Avg. Restful Sleep" comparison="0 hrs 19 min lower than last week" />
-            <Detail icon={<IoFootsteps className="text-green-600" />} value={mockData.totalSteps} label="Total Steps" comparison={mockData.stepsComparison} />
-          </div>
-        )}
-      </section> */}
-    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </div >
   );
 };
 

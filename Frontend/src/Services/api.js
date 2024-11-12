@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create an Axios instance with your server's URL
 const api = axios.create({
-  baseURL: 'http://localhost:3001', // Your Node.js server URL
+  baseURL: 'https://physioactivity-dacvb2fxcjatc8fc.uksouth-01.azurewebsites.net/', // Your Node.js server URL
 });
 
 // Define functions to make requests to your server

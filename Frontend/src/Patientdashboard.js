@@ -3,17 +3,45 @@ import { FaMapMarkerAlt, FaFire, FaSmile, FaHeartbeat, FaMoon, FaWeight, FaUsers
 import { IoFootsteps } from "react-icons/io5";
 import { useLocation } from 'react-router-dom';
 import Sidepanel from './Sidepanel'; // Import your SidePanel component
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import Pbi from './Pbi';
+import PowerBiembededstatic from './PowerBiEmbeddedstatic';
+import PowerBiEmbeddedfilter from './PowerBiEmbeddedfilter';
 
-
-const Dashboard = () => {
-  // State to handle the collapse/expand functionality, set to false by default
+const Patientdashboard = () => {
+  const location = useLocation();
+  const { name } = location.state || {};
+  const [appliedValue, setAppliedValue] = useState("");
   const [isFitbitExpanded, setFitbitExpanded] = useState(false);
   const [isGarminExpanded, setGarminExpanded] = useState(false);
   const [isStravaExpanded, setStravaExpanded] = useState(false);
-  const location = useLocation();
-  const { name } = location.state || {}; // Fallback in case state is undefined
-  const [isSidePanelOpen, setSidePanelOpen] = useState(false);
 
+  const [isSidePanelOpen, setSidePanelOpen] = useState(false);
+  const [userID, setUserID] = useState(''); // State to hold the UserID input
+  const userData = location.state?.userData;
+
+  const [isFitbitExpanded1, setFitbitExpanded1] = useState(false);
+  const [isGarminExpanded1, setGarminExpanded1] = useState(false);
+  const [isStravaExpanded1, setStravaExpanded1] = useState(false);
+
+  const [isApplewatchExpanded, setApplewatchExpanded] = useState(false)
+  const [isdatavisExpanded, setdatavisExpanded] = useState(false)
+  const [isdatavisExpanded1, setdatavisExpanded1] = useState(false)
+  const [isPromExpanded, setPromExpanded] = useState(false)
+
+  const [filterValue, setFilterValue] = useState("");
+
+  const applyFilter = () => {
+    setAppliedValue(filterValue);  // Pass the filter value to PowerBiEmbedded
+  };
+
+  const graphData = userData
+    ? [
+      { name: 'Calories', value: parseInt(userData?.Calories || 0) },
+      { name: 'Sleep (hrs)', value: parseFloat(userData?.Sleep || 0) },
+      { name: 'Steps', value: parseInt(userData?.Steps || 0) }
+    ]
+    : [];
   // Dummy Data
   const mockData = {
     weekDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -34,7 +62,11 @@ const Dashboard = () => {
     <div className="container mx-auto p-4">
 
       {/* Personal  Information  */}
+<<<<<<< HEAD
       <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8 relative ">
+=======
+      <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8 relative">
+>>>>>>> 79f62f0 (structure changes)
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Personal Information</h2>
         {/* Add Notes Button */}
         <button
@@ -60,22 +92,21 @@ const Dashboard = () => {
             <span className="font-semibold text-gray-900">Blood Type:</span> A+
           </div>
 
-          {/* <div className="flex items-center"> */}
+
           <div>
-          <span className="font-semibold text-gray-900">Needs glasses with an eyesight number</span>
+            <span className="font-semibold text-gray-900">Needs glasses with an eyesight number</span>
             <input
               type="checkbox"
-              checked = {true}
-              // {needsGlasses}
-              // onChange={() => setNeedsGlasses(!needsGlasses)}
+              checked={true}
+
               className="ml-2"
             />
-            
+
           </div>
-        {/* </div> */}
-        <div>
-          <span className="font-semibold text-gray-900">Diagnosed Condition : </span> Osteoarthritis
-        </div>
+
+          <div>
+            <span className="font-semibold text-gray-900">Diagnosed Condition : </span> Osteoarthritis
+          </div>
         </div>
 
 
@@ -84,27 +115,7 @@ const Dashboard = () => {
       {/* Patient Overview */}
       <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-4">Patient Overview</h2>
-        {/* Add Notes Button */}
-        {/* <button 
-          className="absolute top-6 right-8 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md transition duration-200"
-          onClick={() => setSidePanelOpen(true)} // Open SidePanel on click
-        >
-          Add Notes
-        </button> */}
-        {/* <div className="flex flex-col space-y-4 text-gray-700 text-lg">
-          <div>
-            <span className="font-semibold text-gray-900">Patient Name:</span> {name}
-          </div>
-          <div>
-            <span className="font-semibold text-gray-900">Age:</span> 29
-          </div>
-          <div>
-            <span className="font-semibold text-gray-900">Height:</span> 175 cm
-          </div>
-          <div>
-            <span className="font-semibold text-gray-900">Weight:</span> 70 kg
-          </div>
-        </div> */}
+
         <p className="text-gray-500 font-bold text-lg mt-6"> Patient progress:</p>
 
         {/* Status Bars */}
@@ -114,6 +125,39 @@ const Dashboard = () => {
           <StatusBar label="Avg. Restful Sleep" value={7} maxValue={8} color="bg-purple-500" />
         </div>
       </section>
+
+      {/* Data Visualization for specific UserID */}
+      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+        <h3 className="text-xl font-bold text-gray-800">Data Visualization for UserID: {userID || '-'}</h3>
+        <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-6">
+          {/* Show default "-" if no data is available */}
+          <div className="p-6 border rounded-lg shadow-md bg-gray-50">
+            <div><strong>Calories:</strong> {userData?.Calories || '-'}</div>
+          </div>
+          <div className="p-6 border rounded-lg shadow-md bg-gray-50">
+            <div><strong>Sleep:</strong> {userData?.Sleep || '-'}</div>
+          </div>
+          <div className="p-6 border rounded-lg shadow-md bg-gray-50">
+            <div><strong>Steps:</strong> {userData?.Steps || '-'}</div>
+          </div>
+        </div>
+      </section>
+      {/* Bar Chart Visualization */}
+      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+        <h3 className="text-xl font-bold text-gray-800 mb-4">User Data Chart</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={graphData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="value" fill="#8884d8" />
+          </BarChart>
+        </ResponsiveContainer>
+
+      </section>
+
 
       {/* Fitbit Section */}
       <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
@@ -174,6 +218,141 @@ const Dashboard = () => {
           </div>
         )}
       </section>
+      {/* prom Section */}
+      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+        <div className="flex justify-between items-center cursor-pointer" onClick={() => setPromExpanded(!isPromExpanded)}>
+          <h3 className="text-xl font-bold text-gray-800">Prom</h3>
+          <button className="text-gray-800">
+            {isPromExpanded ? <FaChevronUp /> : <FaChevronDown />}
+          </button>
+        </div>
+        {isPromExpanded && (
+          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-6">
+
+            <Pbi pagename="PROMs" />
+          </div>
+        )}
+      </section>
+
+
+
+      {/* Fitbit Section */}
+      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+        <div className="flex justify-between items-center cursor-pointer" onClick={() => setFitbitExpanded1(!isFitbitExpanded1)}>
+          <h3 className="text-xl font-bold text-gray-800">Fitbit</h3>
+          <button className="text-gray-800">
+            {isFitbitExpanded1 ? <FaChevronUp /> : <FaChevronDown />}
+          </button>
+        </div>
+        {isFitbitExpanded1 && (
+          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-6">
+            <Pbi pagename="Fitbit" />
+
+
+          </div>
+        )}
+      </section>
+
+      {/* Garmin Section */}
+      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+        <div className="flex justify-between items-center cursor-pointer" onClick={() => setGarminExpanded1(!isGarminExpanded1)}>
+          <h3 className="text-xl font-bold text-gray-800">Garmin</h3>
+          <button className="text-gray-800">
+            {isGarminExpanded1 ? <FaChevronUp /> : <FaChevronDown />}
+          </button>
+        </div>
+        {isGarminExpanded1 && (
+          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-6">
+            <Pbi pagename="Garmin" />
+
+
+          </div>
+        )}
+      </section>
+
+      {/* Strava Section */}
+      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+        <div className="flex justify-between items-center cursor-pointer" onClick={() => setStravaExpanded1(!isStravaExpanded1)}>
+          <h3 className="text-xl font-bold text-gray-800">Strava</h3>
+          <button className="text-gray-800">
+            {isStravaExpanded1 ? <FaChevronUp /> : <FaChevronDown />}
+          </button>
+        </div>
+        {isStravaExpanded1 && (
+          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-6">
+            <Pbi pagename="Strava" />
+
+          </div>
+        )}
+      </section>
+
+      {/* Applewatch Section */}
+      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+        <div className="flex justify-between items-center cursor-pointer" onClick={() => setApplewatchExpanded(!isApplewatchExpanded)}>
+          <h3 className="text-xl font-bold text-gray-800">Apple Watch</h3>
+          <button className="text-gray-800">
+            {isApplewatchExpanded ? <FaChevronUp /> : <FaChevronDown />}
+          </button>
+        </div>
+        {isApplewatchExpanded && (
+          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-6">
+            <Pbi pagename="Apple" />
+
+          </div>
+        )}
+      </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      {/* powerbi  plot  Section */}
+      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+        <div className="flex justify-between items-center cursor-pointer" onClick={() => setdatavisExpanded1(!isdatavisExpanded1)}>
+          <h3 className="text-xl font-bold text-gray-800">Embedded Plot</h3>
+          <button className="text-gray-800">
+            {isdatavisExpanded1 ? <FaChevronUp /> : <FaChevronDown />}
+          </button>
+        </div>
+        {isdatavisExpanded1 && (
+          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-6">
+            <PowerBiembededstatic />
+          </div>
+        )}
+      </section>
+
+
+
+
+
+
+      {/* powerbi  report  Section */}
+      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+        <div className="flex justify-between items-center cursor-pointer" onClick={() => setdatavisExpanded(!isdatavisExpanded)}>
+          <h3 className="text-xl font-bold text-gray-800">Embedded Premium Report</h3>
+          <button className="text-gray-800">
+            {isdatavisExpanded ? <FaChevronUp /> : <FaChevronDown />}
+          </button>
+        </div>
+        {isdatavisExpanded && (
+          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-6">
+            <PowerBiEmbeddedfilter pagename="MSK LabAll" filterValue={appliedValue} />
+
+
+          </div>
+        )}
+      </section>
+
       <Sidepanel isOpen={isSidePanelOpen} onClose={() => setSidePanelOpen(false)} />
     </div>
   );
@@ -209,4 +388,4 @@ const StatusBar = ({ label, value, maxValue, color }) => {
   );
 };
 
-export default Dashboard;
+export default Patientdashboard;

@@ -36,3 +36,8 @@
     transform: rotate(360deg);
   }
 }
+
+.report-style-class {
+  height: 70vh;  /* Set height to 70% of the viewport height */
+  width: 90vw;   /* Set width to 90% of the viewport width */
+}
