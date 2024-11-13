@@ -1,4 +1,3 @@
-// Navbar.js
 import React, { useState } from 'react';
 import SidePanel from './Sidepanel';
 
@@ -14,17 +13,19 @@ const Navbar = () => {
   };
 
   return (
-    <div className="bg-[#0e7490] flex items-center justify-between px-6 py-6 text-white shadow-md">
-      {/* Left Section */}
-      <div className="flex items-center space-x-4">
-        <span className="font-bold text-xl">PhysioActivity</span>
-      </div>
-
-      {/* Right Section */}
-      <div className="flex items-center space-x-6">
-        <button className="hover:text-gray-200 transition-colors duration-200">Sign In</button>
-        {/* Attach handleOpenPanel to Feedback button */}
-        <button onClick={handleOpenPanel} className="hover:text-gray-200 transition-colors duration-200">
+    <div className="bg-white flex items-center justify-between px-6 py-4 shadow-md">
+      {/* Right Section with Buttons */}
+      <div className="flex items-center space-x-4 ml-auto">
+        {/* Sign In Button */}
+        <button className="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-200">
+          Sign In
+        </button>
+        
+        {/* Feedback Button */}
+        <button 
+          onClick={handleOpenPanel} 
+          className="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600 transition duration-200"
+        >
           Feedback
         </button>
       </div>

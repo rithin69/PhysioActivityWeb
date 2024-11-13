@@ -7,8 +7,12 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import Pbi from './Pbi';
 import PowerBiembededstatic from './PowerBiEmbeddedstatic';
 import PowerBiEmbeddedfilter from './PowerBiEmbeddedfilter';
+import Feedbacksidepanel from './Feedbacksidepanel';
 
 const Patientdashboard = () => {
+  const [isPanelOpen, setPanelOpen] = useState(false);
+  const [note1, setNote1] = useState('');
+  const [note2, setNote2] = useState('');
   const location = useLocation();
   const { name } = location.state || {};
   const [appliedValue, setAppliedValue] = useState("");
@@ -33,6 +37,18 @@ const Patientdashboard = () => {
 
   const applyFilter = () => {
     setAppliedValue(filterValue);  // Pass the filter value to PowerBiEmbedded
+  };
+
+  const togglePanel = () => {
+    setPanelOpen(!isPanelOpen);
+  };
+
+  // Function to handle saving notes
+  const handleSave = () => {
+    // console.log('Note 1:', note1);
+    // console.log('Note 2:', note2);
+    // alert("Notes saved!");
+    setPanelOpen(false);  // Close the panel after saving
   };
 
   const graphData = userData
@@ -60,6 +76,15 @@ const Patientdashboard = () => {
 
   return (
     <div className="container mx-auto p-4">
+         <Feedbacksidepanel
+        isOpen={isPanelOpen}
+        onClose={togglePanel}
+        note1={note1}
+        setNote1={setNote1}
+        note2={note2}
+        setNote2={setNote2}
+        onSave={handleSave}
+      />
 
       {/* Personal  Information  */}
       <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8 relative ">
@@ -67,9 +92,9 @@ const Patientdashboard = () => {
         {/* Add Notes Button */}
         <button
           className="absolute top-6 right-8 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md transition duration-200 absolute"
-          onClick={() => setSidePanelOpen(true)} // Open SidePanel on click
+          onClick={togglePanel} // Open SidePanel on click
         >
-          Add Notes
+         {isPanelOpen ? 'Close Notes' : 'Add Notes'}
         </button>
         <div className="flex flex-col space-y-4 text-gray-700 text-lg">
           <div>
@@ -232,6 +257,7 @@ const Patientdashboard = () => {
           </div>
         )}
       </section>
+   
       {/* prom Section */}
       {/* <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
         <div className="flex justify-between items-center cursor-pointer" onClick={() => setPromExpanded(!isPromExpanded)}>
@@ -353,7 +379,8 @@ const Patientdashboard = () => {
         )}
       </section> */}
 
-      <Sidepanel isOpen={isSidePanelOpen} onClose={() => setSidePanelOpen(false)} />
+      {/* <Sidepanel isOpen={isSidePanelOpen} onClose={() => setSidePanelOpen(false)} /> */}
+     
     </div>
   );
 };
@@ -384,6 +411,7 @@ const StatusBar = ({ label, value, maxValue, color }) => {
           style={{ width: `${percentage}%` }}
         ></div>
       </div>
+   
     </div>
   );
 };
