@@ -60,16 +60,23 @@ const Sidebar = () => {
         >
           <FontAwesomeIcon icon={faUser} className="mr-3" />
           <span className={`${isExpanded ? 'block' : 'hidden'}`}>My Page</span>
+
+
+
         </NavLink>
-        <a
-          href="http://51.89.139.42/"
-          className="text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition"
-          target="_blank"
-          rel="noopener noreferrer"
+
+        <NavLink
+          to="/exercise"
+          end
+          className={({ isActive }) =>
+            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${isActive ? 'active-link' : ''}`
+          }
         >
+
           <FontAwesomeIcon icon={faBook} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Exercises</span>
-        </a>
+          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Library</span>
+        </NavLink>
+
         <NavLink
           to="/connectors"
           end
@@ -80,10 +87,12 @@ const Sidebar = () => {
           <FontAwesomeIcon icon={faPlug} className="mr-3" />
           <span className={`${isExpanded ? 'block' : 'hidden'}`}>Connect</span>
         </NavLink>
-        <NavLink 
+
+
+        <NavLink
           to="/lab"
           end
-          className={({ isActive }) => 
+          className={({ isActive }) =>
             `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${isActive ? 'active-link' : ''}`
           }
         >

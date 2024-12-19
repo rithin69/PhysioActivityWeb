@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { FaMapMarkerAlt, FaFire, FaSmile, FaHeartbeat, FaMoon, FaWeight, FaUsers, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { IoFootsteps } from "react-icons/io5";
 import { useLocation } from 'react-router-dom';
@@ -34,6 +34,8 @@ const Patientdashboard = () => {
   const [isPromExpanded, setPromExpanded] = useState(false)
 
   const [filterValue, setFilterValue] = useState("");
+
+ 
 
   const applyFilter = () => {
     setAppliedValue(filterValue);  // Pass the filter value to PowerBiEmbedded
@@ -85,6 +87,13 @@ const Patientdashboard = () => {
         setNote2={setNote2}
         onSave={handleSave}
       />
+      {/* Breadcrumb */}
+      <nav className="mb-4 text-gray-700">
+        <span className="text-blue-600 font-semibold">My Patients</span>
+        <span className="mx-2">{'>'}</span>
+        <span className="font-semibold">{name || 'Patient Name'}</span>
+      </nav>
+
 
       {/* Personal  Information  */}
       <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8 relative ">

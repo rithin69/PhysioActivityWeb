@@ -1,35 +1,49 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
 const ProfilePage = () => {
-  const profileData = JSON.parse(localStorage.getItem('profileData')) || {};
-  console.log(profileData)
+  const { id } = useParams();
+  const profileData = JSON.parse(localStorage.getItem(id));
+
+  // Copy clean profile link
+  const handleCopyLink = () => {
+    const cleanURL = `${window.location.origin}/cleanprofile/${id}`; // Clean URL with ID
+    navigator.clipboard.writeText(cleanURL)
+      .then(() => {
+        alert('Clean Profile Link copied to clipboard!');
+      })
+      .catch((err) => {
+        console.error('Failed to copy link:', err);
+      });
+  };
+  
+
+  if (!profileData) {
+    return <div className="p-4 text-center text-red-500">Profile not found!</div>;
+  }
 
   return (
-    <div className="min-h-screen flex bg-gray-100">
-      <div className="flex-grow p-8">
-        <div className="bg-white rounded-lg shadow-lg p-8 max-w-5xl mx-auto">
-          <div className="flex items-start space-x-8">
-            {profileData.photo && (
-              <div className="w-1/3">
-                <img src={profileData.photo} alt="Profile" className="rounded-lg w-full h-auto object-cover" />
-              </div>
-            )}
-            <div className="w-2/3">
-              <h2 className="text-4xl font-bold mb-6">Profile</h2>
-              <div className="mb-6">
-                <h3 className="text-2xl font-semibold mb-2">About Us</h3>
-                <p className="text-lg text-gray-700">{profileData.aboutUs}</p>
-              </div>
-              <div className="mb-6">
-                <h3 className="text-2xl font-semibold mb-2">Testimonials</h3>
-                <p className="text-lg text-gray-700">{profileData.testimonials}</p>
-              </div>
-              <div>
-                <h3 className="text-2xl font-semibold mb-2">Additional Details</h3>
-                <p className="text-lg text-gray-700">{profileData.additionalDetails}</p>
-              </div>
-            </div>
-          </div>
+    <div className="min-h-screen bg-gray-100 p-4">
+      <div className="bg-white rounded-lg shadow-lg p-6 max-w-4xl mx-auto">
+        <h2 className="text-2xl font-semibold mb-4">Profile Page</h2>
+        {profileData.photo && (
+          <img
+            src={profileData.photo}
+            alt="Profile"
+            className="rounded-md w-32 h-32 object-cover mb-4"
+          />
+        )}
+        <p className="mb-2"><strong>About Us:</strong> {profileData.aboutUs}</p>
+        <p className="mb-2"><strong>Testimonials:</strong> {profileData.testimonials}</p>
+        <p className="mb-2"><strong>Additional Details:</strong> {profileData.additionalDetails}</p>
+
+        <div className="mt-4">
+          <button
+            onClick={handleCopyLink}
+            className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+          >
+            Copy Profile Link
+          </button>
         </div>
       </div>
     </div>

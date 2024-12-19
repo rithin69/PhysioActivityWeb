@@ -36,11 +36,11 @@ const Dashboard = () => {
     const settings = {
       dots: true,
       infinite: true,
-      speed: 500,
+      speed: 3000,
       slidesToShow: 1,
       slidesToScroll: 1,
       autoplay: true,
-      autoplaySpeed: 3000,
+      autoplaySpeed: 9000,
       arrows: true,
       pauseOnHover: true,
       responsive: [
@@ -111,7 +111,7 @@ const handleFetchData = async () => {
 
     <div className = "container mx-auto ">
 
-      <Navbar  ></Navbar >
+      {/* <Navbar  ></Navbar > */}
     {/* Section for entering UserID and fetching data */ }
     
 

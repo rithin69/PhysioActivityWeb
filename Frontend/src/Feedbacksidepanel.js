@@ -4,7 +4,7 @@ import React from 'react';
 const feedbacksidepanel = ({ isOpen, onClose, note1, setNote1, note2, setNote2, onSave }) => {
   return (
     <div
-      className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg transition-transform duration-300 ${
+      className={`fixed top-12 right-0 h-full w-80 bg-white shadow-lg transition-transform duration-300 ${
         isOpen ? 'translate-x-0' : 'translate-x-full'
       } z-20`}
     >
@@ -15,7 +15,7 @@ const feedbacksidepanel = ({ isOpen, onClose, note1, setNote1, note2, setNote2, 
         <h2 className="text-xl font-bold mb-4"> Notes</h2>
         
         {/* Textbox for Note 1 */}
-        <label className="block text-gray-800 font-semibold mb-2">Prescriptions</label>
+        <label className="block text-gray-800 font-semibold mb-2">Observations</label>
         <textarea
           className="w-full p-2 border rounded-md mb-4"
           rows="4"
@@ -25,7 +25,7 @@ const feedbacksidepanel = ({ isOpen, onClose, note1, setNote1, note2, setNote2, 
         ></textarea>
 
         {/* Textbox for Note 2 */}
-        <label className="block text-gray-800 font-semibold mb-2">Exercise</label>
+        <label className="block text-gray-800 font-semibold mb-2">Recommendations</label>
         <textarea
           className="w-full p-2 border rounded-md mb-4"
           rows="4"
