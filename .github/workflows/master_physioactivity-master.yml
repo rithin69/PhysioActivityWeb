@@ -27,7 +27,7 @@ jobs:
           cd frontend  # Navigate to the frontend folder where package.json is located
           npm install
           npm run build --if-present
-          ls -alh frontend/build  # Verify the build output
+          Get-ChildItem -Path frontend/build  # Verify the build output
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
