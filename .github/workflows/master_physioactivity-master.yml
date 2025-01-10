@@ -34,6 +34,7 @@ jobs:
           } else {
             Write-Host "Build folder does not exist!"
             exit 1
+          }
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
