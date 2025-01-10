@@ -3,8 +3,8 @@ name: Build and deploy Node.js app to Azure Web App - physioactivity-master
 on:
   push:
     branches:
-      - master
-  workflow_dispatch:
+      - master  # This triggers the workflow on a push to the master branch
+  workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
   build:
@@ -23,16 +23,14 @@ jobs:
           node-version: '20.x'
 
       - name: npm install, build, and test
-        env:
-          CI: false  # Use the environment variable set earlier
         run: |
-          cd frontend
+          cd frontend  # Navigate to the frontend folder where package.json is located
           npm install
-          npm run build
+          npm run build --if-present
           
           # Check if the build folder exists and list its contents
           if (Test-Path -Path "build") {
-            Get-ChildItem -Path build
+            Get-ChildItem -Path build  # Verify the build output
           } else {
             Write-Host "Build folder does not exist!"
             exit 1
@@ -42,7 +40,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: frontend/build
+          path: frontend/build  # Path to the build folder
 
   deploy:
     runs-on: ubuntu-latest
@@ -51,7 +49,7 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write
+      id-token: write  # Required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
