@@ -57,6 +57,9 @@ jobs:
         with:
           name: node-app
 
+      - name: List downloaded artifact contents  # Debugging step to list contents
+        run: ls -R node-app  # This will list the files in 'node-app'
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -68,4 +71,5 @@ jobs:
         with:
           app-name: 'physioactivity-master'
           slot-name: 'Production'
-          package: node-app
+          package: node-app  # Make sure this path corresponds to the artifact structure
+
