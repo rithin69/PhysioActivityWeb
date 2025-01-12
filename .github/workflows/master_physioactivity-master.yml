@@ -3,7 +3,7 @@ name: Build and deploy Node.js app to Azure Web App - physioactivity-master
 on:
   push:
     branches:
-      - master  # Triggers the workflow on a push to the master branch
+      - master  # This triggers the workflow on a push to the master branch
   workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
@@ -29,20 +29,12 @@ jobs:
           npm run build:ci
           
           # Check if the build folder exists and list its contents
-          echo "Checking if build folder exists..."
           if (Test-Path -Path "build") {
-            echo "Build folder exists. Listing contents:"
             Get-ChildItem -Path build  # Verify the build output
           } else {
-            echo "Build folder does not exist!"
+            Write-Host "Build folder does not exist!"
             exit 1
           }
-
-      - name: List contents of build folder
-        run: |
-          echo "Listing contents of Frontend/build directory:"
-          cd Frontend/build
-          Get-ChildItem -Path .  # Correct command for Windows (PowerShell) to list files
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -63,17 +55,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: node-app  # This will download the artifact named 'node-app'
-
-      - name: List contents of downloaded node-app directory
-        run: |
-          echo "Listing contents of downloaded node-app directory:"
-          ls -alh node-app  # List contents of the node-app folder to check the folder structure
-          
-      - name: List contents of downloaded node-app/build directory
-        run: |
-          echo "Listing contents of downloaded node-app/build directory:"
-          ls -alh node-app/build  # Check the 'build' folder inside 'node-app'
+          name: node-app
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -86,4 +68,4 @@ jobs:
         with:
           app-name: 'physioactivity-master'
           slot-name: 'Production'
-          package: node-app/build  # Correct path to the downloaded artifact
+          package: ./Frontend/build
