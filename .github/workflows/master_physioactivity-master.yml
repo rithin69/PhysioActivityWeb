@@ -28,7 +28,7 @@ jobs:
           npm install
           npm run build:ci
 
-          # Debug the build folder
+          # Verify build folder
           if (Test-Path -Path "build") {
             Write-Host "Build folder exists"
             Get-ChildItem -Path build
@@ -58,6 +58,9 @@ jobs:
         with:
           name: node-app
 
+      - name: Verify extracted artifact
+        run: ls -R
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -69,4 +72,4 @@ jobs:
         with:
           app-name: 'physioactivity-master'
           slot-name: 'Production'
-          package: ./Frontend/build
+          package: ./build
