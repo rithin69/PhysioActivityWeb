@@ -29,11 +29,11 @@ jobs:
           npm run build:ci
 
           # Debug the build folder
-          if [ -d build ]; then
-            echo "Build folder exists"
-            ls build
-          else
-            echo "Build folder does not exist"
+          if (Test-Path -Path "build") {
+            Write-Host "Build folder exists"
+            Get-ChildItem -Path build
+          } else {
+            Write-Host "Build folder does not exist!"
             exit 1
           }
 
