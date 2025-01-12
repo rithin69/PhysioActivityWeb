@@ -3,8 +3,8 @@ name: Build and deploy Node.js app to Azure Web App - physioactivity-master
 on:
   push:
     branches:
-      - master
-  workflow_dispatch:
+      - master  # This triggers the workflow on a push to the master branch
+  workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
   build:
@@ -22,22 +22,25 @@ jobs:
         with:
           node-version: '20.x'
 
-      - name: Install dependencies and build the frontend
+      - name: npm install, build, and test
         run: |
-          cd Frontend  # Navigate to the 'Frontend' folder where package.json is located
+          cd frontend  # Navigate to the frontend folder where package.json is located
           npm install
           npm run build:ci
-
-      - name: Debug Build Folder
-        run: |
-          cd Frontend  # Navigate again to the frontend folder
-          ls -la build  # Verify the build folder exists and check contents
+          
+          # Check if the build folder exists and list its contents
+          if (Test-Path -Path "build") {
+            Get-ChildItem -Path build  # Verify the build output
+          } else {
+            Write-Host "Build folder does not exist!"
+            exit 1
+          }
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: Frontend/build  # Correct path to the build folder
+          path: Frontend/build  # Path to the build folder
 
   deploy:
     runs-on: ubuntu-latest
@@ -46,16 +49,13 @@ jobs:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     permissions:
-      id-token: write
+      id-token: write  # Required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
           name: node-app
-
-      - name: Debug Downloaded Artifact
-        run: ls -la  # Check the contents of the downloaded artifact
 
       - name: Login to Azure
         uses: azure/login@v2
@@ -68,4 +68,4 @@ jobs:
         with:
           app-name: 'physioactivity-master'
           slot-name: 'Production'
-          package: ./node-app  # Path to the downloaded artifact
+          package: ./node-app
