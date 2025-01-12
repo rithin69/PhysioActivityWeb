@@ -36,6 +36,11 @@ jobs:
             exit 1
           }
 
+      - name: List contents of build folder
+        run: |
+          cd Frontend/build
+          ls -alh  # Check the contents of the build folder
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
@@ -56,6 +61,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-app
+
+      - name: List contents of downloaded artifact
+        run: |
+          ls -alh node-app/build  # Check if the build folder is present
 
       - name: Login to Azure
         uses: azure/login@v2
