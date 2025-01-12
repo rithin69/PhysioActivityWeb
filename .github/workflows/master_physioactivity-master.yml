@@ -24,7 +24,7 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-          cd frontend  # Navigate to the frontend folder where package.json is located
+          cd Frontend  # Navigate to the frontend folder where package.json is located
           npm install
           npm run build:ci
           
