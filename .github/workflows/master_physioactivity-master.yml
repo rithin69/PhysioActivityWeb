@@ -29,17 +29,20 @@ jobs:
           npm run build:ci
           
           # Check if the build folder exists and list its contents
+          echo "Checking if build folder exists..."
           if (Test-Path -Path "build") {
+            echo "Build folder exists. Listing contents:"
             Get-ChildItem -Path build  # Verify the build output
           } else {
-            Write-Host "Build folder does not exist!"
+            echo "Build folder does not exist!"
             exit 1
           }
 
       - name: List contents of build folder
         run: |
+          echo "Listing contents of Frontend/build directory:"
           cd Frontend/build
-          ls -alh  # Check the contents of the build folder
+          Get-ChildItem -Path .  # Correct command for Windows (PowerShell) to list files
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -64,7 +67,8 @@ jobs:
 
       - name: List contents of downloaded artifact
         run: |
-          ls -alh node-app/build  # Check if the build folder is present
+          echo "Listing contents of downloaded node-app/build directory:"
+          ls -alh node-app/build  # This will work in the deploy step because it's on Ubuntu (Linux)
 
       - name: Login to Azure
         uses: azure/login@v2
