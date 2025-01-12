@@ -71,4 +71,4 @@ jobs:
         with:
           app-name: 'physioactivity-master'
           slot-name: 'Production'
-          package: node-app/Frontend/build  # Update this path after inspecting the artifact structure
+          package: ./build  # Update this path after inspecting the artifact structure
