@@ -3,7 +3,7 @@ name: Build and deploy Node.js app to Azure Web App - physioactivity-master
 on:
   push:
     branches:
-      - master  # This triggers the workflow on a push to the master branch
+      - master  # Triggers the workflow on a push to the master branch
   workflow_dispatch:  # Allows manual triggering of the workflow
 
 jobs:
@@ -68,4 +68,4 @@ jobs:
         with:
           app-name: 'physioactivity-master'
           slot-name: 'Production'
-          package: node-app/build
+          package: node-app/build  # Correct path to the downloaded artifact
