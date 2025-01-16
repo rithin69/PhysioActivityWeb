@@ -2,8 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const { TableServiceClient, TableClient, AzureNamedKeyCredential } = require("@azure/data-tables");
-const { ConfidentialClientApplication } = require('@azure/msal-node');
-const axios = require('axios');
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -32,8 +30,9 @@ const tableClient = new TableClient(tableEndpoint, process.env.TABLE_NAME, table
 // Create a new table if it doesn't exist
 tableService.createTable(process.env.TABLE_NAME).catch(console.error);
 
+/*
 // -------------------
-// Power BI Configuration
+// Power BI Configuration (Commented Out)
 // -------------------
 const powerBiConfig = {
   clientId: process.env.POWER_BI_CLIENT_ID,
@@ -89,6 +88,7 @@ app.get('/api/getEmbedToken', async (req, res) => {
     res.status(error.response?.status || 500).send('Error generating embed token');
   }
 });
+*/
 
 // -------------------
 // Azure Table Storage CRUD Operations

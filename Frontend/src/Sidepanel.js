@@ -1,10 +1,44 @@
-// SidePanel.js
-import React from 'react';
+import React, { useState } from 'react';
+import { createfeedback } from './Services/api'; // Import the API function
 
 const SidePanel = ({ isOpen, onClose }) => {
-    console.log("sadasd")
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [errors, setErrors] = useState({ name: false, description: false });
+
+  const handleSubmit = async () => {
+    const newErrors = {
+      name: !name,
+      description: !description,
+    };
+
+    setErrors(newErrors);
+
+    // If there are any errors, don't proceed
+    if (Object.values(newErrors).some((error) => error)) return;
+
+    const feedbackEntity = {
+      PartitionKey: 'Feedback', // Use a meaningful PartitionKey
+      RowKey: `${Date.now()}`, // Unique identifier for the feedback
+      Name: name,
+      Description: description,
+    };
+
+    try {
+      // Call the API to create feedback
+      await createfeedback(feedbackEntity);
+      // Reset form fields and errors
+      setName('');
+      setDescription('');
+      setErrors({ name: false, description: false });
+      onClose(); // Close the side panel
+    } catch (error) {
+      console.error('Error submitting feedback:', error.message);
+      // Optionally handle backend errors here
+    }
+  };
+
   return (
-    
     <div
       className={`fixed top-0 right-0 h-full w-80 bg-white shadow-lg transition-transform duration-300 ${
         isOpen ? 'translate-x-0' : 'translate-x-full'
@@ -21,12 +55,54 @@ const SidePanel = ({ isOpen, onClose }) => {
             <strong>ℹ️ If you need help, please contact support.</strong>
           </p>
         </div>
-        <label className="text-gray-800 font-semibold mb-2">Are you satisfied with your experience?</label>
-        <div className="flex space-x-4 mt-4">
-          <button className="text-2xl">😊</button>
-          <button className="text-2xl">😐</button>
-          <button className="text-2xl">☹️</button>
+
+        {/* Name Input */}
+        <label className="text-gray-800 font-semibold mb-2 block">Name:</label>
+        <div className="relative">
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className={`w-full p-2 border rounded-md ${
+              errors.name ? 'border-red-500' : 'border-gray-300'
+            }`}
+            placeholder="Enter your name"
+          />
+          {errors.name && (
+            <>
+              <span className="absolute right-3 top-3 text-red-500 text-xl">!</span>
+              <p className="text-red-500 text-sm mt-1">Please enter your Name</p>
+            </>
+          )}
         </div>
+
+        {/* Description Input */}
+        <label className="text-gray-800 font-semibold mb-2 block">Description:</label>
+        <div className="relative">
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className={`w-full p-2 border rounded-md ${
+              errors.description ? 'border-red-500' : 'border-gray-300'
+            }`}
+            placeholder="Enter your feedback"
+            rows="4"
+          ></textarea>
+          {errors.description && (
+            <>
+              <span className="absolute right-3 top-3 text-red-500 text-xl">!</span>
+              <p className="text-red-500 text-sm mt-1">Please enter your Description</p>
+            </>
+          )}
+        </div>
+
+        {/* Submit Button */}
+        <button
+          onClick={handleSubmit}
+          className="bg-blue-500 text-white px-4 py-2  mt-1 rounded-md hover:bg-blue-600"
+        >
+          Submit
+        </button>
       </div>
     </div>
   );
