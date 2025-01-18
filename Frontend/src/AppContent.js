@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import Patients from './Patients';
@@ -6,11 +6,10 @@ import Connector from './Connector';
 import Lab from './Lab';
 import ProfileCreation from './Profilecreation';
 import ProfilePage from './Profilepage';
-import Login from './Login';
 import Dashboard from './Dashboard';
 import Settings from './Settings';
 import SiriAdPage from './SiriAdPage';
-import Patientdashboard from "./Patientdashboard"
+import Patientdashboard from "./Patientdashboard";
 import Navbar from './Navbar';
 import Exercise from './Exercise';
 import ScrollToTop from './ScrollToTop';
@@ -19,8 +18,11 @@ import CleanProfile from './CleanProfile';
 const AppContent = () => {
   const location = useLocation();
 
-  // Determine if current route is clean profile
+  // Determine if the current route is clean profile
   const isCleanProfile = location.pathname.startsWith('/cleanprofile/');
+
+  // Sidebar expanded state
+  const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
 
   const mockData = {
     weekDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -40,13 +42,29 @@ const AppContent = () => {
   return (
     <div className="flex flex-col h-screen">
       {/* Conditionally render Navbar */}
-      {!isCleanProfile && <Navbar />}
+      {!isCleanProfile && <Navbar isSidebarExpanded={isSidebarExpanded} />}
 
-      <div className="flex flex-grow h-screen">
-        {/* Conditionally render Sidebar */}
-        {!isCleanProfile && <Sidebar className="h-full" />}
+      <div className="flex flex-grow h-full">
+        {/* Sidebar */}
+        {!isCleanProfile && (
+          <div
+            className={`h-full transition-all duration-300 ${
+              isSidebarExpanded ? 'w-64' : 'w-20'
+            } bg-gray-800`}
+          >
+            <Sidebar
+              isExpanded={isSidebarExpanded}
+              setIsExpanded={setIsSidebarExpanded}
+            />
+          </div>
+        )}
 
-        <main className="flex-grow overflow-auto">
+        {/* Main Content */}
+        <main
+          className={`flex-grow transition-all duration-300 ${
+            isSidebarExpanded ? 'ml-64' : 'ml-20'
+          } bg-gray-100`}
+        >
           <ScrollToTop />
           <Routes>
             <Route path="/physio/siri" element={<SiriAdPage />} />

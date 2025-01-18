@@ -1,30 +1,28 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTachometerAlt, faUserFriends, faUser, faBook, faPlug, faFlask, faCogs } from '@fortawesome/free-solid-svg-icons';
-// import { useRole } from './RoleContext';
+import { faTachometerAlt, faUserFriends, faUser, faBook, faPlug, faFlask } from '@fortawesome/free-solid-svg-icons';
 
-const Sidebar = () => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  // const { role } = useRole();
-
+const Sidebar = ({ isExpanded, setIsExpanded }) => {
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
   };
 
-  // const baseUrl = `/${role}`;
-
   return (
-    <aside className={`bg-[#4db6c3] h-screen p-4 flex flex-col items-center transition-all duration-300 ${isExpanded ? 'w-64' : 'w-20'}`}>
-      <div className="mb-4 cursor-pointer" onClick={toggleSidebar}>
+    <aside
+      className={`bg-[#4db6c3] fixed top-0 left-0 h-screen p-4 flex flex-col transition-all duration-300 ${
+        isExpanded ? 'w-64' : 'w-20'
+      }`}
+    >
+      <div className="mb-4 cursor-pointer flex justify-center" onClick={toggleSidebar}>
         <img
-          src={isExpanded ? "/images/logo.png" : "/images/logo.png"}
+          src="/images/logo.png"
           alt="Logo"
           className={`rounded-full transition-all duration-300 ${isExpanded ? 'w-24 h-24' : 'w-12 h-12'}`}
         />
       </div>
       {isExpanded && (
-        <div className="text-white text-xl mb-8 transition-opacity duration-300">
+        <div className="text-white text-xl mb-8 text-center transition-opacity duration-300">
           PhysioActivity
         </div>
       )}
@@ -33,7 +31,9 @@ const Sidebar = () => {
           to="/"
           end
           className={({ isActive }) =>
-            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${isActive ? 'active-link' : ''}`
+            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${
+              isActive ? 'active-link bg-white text-[#4db6c3]' : ''
+            }`
           }
         >
           <FontAwesomeIcon icon={faTachometerAlt} className="mr-3" />
@@ -44,35 +44,37 @@ const Sidebar = () => {
           to="/Patientdashboard"
           end
           className={({ isActive }) =>
-            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${isActive ? 'active-link' : ''}`
+            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${
+              isActive ? 'active-link bg-white text-[#4db6c3]' : ''
+            }`
           }
         >
           <FontAwesomeIcon icon={faUserFriends} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}> Patients</span>
+          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Patients</span>
         </NavLink>
 
         <NavLink
           to="/profile"
           end
           className={({ isActive }) =>
-            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${isActive ? 'active-link' : ''}`
+            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${
+              isActive ? 'active-link bg-white text-[#4db6c3]' : ''
+            }`
           }
         >
           <FontAwesomeIcon icon={faUser} className="mr-3" />
           <span className={`${isExpanded ? 'block' : 'hidden'}`}>My Page</span>
-
-
-
         </NavLink>
 
         <NavLink
           to="/exercise"
           end
           className={({ isActive }) =>
-            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${isActive ? 'active-link' : ''}`
+            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${
+              isActive ? 'active-link bg-white text-[#4db6c3]' : ''
+            }`
           }
         >
-
           <FontAwesomeIcon icon={faBook} className="mr-3" />
           <span className={`${isExpanded ? 'block' : 'hidden'}`}>Library</span>
         </NavLink>
@@ -81,34 +83,27 @@ const Sidebar = () => {
           to="/connectors"
           end
           className={({ isActive }) =>
-            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${isActive ? 'active-link' : ''}`
+            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${
+              isActive ? 'active-link bg-white text-[#4db6c3]' : ''
+            }`
           }
         >
           <FontAwesomeIcon icon={faPlug} className="mr-3" />
           <span className={`${isExpanded ? 'block' : 'hidden'}`}>Connect</span>
         </NavLink>
 
-
         <NavLink
           to="/lab"
           end
           className={({ isActive }) =>
-            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${isActive ? 'active-link' : ''}`
+            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${
+              isActive ? 'active-link bg-white text-[#4db6c3]' : ''
+            }`
           }
         >
           <FontAwesomeIcon icon={faFlask} className="mr-3" />
           <span className={`${isExpanded ? 'block' : 'hidden'}`}>Research Labs</span>
         </NavLink>
-        {/* <NavLink 
-          to="/settings"
-          end
-          className={({ isActive }) => 
-            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${isActive ? 'active-link' : ''}`
-          }
-        >
-          <FontAwesomeIcon icon={faCogs} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Configure Settings</span>
-        </NavLink> */}
       </nav>
     </aside>
   );

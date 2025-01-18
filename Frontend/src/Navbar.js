@@ -3,7 +3,7 @@ import { CogIcon, QuestionMarkCircleIcon, ChatAlt2Icon } from '@heroicons/react/
 import { ChevronDownIcon } from '@heroicons/react/solid'; // For the dropdown arrow icon
 import SidePanel from './Sidepanel'; // Ensure you have a SidePanel component
 
-const Navbar = () => {
+const Navbar = ({ isSidebarExpanded }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Dropdown state
 
@@ -20,7 +20,11 @@ const Navbar = () => {
   };
 
   return (
-    <div className="sticky top-0 z-50 bg-white flex items-center justify-between px-6 py-4 shadow-md">
+    <div
+    className={`sticky top-0 z-50 bg-white flex items-center justify-between px-6 py-4 shadow-md transition-all duration-300 ${
+      isSidebarExpanded ? 'ml-64' : 'ml-20'
+    }`}
+  >
       {/* Left Section (You can add a logo or other content here) */}
       <div className="flex items-center">
         {/* Add a brand logo or name */}
