@@ -62,7 +62,7 @@ const AppContent = () => {
         {/* Main Content */}
         <main
           className={`flex-grow transition-all duration-300 ${
-            isSidebarExpanded ? 'ml-64' : 'ml-20'
+            isSidebarExpanded ? 'ml-64' : 'ml-0'
           } bg-gray-100`}
         >
           <ScrollToTop />
