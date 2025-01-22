@@ -12,3 +12,9 @@
   height: 70vh;  /* Set height to 70% of the viewport height */
   width: 80vw;   /* Set width to 90% of the viewport width */
 }
+@layer base {
+  html,
+  body {
+    @apply overflow-x-hidden w-full h-full;
+  }
+}
