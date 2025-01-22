@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';  // Import hooks
 import { setRole } from './redux/roleSlice';  // Import the action to set the role
 import { ChevronDownIcon } from '@heroicons/react/solid';  // For the dropdown arrow icon
 import SidePanel from './Sidepanel';
+import { CogIcon, QuestionMarkCircleIcon, ChatAlt2Icon } from '@heroicons/react/solid'; // Correct icons imported
 
 const Navbar = ({ isSidebarExpanded }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
@@ -12,6 +13,9 @@ const Navbar = ({ isSidebarExpanded }) => {
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
+  };
+  const handleOpenPanel = () => {
+    setIsPanelOpen(true);
   };
 
   const handleClosePanel = () => {
@@ -33,7 +37,24 @@ const Navbar = ({ isSidebarExpanded }) => {
         {/* Add a brand logo or name */}
       </div>
 
+
+      {/* Right Section with Icons */}
       <div className="flex items-center space-x-4">
+        {/* Feedback (Chat Bubble) Icon */}
+        <ChatAlt2Icon
+          className="h-6 w-6 text-gray-500 hover:text-gray-700 cursor-pointer"
+          onClick={handleOpenPanel} // Open the side panel on click
+        />
+
+        {/* Settings (Cog) Icon */}
+        <CogIcon className="h-6 w-6 text-gray-500 hover:text-gray-700 cursor-pointer" />
+
+        {/* Help (Question Mark) Icon */}
+        <QuestionMarkCircleIcon className="h-6 w-6 text-gray-500 hover:text-gray-700 cursor-pointer" />
+
+        
+
+      {/* <div className="flex items-center space-x-4"> */}
         {/* Role Dropdown */}
         <div className="relative">
           <button
