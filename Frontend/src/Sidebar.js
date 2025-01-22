@@ -1,12 +1,58 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';  // Import the hook to access the role
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTachometerAlt, faUserFriends, faUser, faBook, faPlug, faFlask } from '@fortawesome/free-solid-svg-icons';
 
 const Sidebar = ({ isExpanded, setIsExpanded }) => {
+  const userRole = useSelector((state) => state.role.role);  // Access the current role from the Redux store
+
   const toggleSidebar = () => {
     setIsExpanded(!isExpanded);
   };
+
+  const getSidebarLinks = () => {
+    switch (userRole) {
+      case 'Admin':
+        return [
+          { to: '/', label: 'Dashboard', icon: faTachometerAlt },
+          { to: '/Patientdashboard', label: 'Patients', icon: faUserFriends },
+          { to: '/profile', label: 'My Page', icon: faUser },
+          { to: '/exercise', label: 'Library', icon: faBook },
+          { to: '/connectors', label: 'Connect', icon: faPlug },
+          { to: '/lab', label: 'Research Labs', icon: faFlask },
+        ];
+      case 'Researcher':
+        return [
+          { to: '/', label: 'Dashboard', icon: faTachometerAlt },
+          { to: '/Patientdashboard', label: 'Patients', icon: faUserFriends },
+          { to: '/profile', label: 'My Page', icon: faUser },
+          { to: '/exercise', label: 'Library', icon: faBook },
+          { to: '/connectors', label: 'Connect', icon: faPlug },
+          { to: '/lab', label: 'Research Labs', icon: faFlask },
+        ];
+      case 'Physio':
+        return [
+          { to: '/', label: 'Dashboard', icon: faTachometerAlt },
+          { to: '/Patientdashboard', label: 'Patients', icon: faUserFriends },
+          { to: '/profile', label: 'My Page', icon: faUser },
+          { to: '/exercise', label: 'Library', icon: faBook },
+          { to: '/connectors', label: 'Connect', icon: faPlug },
+        ];
+      case 'Guest':
+      case 'Patient':
+      case 'OT':
+      case 'Personal Trainer':
+        return [
+          { to: '/', label: 'Dashboard', icon: faTachometerAlt },
+          
+        ];
+      default:
+        return [];
+    }
+  };
+
+  const sidebarLinks = getSidebarLinks();
 
   return (
     <aside
@@ -27,83 +73,21 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
         </div>
       )}
       <nav className="flex flex-col w-full space-y-4">
-        <NavLink
-          to="/"
-          end
-          className={({ isActive }) =>
-            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${
-              isActive ? 'active-link bg-white text-[#4db6c3]' : ''
-            }`
-          }
-        >
-          <FontAwesomeIcon icon={faTachometerAlt} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Dashboard</span>
-        </NavLink>
-
-        <NavLink
-          to="/Patientdashboard"
-          end
-          className={({ isActive }) =>
-            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${
-              isActive ? 'active-link bg-white text-[#4db6c3]' : ''
-            }`
-          }
-        >
-          <FontAwesomeIcon icon={faUserFriends} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Patients</span>
-        </NavLink>
-
-        <NavLink
-          to="/profile"
-          end
-          className={({ isActive }) =>
-            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${
-              isActive ? 'active-link bg-white text-[#4db6c3]' : ''
-            }`
-          }
-        >
-          <FontAwesomeIcon icon={faUser} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}>My Page</span>
-        </NavLink>
-
-        <NavLink
-          to="/exercise"
-          end
-          className={({ isActive }) =>
-            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${
-              isActive ? 'active-link bg-white text-[#4db6c3]' : ''
-            }`
-          }
-        >
-          <FontAwesomeIcon icon={faBook} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Library</span>
-        </NavLink>
-
-        <NavLink
-          to="/connectors"
-          end
-          className={({ isActive }) =>
-            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${
-              isActive ? 'active-link bg-white text-[#4db6c3]' : ''
-            }`
-          }
-        >
-          <FontAwesomeIcon icon={faPlug} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Connect</span>
-        </NavLink>
-
-        <NavLink
-          to="/lab"
-          end
-          className={({ isActive }) =>
-            `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${
-              isActive ? 'active-link bg-white text-[#4db6c3]' : ''
-            }`
-          }
-        >
-          <FontAwesomeIcon icon={faFlask} className="mr-3" />
-          <span className={`${isExpanded ? 'block' : 'hidden'}`}>Research Labs</span>
-        </NavLink>
+        {sidebarLinks.map(({ to, label, icon }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end
+            className={({ isActive }) =>
+              `text-white py-2 px-4 rounded flex items-center hover:bg-white hover:text-[#4db6c3] transition ${
+                isActive ? 'active-link bg-white text-[#4db6c3]' : ''
+              }`
+            }
+          >
+            <FontAwesomeIcon icon={icon} className="mr-3" />
+            <span className={`${isExpanded ? 'block' : 'hidden'}`}>{label}</span>
+          </NavLink>
+        ))}
       </nav>
     </aside>
   );
