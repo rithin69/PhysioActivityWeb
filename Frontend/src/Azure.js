@@ -18,7 +18,7 @@ function App() {
     }
   };
 
-  const handleCreate = async () => {
+  const handleCreate = async () => { 
     try {
       await createEntity(newEntity);
       fetchEntities();
