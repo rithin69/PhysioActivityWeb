@@ -11,7 +11,7 @@ const PowerBiEmbeddedfilter = ({ filterValue }) => {
   useEffect(() => {
     const fetchEmbedToken = async () => {
       try {
-        const response = await axios.get('https://physioactivity-dacvb2fxcjatc8fc.uksouth-01.azurewebsites.net/api/getEmbedToken'); // Adjust URL as needed
+        const response = await axios.get('https://physioactivitybackend-gjb3dnbsgdcbgjfj.uksouth-01.azurewebsites.net/api/getEmbedToken'); // Adjust URL as needed
         setEmbedConfig({
           type: 'report',
           embedUrl: response.data.embedUrl,

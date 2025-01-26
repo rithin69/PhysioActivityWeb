@@ -10,7 +10,7 @@ const PowerBiEmbeddedstatic = () => {
   useEffect(() => {
     const fetchEmbedToken = async () => {
       try {
-        const response = await axios.get('https://physioactivity-dacvb2fxcjatc8fc.uksouth-01.azurewebsites.net/api/getEmbedToken');
+        const response = await axios.get('https://physioactivitybackend-gjb3dnbsgdcbgjfj.uksouth-01.azurewebsites.net/api/getEmbedToken');
         setEmbedConfig({
           type: 'report',
           embedUrl: response.data.embedUrl,
