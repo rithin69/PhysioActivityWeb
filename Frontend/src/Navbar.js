@@ -34,7 +34,7 @@ const Navbar = ({ isSidebarExpanded }) => {
 
   const redirectToFitbit = () => {
   //  const fitbitAuthUrl=`physioactivitybackend-gjb3dnbsgdcbgjfj.uksouth-01.azurewebsites.net\fitbit\auth`
-     const fitbitAuthUrl = `https://www.fitbit.com/oauth2/authorize?client_id=23RQGB&response_type=code&code_challenge=vxQ5g_nNjnIE4QuTvoX4Ppyy--6D8FE4fyDKq-beFXg&code_challenge_method=S256&scope=activity%20heartrate%20location%20nutrition%20oxygen_saturation%20profile%20respiratory_rate%20settings%20sleep%20social%20temperature%20weight&state=123456`;
+     const fitbitAuthUrl = `https://www.fitbit.com/oauth2/authorize?client_id=23RQGB&response_type=code&code_challenge=qWGF0O7mN_qbhKxs33cFtxGnHZm-U5vJeQUtql1OxJY&code_challenge_method=S256&scope=activity%20heartrate%20location%20nutrition%20oxygen_saturation%20profile%20respiratory_rate%20settings%20sleep%20social%20temperature%20weight&state=123456`;
     window.location.href = fitbitAuthUrl; // Redirect to Fitbit authorization URL
   };
 
