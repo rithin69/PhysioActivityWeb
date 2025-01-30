@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';  // Import hooks
-import { setRole } from './redux/roleSlice';  // Import the action to set the role
-import { ChevronDownIcon } from '@heroicons/react/solid';  // For the dropdown arrow icon
+import { useDispatch, useSelector } from 'react-redux'; // Import hooks
+import { setRole } from './redux/roleSlice'; // Import the action to set the role
+import { ChevronDownIcon } from '@heroicons/react/solid'; // For the dropdown arrow icon
 import SidePanel from './Sidepanel';
-import { CogIcon, QuestionMarkCircleIcon, ChatAlt2Icon } from '@heroicons/react/solid'; // Correct icons imported
+import {
+  CogIcon,
+  QuestionMarkCircleIcon,
+  ChatAlt2Icon,
+} from '@heroicons/react/solid'; // Correct icons imported
 
 const Navbar = ({ isSidebarExpanded }) => {
   const [isPanelOpen, setIsPanelOpen] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);  // Dropdown state
-  const dispatch = useDispatch();  // Hook to dispatch actions
-  const userRole = useSelector((state) => state.role.role);  // Hook to access the current role from the Redux store
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Dropdown state
+  const dispatch = useDispatch(); // Hook to dispatch actions
+  const userRole = useSelector((state) => state.role.role); // Hook to access the current role from the Redux store
+  // const userId = useSelector((state) => state.user.id); // Replace with your app's user ID selector
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -23,8 +28,13 @@ const Navbar = ({ isSidebarExpanded }) => {
   };
 
   const handleRoleSelect = (role) => {
-    dispatch(setRole(role));  // Update the role in the Redux store
-    setIsDropdownOpen(false);  // Close the dropdown after selection
+    dispatch(setRole(role)); // Update the role in the Redux store
+    setIsDropdownOpen(false); // Close the dropdown after selection
+  };
+
+  const redirectToFitbit = () => {
+    const fitbitAuthUrl = `https://www.fitbit.com/oauth2/authorize?client_id=23RQGB&response_type=code&code_challenge=vxQ5g_nNjnIE4QuTvoX4Ppyy--6D8FE4fyDKq-beFXg&code_challenge_method=S256&scope=activity%20heartrate%20location%20nutrition%20oxygen_saturation%20profile%20respiratory_rate%20settings%20sleep%20social%20temperature%20weight&state=123456`;
+    window.location.href = fitbitAuthUrl; // Redirect to Fitbit authorization URL
   };
 
   return (
@@ -33,10 +43,7 @@ const Navbar = ({ isSidebarExpanded }) => {
         isSidebarExpanded ? 'ml-64' : 'ml-20'
       }`}
     >
-      <div className="flex items-center">
-        {/* Add a brand logo or name */}
-      </div>
-
+      <div className="flex items-center">{/* Add a brand logo or name */}</div>
 
       {/* Right Section with Icons */}
       <div className="flex items-center space-x-4">
@@ -52,30 +59,44 @@ const Navbar = ({ isSidebarExpanded }) => {
         {/* Help (Question Mark) Icon */}
         <QuestionMarkCircleIcon className="h-6 w-6 text-gray-500 hover:text-gray-700 cursor-pointer" />
 
-        
+        {/* Connect to Fitbit Button */}
+        <button
+          onClick={redirectToFitbit}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none"
+        >
+          Connect to Fitbit
+        </button>
 
-      {/* <div className="flex items-center space-x-4"> */}
         {/* Role Dropdown */}
         <div className="relative">
           <button
             onClick={toggleDropdown}
             className="flex items-center bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none"
           >
-            {userRole}  {/* Display the current role */}
+            {userRole} {/* Display the current role */}
             <ChevronDownIcon
               className={`h-5 w-5 ml-2 transform ${
                 isDropdownOpen ? 'rotate-180' : 'rotate-0'
               } transition-transform`}
             />
           </button>
+
           {isDropdownOpen && (
             <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 shadow-lg rounded-md z-10">
-              {['Guest', 'Patient', 'Physio', 'OT', 'Personal Trainer', 'Researcher', 'Admin'].map((role) => (
+              {[
+                'Guest',
+                'Patient',
+                'Physio',
+                'OT',
+                'Personal Trainer',
+                'Researcher',
+                'Admin',
+              ].map((role) => (
                 <a
                   key={role}
                   href="#"
                   className="block px-4 py-2 text-gray-700 hover:bg-green-100"
-                  onClick={() => handleRoleSelect(role)}  // Update the role when clicked
+                  onClick={() => handleRoleSelect(role)} // Update the role when clicked
                 >
                   {role}
                 </a>
