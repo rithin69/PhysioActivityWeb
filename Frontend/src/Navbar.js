@@ -41,6 +41,34 @@ const Navbar = ({ isSidebarExpanded }) => {
    
     
   }
+  const handleFitbitRedirect = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    const state = urlParams.get('state');
+  
+    if (code && state) {
+      // Send the code and state to the backend
+      fetch('https://physioactivitybackend-gjb3dnbsgdcbgjfj.uksouth-01.azurewebsites.net', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code, state }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Token exchange response:', data);
+          // Handle the response (e.g., save tokens, redirect user, etc.)
+        })
+        .catch(error => {
+          console.error('Error exchanging token:', error);
+        });
+    }
+  };
+  
+  // Call handleFitbitRedirect when the page loads
+  window.addEventListener('load', handleFitbitRedirect);
+  
 
   return (
     <div
