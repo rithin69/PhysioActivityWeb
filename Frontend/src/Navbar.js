@@ -48,7 +48,7 @@ const Navbar = ({ isSidebarExpanded }) => {
   
     if (code && state) {
       // Send the code and state to the backend
-      fetch('https://physioactivitybackend-gjb3dnbsgdcbgjfj.uksouth-01.azurewebsites.net', {
+      fetch('https://physioactivitybackend-gjb3dnbsgdcbgjfj.uksouth-01.azurewebsites.net/fitbit/callback', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
