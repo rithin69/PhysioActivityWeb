@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux'; // Import hooks
 import { setRole } from './redux/roleSlice'; // Import the action to set the role
 import { ChevronDownIcon } from '@heroicons/react/solid'; // For the dropdown arrow icon
