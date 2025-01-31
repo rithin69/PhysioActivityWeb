@@ -42,6 +42,7 @@ const Navbar = ({ isSidebarExpanded }) => {
     
   }
   const handleFitbitRedirect = () => {
+    console.log("ghgh")
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
     const state = urlParams.get('state');
