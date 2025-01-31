@@ -66,9 +66,9 @@ const Navbar = ({ isSidebarExpanded }) => {
         });
     }
   };
-  
-  // Call handleFitbitRedirect when the page loads
-  window.addEventListener('load', handleFitbitRedirect);
+  useEffect(() => {
+    handleFitbitRedirect(); // Runs when the component mounts
+  }, []); 
   
 
   return (
