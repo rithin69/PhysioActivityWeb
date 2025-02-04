@@ -12,8 +12,9 @@ function Connector() {
             <AppCard name="NHS" icon="/images/nhs.png" />
             <AppCard name="Southampton General Hospital" icon="/images/sgh.png" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 ml-80">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <AppCard name="Physitrack" icon="/images/physitrack.png" />
+            <AppCard name="Fitbit" icon="/images/fitbit.png" />
           </div>
         </div>
       </div>
