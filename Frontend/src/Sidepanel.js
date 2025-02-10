@@ -20,7 +20,7 @@ const SidePanel = ({ isOpen, onClose }) => {
     if (Object.values(newErrors).some((error) => error)) return;
 
     const feedbackEntity = {
-      PartitionKey: uuidv4(), // Use a meaningful PartitionKey
+      PartitionKey: "1233", // Use a meaningful PartitionKey
       RowKey: `${Date.now()}`, // Unique identifier for the feedback
       Name: name,
       Description: description,
