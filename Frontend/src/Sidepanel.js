@@ -28,6 +28,7 @@ const SidePanel = ({ isOpen, onClose }) => {
 
     try {
       // Call the API to create feedback
+      console.log(feedbackEntity)
       await createfeedback(feedbackEntity);
       // Reset form fields and errors
       setName('');
