@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { createfeedback } from './Services/api'; // Import the API function
+const { v4: uuidv4 } = require('uuid'); // Importing UUID library for unique rowKey generation
+
 
 const SidePanel = ({ isOpen, onClose }) => {
   const [name, setName] = useState('');
@@ -18,7 +20,7 @@ const SidePanel = ({ isOpen, onClose }) => {
     if (Object.values(newErrors).some((error) => error)) return;
 
     const feedbackEntity = {
-      PartitionKey: 'Feedback', // Use a meaningful PartitionKey
+      PartitionKey: uuidv4(), // Use a meaningful PartitionKey
       RowKey: `${Date.now()}`, // Unique identifier for the feedback
       Name: name,
       Description: description,
