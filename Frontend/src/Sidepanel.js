@@ -7,11 +7,13 @@ const SidePanel = ({ isOpen, onClose }) => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [errors, setErrors] = useState({ name: false, description: false });
+  const userRole = useSelector((state) => state.role.role);
 
   const handleSubmit = async () => {
     const newErrors = {
       name: !name,
       description: !description,
+      
     };
 
     setErrors(newErrors);
@@ -24,6 +26,7 @@ const SidePanel = ({ isOpen, onClose }) => {
       RowKey: `${Date.now()}`, // Unique identifier for the feedback
       Name: name,
       Description: description,
+      Role: userRole,
     };
 
     try {
