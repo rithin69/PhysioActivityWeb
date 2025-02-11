@@ -14,7 +14,7 @@ const Patientdashboard = () => {
   const [note1, setNote1] = useState('');
   const [note2, setNote2] = useState('');
   const location = useLocation();
-  const { name } = location.state || {};
+  const name = location.state?.name || "John";
   const [appliedValue, setAppliedValue] = useState("");
   const [isFitbitExpanded, setFitbitExpanded] = useState(false);
   const [isGarminExpanded, setGarminExpanded] = useState(false);
