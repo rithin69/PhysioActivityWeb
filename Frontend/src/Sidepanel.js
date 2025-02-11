@@ -9,8 +9,7 @@ const SidePanel = ({ isOpen, onClose }) => {
   const [description, setDescription] = useState('');
   const [errors, setErrors] = useState({ name: false, description: false });
   const userRole = useSelector((state) => state.role.role);
-  console.log("s")
-  console.log(userRole);
+  
 
   const handleSubmit = async () => {
     const newErrors = {
