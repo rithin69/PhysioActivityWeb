@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 
 const Dashboard = () => {
@@ -18,6 +19,9 @@ const Dashboard = () => {
   const [isdatavisExpanded, setdatavisExpanded] = useState(false)
   const [isdatavisExpanded1, setdatavisExpanded1] = useState(false)
   const [isPromExpanded, setPromExpanded] = useState(false)
+  const [isLoading, setIsLoading] = useState(false); // New Loading State
+
+
 
 
   const [filterValue, setFilterValue] = useState("");  // State to hold the textbox input
@@ -90,19 +94,23 @@ const Dashboard = () => {
     weight: 70,
   };
 
-  const navigate = useNavigate(); // Initialize navigate hook
+  // const navigate = useNavigate(); // Initialize navigate hook
 
   const handleFetchData = async () => {
+    setIsLoading(true); // Start loading
     try {
+
       const response = await getEntities();
       const filteredData = response.data.find((entity) => entity.UserID === userID);
       setUserData(filteredData || { Calories: '-', Sleep: '-', Steps: '-' });
 
       // Navigate to visualization page with the UserID passed in route state
-      navigate('/Patientdashboard', { state: { userData: filteredData } });
+      // navigate('/Patientdashboard', { state: { userData: filteredData } });
     } catch (error) {
       console.error('Error fetching data by UserID:', error);
       setUserData({ Calories: '-', Sleep: '-', Steps: '-' });
+    }finally{
+    setIsLoading(false); // Stop loading after fetching data
     }
   };
 
@@ -112,7 +120,7 @@ const Dashboard = () => {
     <div className="container mx-auto ml-20 overflow-x-hidden">
 
 
-     
+
 
       {/* Patient Overview */}
       < section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8" >
@@ -134,7 +142,7 @@ const Dashboard = () => {
               <p>Content for Slide 3</p>
             </div>
           </Slider>
-         
+
         </div>
       </ section>
       < section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8" >
@@ -168,6 +176,56 @@ const Dashboard = () => {
         {/* Pass the applied filter value to PowerBiEmbedded as a prop */}
 
       </section>
+      {/* Loading Modal */}
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
+            <p className="mt-4 text-lg font-semibold">Loading data...</p>
+          </div>
+        </div>
+      )}
+
+
+
+      {/* Data Visualization for specific UserID */}
+
+      {/* {!isLoading && userData && ( */}
+        {/* <> */}
+          <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+            <h3 className="text-xl font-bold text-gray-800">Data Visualization for UserID: {userID || '-'}</h3>
+            <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-6">
+              <div className="p-6 border rounded-lg shadow-md bg-gray-50">
+                <div><strong>Calories:</strong> {userData?.Calories || '-'}</div>
+              </div>
+              <div className="p-6 border rounded-lg shadow-md bg-gray-50">
+                <div><strong>Sleep:</strong> {userData?.Sleep || '-'}</div>
+              </div>
+              <div className="p-6 border rounded-lg shadow-md bg-gray-50">
+                <div><strong>Steps:</strong> {userData?.Steps || '-'}</div>
+              </div>
+            </div>
+          </section>
+
+          {/* Bar Chart Visualization */}
+          <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">User Data Chart</h3>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={graphData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="value" fill="#8884d8" />
+              </BarChart>
+            </ResponsiveContainer>
+          </section>
+        {/* </> */}
+      {/* )} */}
+
+
+
 
 
       <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8">

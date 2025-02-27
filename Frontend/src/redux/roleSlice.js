@@ -2,7 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  role: 'Guest',  // Set the default role (Guest)
+  role: '',  // Set the default role (Guest)
 };
 
 const roleSlice = createSlice({

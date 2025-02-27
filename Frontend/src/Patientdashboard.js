@@ -156,38 +156,7 @@ const Patientdashboard = () => {
         </div>
       </section>
 
-      {/* Data Visualization for specific UserID */}
-      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
-        <h3 className="text-xl font-bold text-gray-800">Data Visualization for UserID: {userID || '-'}</h3>
-        <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-6">
-          {/* Show default "-" if no data is available */}
-          <div className="p-6 border rounded-lg shadow-md bg-gray-50">
-            <div><strong>Calories:</strong> {userData?.Calories || '-'}</div>
-          </div>
-          <div className="p-6 border rounded-lg shadow-md bg-gray-50">
-            <div><strong>Sleep:</strong> {userData?.Sleep || '-'}</div>
-          </div>
-          <div className="p-6 border rounded-lg shadow-md bg-gray-50">
-            <div><strong>Steps:</strong> {userData?.Steps || '-'}</div>
-          </div>
-        </div>
-      </section>
-      {/* Bar Chart Visualization */}
-      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
-        <h3 className="text-xl font-bold text-gray-800 mb-4">User Data Chart</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={graphData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="value" fill="#8884d8" />
-          </BarChart>
-        </ResponsiveContainer>
-
-      </section>
-
+      
 
       {/* Fitbit Section */}
       <section className="bg-white p-4 rounded-lg shadow-lg mb-4">

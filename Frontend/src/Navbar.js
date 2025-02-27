@@ -89,9 +89,7 @@ const Navbar = ({ isSidebarExpanded }) => {
           onClick={handleOpenPanel} // Open the side panel on click
         />
 
-        {/* Settings (Cog) Icon */}
-        <CogIcon className="h-6 w-6 text-gray-500 hover:text-gray-700 cursor-pointer" />
-
+      
         {/* Help (Question Mark) Icon */}
         <QuestionMarkCircleIcon className="h-6 w-6 text-gray-500 hover:text-gray-700 cursor-pointer" />
 
@@ -109,7 +107,7 @@ const Navbar = ({ isSidebarExpanded }) => {
             onClick={toggleDropdown}
             className="flex items-center bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none"
           >
-            {userRole} {/* Display the current role */}
+            {userRole ? userRole : "Login"} {/* Default to "Login" if no role is selected */}
             <ChevronDownIcon
               className={`h-5 w-5 ml-2 transform ${
                 isDropdownOpen ? 'rotate-180' : 'rotate-0'
