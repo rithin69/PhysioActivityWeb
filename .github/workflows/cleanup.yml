@@ -10,4 +10,4 @@ jobs:
         uses: actions/delete-workflow-runs@v2
         with:
           retain_days: 1 # Delete runs older than 1 day
-          keep_minimum_runs: 5 # Always keep at least 5 runs
+          keep_minimum_runs: 5 # Always keep at least 5 run
