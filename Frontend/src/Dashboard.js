@@ -101,7 +101,7 @@ const Dashboard = () => {
     try {
 
       const response = await getEntities();
-      const filteredData = response.data.find((entity) => entity.UserID === userID);
+      const filteredData = response.data.find((entity) => entity.Code === userID);
       setUserData(filteredData || { Calories: '-', Sleep: '-', Steps: '-' });
 
       // Navigate to visualization page with the UserID passed in route state

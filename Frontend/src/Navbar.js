@@ -93,13 +93,13 @@ const Navbar = ({ isSidebarExpanded }) => {
         {/* Help (Question Mark) Icon */}
         <QuestionMarkCircleIcon className="h-6 w-6 text-gray-500 hover:text-gray-700 cursor-pointer" />
 
-        {/* Connect to Fitbit Button */}
-        {/* <button
+   
+         <button>
           onClick={redirectToFitbit}
           className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none"
-        >
+        
           Connect to Fitbit
-        </button> */}
+        </button>
 
         {/* Role Dropdown */}
         <div className="relative">
