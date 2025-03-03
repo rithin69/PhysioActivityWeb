@@ -107,7 +107,7 @@ const Navbar = ({ isSidebarExpanded }) => {
         <QuestionMarkCircleIcon className="h-6 w-6 text-gray-500 hover:text-gray-700 cursor-pointer" />
 
    
-        <button
+        {/* <button
           onClick={redirectToFitbit}
           disabled={isConnected} // Disable after connecting
           className={`px-4 py-2 rounded-md focus:outline-none ${
@@ -115,7 +115,7 @@ const Navbar = ({ isSidebarExpanded }) => {
           }`}
         >
          {isConnected ? 'Connected' : 'Connect to Fitbit'}
-        </button>
+        </button> */}
 
         {/* Role Dropdown */}
         <div className="relative">
