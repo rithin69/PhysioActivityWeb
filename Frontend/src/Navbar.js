@@ -15,6 +15,14 @@ const Navbar = ({ isSidebarExpanded }) => {
   const dispatch = useDispatch(); // Hook to dispatch actions
   const userRole = useSelector((state) => state.role.role); // Hook to access the current role from the Redux store
   // const userId = useSelector((state) => state.user.id); // Replace with your app's user ID selector
+  const [isConnected, setIsConnected] = useState(false); // Track connection state
+  useEffect(() => {
+    // Check if the user is already connected (persist state)
+    const fitbitStatus = localStorage.getItem('fitbitConnected');
+    if (fitbitStatus === 'true') {
+      setIsConnected(true);
+    }
+  }, []);
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -37,6 +45,11 @@ const Navbar = ({ isSidebarExpanded }) => {
   const fitbitAuthUrl = `https://www.fitbit.com/oauth2/authorize?client_id=23RQGB&response_type=code&code_challenge=iuI14a-HY3uhrVZxBHauT1EoYcBN1HoRWSjVl3_wAeA&code_challenge_method=S256&redirect_uri=${encodeURIComponent('https://physioactivity-master-bch8c8b5eyg9g3g2.uksouth-01.azurewebsites.net/')}&scope=activity%20heartrate%20location%20nutrition%20oxygen_saturation%20profile%20respiratory_rate%20settings%20sleep%20social%20temperature%20weight&state=897456`;
 
   window.location.href = fitbitAuthUrl;
+  setIsConnected(true);
+    localStorage.setItem('fitbitConnected', 'true'); // Persist connection state
+  
+
+ 
   
    
     
@@ -94,11 +107,14 @@ const Navbar = ({ isSidebarExpanded }) => {
         <QuestionMarkCircleIcon className="h-6 w-6 text-gray-500 hover:text-gray-700 cursor-pointer" />
 
    
-         <button
+        <button
           onClick={redirectToFitbit}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none"
+          disabled={isConnected} // Disable after connecting
+          className={`px-4 py-2 rounded-md focus:outline-none ${
+            isConnected ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600 text-white'
+          }`}
         >
-          Connect to Fitbit
+         {isConnected ? 'Connected' : 'Connect to Fitbit'}
         </button>
 
         {/* Role Dropdown */}
