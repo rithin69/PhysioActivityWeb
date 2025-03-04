@@ -48,7 +48,9 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
           
         ];
       default:
-        return [];
+        return [
+          { to: '/', label: 'Dashboard', icon: faTachometerAlt },
+        ];
     }
   };
 

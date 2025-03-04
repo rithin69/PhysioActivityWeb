@@ -14,9 +14,12 @@ import Navbar from './Navbar';
 import Exercise from './Exercise';
 import ScrollToTop from './ScrollToTop';
 import CleanProfile from './CleanProfile';
+import { useSelector } from 'react-redux'; // Import useSelector to access Redux state
+import Otherprofidashboard from "./Otherprofidashboard"
 
 const AppContent = () => {
   const location = useLocation();
+  const userRole = useSelector((state) => state.role.role); // Get role from Redux
 
   // Determine if the current route is clean profile
   const isCleanProfile = location.pathname.startsWith('/cleanprofile/');
@@ -39,6 +42,29 @@ const AppContent = () => {
     weight: 70,
   };
 
+
+  const getDashboardComponent = () => {
+    switch (userRole) {
+      case 'Guest':
+        return <Dashboard data={mockData} />;
+      case 'Physio':
+        return <Otherprofidashboard data={mockData} />;
+      case 'OT':
+        return <Otherprofidashboard data={mockData} />; // Change if Admin has a different dashboard
+      case 'Personal Trainer':
+        return <Otherprofidashboard data={mockData} />;
+      case 'Researcher':
+        return <Otherprofidashboard data={mockData} />; // Change if Admin has a different dashboard
+      case 'Admin':
+        return <Otherprofidashboard data={mockData} />;
+      case 'Patient':
+          return <Otherprofidashboard data={mockData} />;
+
+      default:
+        return <Dashboard data={mockData} />; // Default dashboard
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen">
       {/* Conditionally render Navbar */}
@@ -48,9 +74,8 @@ const AppContent = () => {
         {/* Sidebar */}
         {!isCleanProfile && (
           <div
-            className={`h-full transition-all duration-300 ${
-              isSidebarExpanded ? 'w-64' : 'w-20'
-            } bg-gray-800`}
+            className={`h-full transition-all duration-300 ${isSidebarExpanded ? 'w-64' : 'w-20'
+              } bg-gray-800`}
           >
             <Sidebar
               isExpanded={isSidebarExpanded}
@@ -61,15 +86,14 @@ const AppContent = () => {
 
         {/* Main Content */}
         <main
-          className={`flex-grow transition-all duration-300 ${
-            isSidebarExpanded ? 'ml-64' : 'ml-0'
-          } bg-gray-100`}
+          className={`flex-grow transition-all duration-300 ${isSidebarExpanded ? 'ml-64' : 'ml-0'
+            } bg-gray-100`}
         >
           <ScrollToTop />
           <Routes>
             <Route path="/physio/siri" element={<SiriAdPage />} />
             <Route path="/Patientdashboard" element={<Patientdashboard />} />
-            <Route path="/" element={<Dashboard data={mockData} />} />
+            <Route path="/" element={getDashboardComponent()} /> {/* Dynamically load dashboard */}
             <Route path="/patients" element={<Patients />} />
             <Route path="/profilepage/:id" element={<ProfilePage />} />
             <Route path="/cleanprofile/:id" element={<CleanProfile />} />
