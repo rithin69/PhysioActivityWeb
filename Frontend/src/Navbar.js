@@ -35,8 +35,9 @@ const Navbar = ({ isSidebarExpanded }) => {
   };
 
   const redirectToFitbit = () => {
+    const state1=123456
   //  const fitbitAuthUrl=`physioactivitybackend-gjb3dnbsgdcbgjfj.uksouth-01.azurewebsites.net\fitbit\auth`
-  const fitbitAuthUrl = `https://www.fitbit.com/oauth2/authorize?client_id=23RQGB&response_type=code&code_challenge=iuI14a-HY3uhrVZxBHauT1EoYcBN1HoRWSjVl3_wAeA&code_challenge_method=S256&redirect_uri=${encodeURIComponent('https://physioactivity-master-bch8c8b5eyg9g3g2.uksouth-01.azurewebsites.net/')}&scope=activity%20heartrate%20location%20nutrition%20oxygen_saturation%20profile%20respiratory_rate%20settings%20sleep%20social%20temperature%20weight&state=123456`;
+  const fitbitAuthUrl = `https://www.fitbit.com/oauth2/authorize?client_id=23RQGB&response_type=code&code_challenge=iuI14a-HY3uhrVZxBHauT1EoYcBN1HoRWSjVl3_wAeA&code_challenge_method=S256&redirect_uri=${encodeURIComponent('https://physioactivity-master-bch8c8b5eyg9g3g2.uksouth-01.azurewebsites.net/')}&scope=activity%20heartrate%20location%20nutrition%20oxygen_saturation%20profile%20respiratory_rate%20settings%20sleep%20social%20temperature%20weight&state=${state1}`;
 
   window.location.href = fitbitAuthUrl;
   
