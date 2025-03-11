@@ -51,6 +51,7 @@ const Navbar = ({ isSidebarExpanded }) => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
     const state = urlParams.get('state');
+    console.log(state)
   
     if (code && state) {
       // Send the code and state to the backend
