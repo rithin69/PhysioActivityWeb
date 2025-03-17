@@ -68,10 +68,30 @@ const FeedbackSidePanel = ({ isOpen, onClose, note1, setNote1, note2, setNote2, 
               🔎 Check if swelling ever occurred
             </a>
           </li>
+          <li>
+            <a 
+              href="https://www.nhs.uk/conditions/rheumatoid-arthritis/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="block text-blue-600 hover:text-blue-800 transition font-medium"
+            >
+              🩸 Recommend Blood test for RA
+            </a>
+          </li>
+          <li>
+            <a 
+              href="https://www.nhs.uk/conditions/rheumatoid-arthritis/" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="block text-blue-600 hover:text-blue-800 transition font-medium"
+            >
+              📌 Signpost to RA specialist
+            </a>
+          </li>
         </ul>
 
         {/* Save Button */}
-        <button className="bg-blue-500 text-white px-4 py-2 rounded mt-6 w-full" onClick={onSave}>
+        <button className="bg-blue-500 text-white px-4 py-2 rounded mt-2 w-full" onClick={onSave}>
           Save Notes
         </button>
       </div>
