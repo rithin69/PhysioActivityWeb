@@ -16,7 +16,7 @@ import ScrollToTop from './ScrollToTop';
 import CleanProfile from './CleanProfile';
 import { useSelector } from 'react-redux'; // Import useSelector to access Redux state
 import Otherprofidashboard from "./Otherprofidashboard"
-
+import PhysioDashboard from "./PhysioDashboard"
 const AppContent = () => {
   const location = useLocation();
   const userRole = useSelector((state) => state.role.role); // Get role from Redux
@@ -48,7 +48,7 @@ const AppContent = () => {
       case 'Guest':
         return <Dashboard data={mockData} />;
       case 'Physio':
-        return <Otherprofidashboard data={mockData} />;
+        return <PhysioDashboard data={mockData} />;
       case 'OT':
         return <Otherprofidashboard data={mockData} />; // Change if Admin has a different dashboard
       case 'Personal Trainer':

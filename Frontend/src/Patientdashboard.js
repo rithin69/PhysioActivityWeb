@@ -1,12 +1,16 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaMapMarkerAlt, FaFire, FaSmile, FaHeartbeat, FaMoon, FaWeight, FaUsers, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { IoFootsteps } from "react-icons/io5";
 import { useLocation } from 'react-router-dom';
 import Sidepanel from './Sidepanel'; // Import your SidePanel component
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, LineChart,
+  Line, ResponsiveContainer
+} from 'recharts';
 import Pbi from './Pbi';
 import PowerBiembededstatic from './PowerBiEmbeddedstatic';
 import PowerBiEmbeddedfilter from './PowerBiEmbeddedfilter';
+import PowerBIReport from './PowerBIReport';
 import Feedbacksidepanel from './Feedbacksidepanel';
 
 const Patientdashboard = () => {
@@ -19,6 +23,23 @@ const Patientdashboard = () => {
   const [isFitbitExpanded, setFitbitExpanded] = useState(false);
   const [isGarminExpanded, setGarminExpanded] = useState(false);
   const [isStravaExpanded, setStravaExpanded] = useState(false);
+  const [isMSKExpanded, setMSKExpanded] = useState(false);
+  const painData = [
+    { week: "Week 1", pain: 8 },
+    { week: "Week 2", pain: 7 },
+    { week: "Week 3", pain: 6 },
+    { week: "Week 4", pain: 5 },
+    { week: "Week 5", pain: 4 },
+  ];
+
+  // Dummy Data for DAS28 Scores
+  const das28Data = [
+    { name: "Patient A", score: 3.2 },
+    { name: "Patient B", score: 5.8 },
+    { name: "Patient C", score: 4.1 },
+    { name: "Patient D", score: 6.9 },
+  ];
+
 
   const [isSidePanelOpen, setSidePanelOpen] = useState(false);
   const [userID, setUserID] = useState(''); // State to hold the UserID input
@@ -35,7 +56,7 @@ const Patientdashboard = () => {
 
   const [filterValue, setFilterValue] = useState("");
 
- 
+
 
   const applyFilter = () => {
     setAppliedValue(filterValue);  // Pass the filter value to PowerBiEmbedded
@@ -78,7 +99,7 @@ const Patientdashboard = () => {
 
   return (
     <div className="container mx-auto p-4">
-         <Feedbacksidepanel
+      <Feedbacksidepanel
         isOpen={isPanelOpen}
         onClose={togglePanel}
         note1={note1}
@@ -103,7 +124,7 @@ const Patientdashboard = () => {
           className="absolute top-6 right-8 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md transition duration-200 absolute"
           onClick={togglePanel} // Open SidePanel on click
         >
-         {isPanelOpen ? 'Close Notes' : 'Add Notes'}
+          {isPanelOpen ? 'Close Notes' : 'Add Notes'}
         </button>
         <div className="flex flex-col space-y-4 text-gray-700 text-lg">
           <div>
@@ -189,6 +210,42 @@ const Patientdashboard = () => {
       </section>
 
 
+      {/* PROMS Section (Pain Points & DAS28 Scores) */}
+      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+        <div className="flex justify-between items-center cursor-pointer" onClick={() => setPromExpanded(!isPromExpanded)}>
+          <h3 className="text-xl font-bold text-gray-800">Proms - Patient Reported Outcomes</h3>
+          <button className="text-gray-800">
+            {isPromExpanded ? <FaChevronUp /> : <FaChevronDown />}
+          </button>
+        </div>
+        {isPromExpanded && (
+          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">Pain Points Over Time</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={painData}>
+                  <XAxis dataKey="week" />
+                  <YAxis domain={[0, 10]} />
+                  <Tooltip />
+                  <Line type="monotone" dataKey="pain" stroke="red" />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h3 className="text-xl font-semibold text-gray-800 mb-3">DAS28 Scores</h3>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={das28Data}>
+                  <XAxis dataKey="name" />
+                  <YAxis domain={[0, 10]} />
+                  <Tooltip />
+                  <Legend />
+                  <Bar dataKey="score" fill="#8884d8" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
+      </section>
       {/* Fitbit Section */}
       <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
         <div className="flex justify-between items-center cursor-pointer" onClick={() => setFitbitExpanded(!isFitbitExpanded)}>
@@ -266,23 +323,21 @@ const Patientdashboard = () => {
           </div>
         )}
       </section>
-   
-      {/* prom Section */}
-      {/* <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
-        <div className="flex justify-between items-center cursor-pointer" onClick={() => setPromExpanded(!isPromExpanded)}>
-          <h3 className="text-xl font-bold text-gray-800">Prom</h3>
+
+
+      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+        <div className="flex justify-between items-center cursor-pointer" onClick={() => setMSKExpanded(!isMSKExpanded)}>
+          <h3 className="text-xl font-bold text-gray-800">MSK Health Index</h3>
           <button className="text-gray-800">
-            {isPromExpanded ? <FaChevronUp /> : <FaChevronDown />}
+            {isMSKExpanded ? <FaChevronUp /> : <FaChevronDown />}
           </button>
         </div>
-        {isPromExpanded && (
-          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-6">
-
-            <Pbi pagename="PROMs" />
+        {isMSKExpanded && (
+          <div className="mt-4 h-[560px]">
+            <PowerBIReport />
           </div>
         )}
-      </section> */}
-
+      </section>;
 
 
       {/* Fitbit Section */}
@@ -335,7 +390,7 @@ const Patientdashboard = () => {
         )}
       </section> */}
 
-      
+
 
 
 
@@ -389,7 +444,7 @@ const Patientdashboard = () => {
       </section> */}
 
       {/* <Sidepanel isOpen={isSidePanelOpen} onClose={() => setSidePanelOpen(false)} /> */}
-     
+
     </div>
   );
 };
@@ -420,7 +475,7 @@ const StatusBar = ({ label, value, maxValue, color }) => {
           style={{ width: `${percentage}%` }}
         ></div>
       </div>
-   
+
     </div>
   );
 };
