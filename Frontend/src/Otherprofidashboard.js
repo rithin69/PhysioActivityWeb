@@ -18,6 +18,7 @@ const Otherprofidashboard = () => {
   const [isdatavisExpanded, setdatavisExpanded] = useState(false)
   const [isdatavisExpanded1, setdatavisExpanded1] = useState(false)
   const [isPromExpanded, setPromExpanded] = useState(false)
+  const [isLoading, setIsLoading] = useState(false); // New Loading State
 
 
   const [filterValue, setFilterValue] = useState("");  // State to hold the textbox input
@@ -93,7 +94,9 @@ const Otherprofidashboard = () => {
   const navigate = useNavigate(); // Initialize navigate hook
 
   const handleFetchData = async () => {
+    setIsLoading(true); 
     try {
+      
       const response = await getEntities();
       const filteredData = response.data.find((entity) => entity.UserID === userID);
       setUserData(filteredData || { Calories: '-', Sleep: '-', Steps: '-' });
@@ -104,12 +107,15 @@ const Otherprofidashboard = () => {
       console.error('Error fetching data by UserID:', error);
       setUserData({ Calories: '-', Sleep: '-', Steps: '-' });
     }
+    finally{
+      setIsLoading(false); // Stop loading after fetching data
+      }
   };
 
 
   return (
 
-    <div className="container mx-auto ml-20 overflow-x-hidden">
+    <div className="container mx-auto ml-20 overflow-x-hidden pt-16">
 
 
      

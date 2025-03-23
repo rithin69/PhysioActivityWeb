@@ -18,6 +18,7 @@ const PhysioDashboard = () => {
   const [isdatavisExpanded, setdatavisExpanded] = useState(false)
   const [isdatavisExpanded1, setdatavisExpanded1] = useState(false)
   const [isPromExpanded, setPromExpanded] = useState(false)
+  const [isLoading, setIsLoading] = useState(false); // New Loading State
 
 
   const [filterValue, setFilterValue] = useState("");  // State to hold the textbox input
@@ -93,7 +94,9 @@ const PhysioDashboard = () => {
   const navigate = useNavigate(); // Initialize navigate hook
 
   const handleFetchData = async () => {
+    setIsLoading(true); 
     try {
+        
       const response = await getEntities();
       const filteredData = response.data.find((entity) => entity.UserID === userID);
       setUserData(filteredData || { Calories: '-', Sleep: '-', Steps: '-' });
@@ -104,12 +107,15 @@ const PhysioDashboard = () => {
       console.error('Error fetching data by UserID:', error);
       setUserData({ Calories: '-', Sleep: '-', Steps: '-' });
     }
+    finally{
+        setIsLoading(false); // Stop loading after fetching data
+        }
   };
 
 
   return (
 
-    <div className="container mx-auto ml-20 overflow-x-hidden">
+    <div className="container mx-auto ml-20 overflow-x-hidden pt-16">
 
 
      
@@ -180,7 +186,15 @@ const PhysioDashboard = () => {
       </section>
 
 
-
+           {/* Loading Modal */}
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
+            <p className="mt-4 text-lg font-semibold">Loading data...</p>
+          </div>
+        </div>
+      )}
 
 
 

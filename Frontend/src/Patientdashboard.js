@@ -24,6 +24,7 @@ const Patientdashboard = () => {
   const [isGarminExpanded, setGarminExpanded] = useState(false);
   const [isStravaExpanded, setStravaExpanded] = useState(false);
   const [isMSKExpanded, setMSKExpanded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // New Loading State
   const painData = [
     { week: "Week 1", pain: 8 },
     { week: "Week 2", pain: 7 },
@@ -134,7 +135,7 @@ const Patientdashboard = () => {
         </button>
         <div className="flex flex-col space-y-4 text-gray-700 text-lg">
           <div>
-            <span className="font-semibold text-gray-900">Patient Name:</span> {name}
+            <span className="font-semibold text-gray-900">Patient Name: </span>{ name|| `John`}
           </div>
           <div>
             <span className="font-semibold text-gray-900">Age:</span> 29
@@ -168,6 +169,15 @@ const Patientdashboard = () => {
 
 
       </section>
+      {/* Loading Modal */}
+      {isLoading && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-4 border-blue-500"></div>
+            <p className="mt-4 text-lg font-semibold">Loading data...</p>
+          </div>
+        </div>
+      )}
 
       {/* Patient Overview */}
       <section className="bg-gray-100 p-6 rounded-lg shadow-lg mb-8">
@@ -216,42 +226,54 @@ const Patientdashboard = () => {
       </section>
 
 
-      {/* PROMS Section (Pain Points & DAS28 Scores) */}
-      <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
-        <div className="flex justify-between items-center cursor-pointer" onClick={() => setPromExpanded(!isPromExpanded)}>
-          <h3 className="text-xl font-bold text-gray-800">Proms - Patient Reported Outcomes</h3>
-          <button className="text-gray-800">
-            {isPromExpanded ? <FaChevronUp /> : <FaChevronDown />}
-          </button>
-        </div>
-        {isPromExpanded && (
-          <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">Pain Points Over Time</h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={painData}>
-                  <XAxis dataKey="week" />
-                  <YAxis domain={[0, 10]} />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="pain" stroke="red" />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h3 className="text-xl font-semibold text-gray-800 mb-3">DAS28 Scores</h3>
-              <ResponsiveContainer width="100%" height={300}>
-                <BarChart data={das28Data}>
-                  <XAxis dataKey="name" />
-                  <YAxis domain={[0, 10]} />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="score" fill="#8884d8" />
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-        )}
-      </section>
+ {/* PROMS Section (Pain Points & DAS28 Scores) */}
+<section className="bg-white p-4 rounded-lg shadow-lg mb-4">
+  <div className="flex justify-between items-center cursor-pointer" onClick={() => setPromExpanded(!isPromExpanded)}>
+    <h3 className="text-xl font-bold text-gray-800">Proms - Patient Reported Outcomes</h3>
+    <button className="text-gray-800">
+      {isPromExpanded ? <FaChevronUp /> : <FaChevronDown />}
+    </button>
+  </div>
+  {isPromExpanded && (
+    <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
+      
+      {/* Smooth Curve Line Chart */}
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <h3 className="text-xl font-semibold text-gray-800 mb-3">Pain Points Over Time</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <LineChart data={painData}>
+            <XAxis dataKey="week" />
+            <YAxis domain={[0, 10]} />
+            <Tooltip />
+            <Line 
+              type="step"  // Makes the line smooth
+              dataKey="pain" 
+              stroke="red" 
+              strokeWidth={2} 
+              dot={{ r: 4 }} // Makes data points more visible
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* DAS28 Scores Bar Chart */}
+      <div className="bg-white p-6 rounded-lg shadow-md">
+        <h3 className="text-xl font-semibold text-gray-800 mb-3">DAS28 Scores</h3>
+        <ResponsiveContainer width="100%" height={300}>
+          <BarChart data={das28Data}>
+            <XAxis dataKey="name" />
+            <YAxis domain={[0, 10]} />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="score" fill="#8884d8" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+    </div>
+  )}
+</section>
+
       {/* Fitbit Section */}
       <section className="bg-white p-4 rounded-lg shadow-lg mb-4">
         <div className="flex justify-between items-center cursor-pointer" onClick={() => setFitbitExpanded(!isFitbitExpanded)}>
