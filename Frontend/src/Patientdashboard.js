@@ -35,11 +35,14 @@ const Patientdashboard = () => {
 
   // Dummy Data for DAS28 Scores
   const das28Data = [
-    { name: "Patient A", score: 3.2 },
-    { name: "Patient B", score: 5.8 },
-    { name: "Patient C", score: 4.1 },
-    { name: "Patient D", score: 6.9 },
+    { week: "Week 1", score: 6.5 },
+    { week: "Week 2", score: 6.0 },
+    { week: "Week 3", score: 5.2 },
+    { week: "Week 4", score: 4.6 },
+    { week: "Week 5", score: 4.0 },
   ];
+  
+  
 
 
   const [isSidePanelOpen, setSidePanelOpen] = useState(false);
@@ -257,18 +260,20 @@ const Patientdashboard = () => {
       </div>
 
       {/* DAS28 Scores Bar Chart */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h3 className="text-xl font-semibold text-gray-800 mb-3">DAS28 Scores</h3>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={das28Data}>
-            <XAxis dataKey="name" />
-            <YAxis domain={[0, 10]} />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="score" fill="#8884d8" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+     {/* DAS28 Scores Bar Chart */}
+<div className="bg-white p-6 rounded-lg shadow-md">
+  <h3 className="text-xl font-semibold text-gray-800 mb-3">DAS28 Scores Over Time</h3>
+  <ResponsiveContainer width="100%" height={300}>
+    <BarChart data={das28Data}>
+      <XAxis dataKey="week" />
+      <YAxis domain={[0, 10]} />
+      <Tooltip />
+      <Legend />
+      <Bar dataKey="score" fill="#8884d8" />
+    </BarChart>
+  </ResponsiveContainer>
+</div>
+
 
     </div>
   )}
