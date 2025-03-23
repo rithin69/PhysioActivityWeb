@@ -96,6 +96,11 @@ const Patientdashboard = () => {
     avgRestingHeartRate: 60,
     weight: 70,
   };
+  const images = [
+    '/images/sug1.jpg',
+    '/images/sug2.jpg',
+    '/images/sug3.jpg'
+  ];
 
   return (
     <div className="container mx-auto p-4">
@@ -107,6 +112,7 @@ const Patientdashboard = () => {
         note2={note2}
         setNote2={setNote2}
         onSave={handleSave}
+        images={images}
       />
       {/* Breadcrumb */}
       <nav className="mb-4 text-gray-700">
@@ -124,7 +130,7 @@ const Patientdashboard = () => {
           className="absolute top-6 right-8 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md transition duration-200 absolute"
           onClick={togglePanel} // Open SidePanel on click
         >
-          {isPanelOpen ? 'Close Notes' : 'Add Notes'}
+          {isPanelOpen ? '📝Add Notes' : '📝Add Notes'}
         </button>
         <div className="flex flex-col space-y-4 text-gray-700 text-lg">
           <div>

@@ -81,10 +81,11 @@ const Navbar = ({ isSidebarExpanded }) => {
   return (
     
     <div
-      className={`sticky top-0 z-50 bg-white flex items-center justify-between px-6 py-4 shadow-md transition-all duration-300 ${
-        isSidebarExpanded ? 'ml-64' : 'ml-20'
-      }`}
-    >
+  className={`fixed top-0 z-50 bg-white flex items-center justify-between px-6 py-2 shadow-md transition-all duration-300 ${
+    isSidebarExpanded ? 'ml-64' : 'ml-20'
+  } w-[calc(100%-80px)]`}
+>
+
       {console.log("hhhhhhhhhhhhhhhhh")}
       <div className="flex items-center">{/* Add a brand logo or name */}</div>
 
