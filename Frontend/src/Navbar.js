@@ -134,6 +134,10 @@ const Navbar = ({ isSidebarExpanded }) => {
                 'Personal Trainer',
                 'Researcher',
                 'Admin',
+                'GP',
+                'OA/RA',
+                'Surgeon'
+
               ].map((role) => (
                 <a
                   key={role}
