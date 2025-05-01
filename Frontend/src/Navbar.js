@@ -132,6 +132,7 @@ const Navbar = ({ isSidebarExpanded }) => {
                 'Physio',
                 'OT',
                 'Personal Trainer',
+                'Nutritionist',
                 'Researcher',
                 'Admin',
                 'GP',
