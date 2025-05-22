@@ -4,7 +4,7 @@ import Sidebar from './Sidebar';
 import Patients from './Patients';
 import Connector from './Connector';
 import Lab from './Lab';
-import ProfileCreation from './Profilecreation';
+import ProfileEditor from './ProfileEditor';
 import ProfilePage from './Profilepage';
 import Dashboard from './Dashboard';
 import Settings from './Settings';
@@ -17,6 +17,7 @@ import CleanProfile from './CleanProfile';
 import { useSelector } from 'react-redux'; // Import useSelector to access Redux state
 import Otherprofidashboard from "./Otherprofidashboard"
 import PhysioDashboard from "./PhysioDashboard"
+import ProfileViewer from "./ProfileViewer"
 const AppContent = () => {
   const location = useLocation();
   const userRole = useSelector((state) => state.role.role); // Get role from Redux
@@ -95,13 +96,15 @@ const AppContent = () => {
             <Route path="/Patientdashboard" element={<Patientdashboard />} />
             <Route path="/" element={getDashboardComponent()} /> {/* Dynamically load dashboard */}
             <Route path="/patients" element={<Patients />} />
-            <Route path="/profilepage/:id" element={<ProfilePage />} />
-            <Route path="/cleanprofile/:id" element={<CleanProfile />} />
-            <Route path="/profile" element={<ProfileCreation />} />
+            {/* <Route path="/profilepage/:id" element={<ProfilePage />} /> */}
+            {/* <Route path="/cleanprofile/:id" element={<CleanProfile />} /> */}
+            <Route path="/profile" element={<ProfileEditor />} />
             <Route path="/connectors" element={<Connector />} />
             <Route path="/lab" element={<Lab />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/exercise" element={<Exercise />} />
+            {/* <Route path="/" element={<ProfileEditor />} /> */}
+        <Route path="/profile/:id" element={<ProfileViewer />} />
           </Routes>
         </main>
       </div>
