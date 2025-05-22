@@ -15,6 +15,7 @@
     "crypto-js": "^4.2.0",
     "firebase": "^10.12.4",
     "http-proxy-middleware": "^3.0.0",
+    "lucide-react": "^0.511.0",
     "powerbi-client": "^2.23.1",
     "powerbi-client-react": "^1.4.0",
     "qrcode.react": "^3.1.0",
