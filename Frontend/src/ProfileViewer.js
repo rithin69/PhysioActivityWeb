@@ -7,6 +7,7 @@ const ProfileViewer = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
+    console.log("gggggggggggggggggggggggggggggggggggggggggggggggggyuyyvftuf")
     const fetchProfile = async () => {
       try {
         const res = await fetch(
