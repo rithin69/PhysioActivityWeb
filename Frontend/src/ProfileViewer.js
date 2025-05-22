@@ -10,8 +10,9 @@ const ProfileViewer = () => {
     const fetchProfile = async () => {
       try {
         const res = await fetch(
-          `https://physioprofile.blob.core.windows.net/profile/${id}-profile.json`
-        );
+            `https://physioprofile.blob.core.windows.net/profile/${id}`
+          );
+          
         if (!res.ok) throw new Error("Profile not found.");
         const data = await res.json();
         setProfile(data);
