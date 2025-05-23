@@ -17,7 +17,7 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
         return [
           { to: '/', label: 'Dashboard', icon: faTachometerAlt },
           { to: '/Patientdashboard', label: 'Patients', icon: faUserFriends },
-          { to: '/profile', label: 'My Page', icon: faUser },
+          { to: '/profilee', label: 'My Page', icon: faUser },
           { to: '/exercise', label: 'Library', icon: faBook },
           { to: '/connectors', label: 'Connect', icon: faPlug },
           { to: '/lab', label: 'Research Labs', icon: faFlask },
@@ -26,7 +26,7 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
         return [
           { to: '/', label: 'Dashboard', icon: faTachometerAlt },
           { to: '/Patientdashboard', label: 'Patients', icon: faUserFriends },
-          { to: '/profile', label: 'My Page', icon: faUser },
+          { to: '/profilee', label: 'My Page', icon: faUser },
           { to: '/exercise', label: 'Library', icon: faBook },
           { to: '/connectors', label: 'Connect', icon: faPlug },
           { to: '/lab', label: 'Research Labs', icon: faFlask },
@@ -35,7 +35,7 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
         return [
           { to: '/', label: 'Dashboard', icon: faTachometerAlt },
           { to: '/Patientdashboard', label: 'Patients', icon: faUserFriends },
-          { to: '/profile', label: 'My Page', icon: faUser },
+          { to: '/profilee', label: 'My Page', icon: faUser },
           { to: '/exercise', label: 'Library', icon: faBook },
           { to: '/connectors', label: 'Connect', icon: faPlug },
         ];

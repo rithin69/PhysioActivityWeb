@@ -98,7 +98,7 @@ const AppContent = () => {
             <Route path="/patients" element={<Patients />} />
             {/* <Route path="/profilepage/:id" element={<ProfilePage />} /> */}
             {/* <Route path="/cleanprofile/:id" element={<CleanProfile />} /> */}
-            <Route path="/profile" element={<ProfileEditor />} />
+            <Route path="/profilee" element={<ProfileEditor />} />
             <Route path="/connectors" element={<Connector />} />
             <Route path="/lab" element={<Lab />} />
             <Route path="/settings" element={<Settings />} />
