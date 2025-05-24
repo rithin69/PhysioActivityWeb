@@ -1,31 +1,29 @@
 import React, { useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import Sidebar from './Sidebar';
 import Patients from './Patients';
 import Connector from './Connector';
 import Lab from './Lab';
 import ProfileEditor from './ProfileEditor';
-import ProfilePage from './Profilepage';
 import Dashboard from './Dashboard';
 import Settings from './Settings';
 import SiriAdPage from './SiriAdPage';
-import Patientdashboard from "./Patientdashboard";
+import Patientdashboard from './Patientdashboard';
 import Navbar from './Navbar';
 import Exercise from './Exercise';
 import ScrollToTop from './ScrollToTop';
-import CleanProfile from './CleanProfile';
-import { useSelector } from 'react-redux'; // Import useSelector to access Redux state
-import Otherprofidashboard from "./Otherprofidashboard"
-import PhysioDashboard from "./PhysioDashboard"
-import ProfileViewer from "./ProfileViewer"
+import Otherprofidashboard from './Otherprofidashboard';
+import PhysioDashboard from './PhysioDashboard';
+import ProfileViewer from './ProfileViewer';
+
 const AppContent = () => {
   const location = useLocation();
-  const userRole = useSelector((state) => state.role.role); // Get role from Redux
+  const userRole = useSelector((state) => state.role.role);
 
-  // Determine if the current route is clean profile
-  const isCleanProfile = location.pathname.startsWith('/cleanprofile/');
+  // Determine if the current route is exactly "/profile/:id"
+  const isProfileViewer = /^\/profile\/[^/]+$/.test(location.pathname);
 
-  // Sidebar expanded state
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
 
   const mockData = {
@@ -43,7 +41,6 @@ const AppContent = () => {
     weight: 70,
   };
 
-
   const getDashboardComponent = () => {
     switch (userRole) {
       case 'Guest':
@@ -51,32 +48,28 @@ const AppContent = () => {
       case 'Physio':
         return <PhysioDashboard data={mockData} />;
       case 'OT':
-        return <Otherprofidashboard data={mockData} />; // Change if Admin has a different dashboard
       case 'Personal Trainer':
-        return <Otherprofidashboard data={mockData} />;
       case 'Researcher':
-        return <Otherprofidashboard data={mockData} />; // Change if Admin has a different dashboard
       case 'Admin':
-        return <Otherprofidashboard data={mockData} />;
       case 'Patient':
-          return <Otherprofidashboard data={mockData} />;
-
+        return <Otherprofidashboard data={mockData} />;
       default:
-        return <Dashboard data={mockData} />; // Default dashboard
+        return <Dashboard data={mockData} />;
     }
   };
 
   return (
     <div className="flex flex-col h-screen">
-      {/* Conditionally render Navbar */}
-      {!isCleanProfile && <Navbar isSidebarExpanded={isSidebarExpanded} />}
+      {/* Navbar - hide on profile viewer */}
+      {!isProfileViewer && <Navbar isSidebarExpanded={isSidebarExpanded} />}
 
       <div className="flex flex-grow h-full">
-        {/* Sidebar */}
-        {!isCleanProfile && (
+        {/* Sidebar - hide on profile viewer */}
+        {!isProfileViewer && (
           <div
-            className={`h-full transition-all duration-300 ${isSidebarExpanded ? 'w-64' : 'w-20'
-              } bg-gray-800`}
+            className={`h-full transition-all duration-300 ${
+              isSidebarExpanded ? 'w-64' : 'w-20'
+            } bg-gray-800`}
           >
             <Sidebar
               isExpanded={isSidebarExpanded}
@@ -87,24 +80,22 @@ const AppContent = () => {
 
         {/* Main Content */}
         <main
-          className={`flex-grow transition-all duration-300 ${isSidebarExpanded ? 'ml-64' : 'ml-0'
-            } bg-gray-100`}
+          className={`flex-grow transition-all duration-300 ${
+            !isProfileViewer && isSidebarExpanded ? 'ml-64' : ''
+          } bg-gray-100`}
         >
           <ScrollToTop />
           <Routes>
             <Route path="/physio/siri" element={<SiriAdPage />} />
             <Route path="/Patientdashboard" element={<Patientdashboard />} />
-            <Route path="/" element={getDashboardComponent()} /> {/* Dynamically load dashboard */}
+            <Route path="/" element={getDashboardComponent()} />
             <Route path="/patients" element={<Patients />} />
-            {/* <Route path="/profilepage/:id" element={<ProfilePage />} /> */}
-            {/* <Route path="/cleanprofile/:id" element={<CleanProfile />} /> */}
             <Route path="/profilee" element={<ProfileEditor />} />
             <Route path="/connectors" element={<Connector />} />
             <Route path="/lab" element={<Lab />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/exercise" element={<Exercise />} />
-            {/* <Route path="/" element={<ProfileEditor />} /> */}
-        <Route path="/profile/:id" element={<ProfileViewer />} />
+            <Route path="/profile/:id" element={<ProfileViewer />} />
           </Routes>
         </main>
       </div>
