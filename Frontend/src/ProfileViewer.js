@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-const ProfileViewer = () => {
+export default function ProfileViewer() {
   const { id } = useParams();
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState("");
@@ -24,77 +24,118 @@ const ProfileViewer = () => {
   if (!profile) return <div className="p-6 text-center text-gray-600">Loading profile...</div>;
 
   return (
-    <div className="bg-white text-gray-800 font-sans leading-relaxed">
+    <div className="bg-white text-gray-800 font-sans scroll-smooth">
+      {/* Header */}
+      <header className="bg-[#104378] py-4 px-6 flex justify-between items-center shadow-md sticky top-0 z-50">
+        <div className="flex items-center gap-3">
+          <img src="/logo.png" alt="PhysioActivity Logo" className="h-12" />
+          <span className="text-white text-xl font-bold tracking-wide">PhysioActivity</span>
+        </div>
+        <span className="text-white text-lg font-medium">Partnering with {profile.name}</span>
+      </header>
+
       {/* Hero Section */}
-      <section className="bg-gray-100 py-12 px-6 md:px-20 text-center">
+      <section className="text-center py-24 px-6 bg-gradient-to-br from-[#4cb6c3] to-[#104378] text-white relative">
         <img
           src={profile.image}
-          alt="Profile"
-          className="mx-auto w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg mb-4"
+          alt={profile.name}
+          className="mx-auto w-80 h-80 rounded-full mb-6 object-cover border-4 border-white shadow-2xl"
         />
-        <h1 className="text-3xl font-bold mb-2">Hi, I’m {profile.name}</h1>
-        <p className="max-w-2xl mx-auto text-lg text-gray-600">{profile.title}</p>
+        <h1 className="text-5xl font-extrabold mb-4 drop-shadow-md">{profile.title}</h1>
+        <p className="text-xl max-w-2xl mx-auto font-light leading-relaxed">{profile.bio}</p>
+        {profile.logo && (
+          <img
+            src={profile.logo}
+            alt="Logo"
+            className="absolute top-6 right-8 w-20 h-20 object-contain drop-shadow-lg"
+          />
+        )}
       </section>
 
-      {/* About / Bio Section */}
-      <section className="py-12 px-6 md:px-20 text-center bg-white">
-        <h2 className="text-2xl font-semibold mb-4">About Me</h2>
-        <p className="max-w-3xl mx-auto text-gray-700 text-base">{profile.bio}</p>
+      {/* Promo Section */}
+      <section className="text-center py-24 px-6 bg-[#e50000] text-white relative">
+        <h2 className="text-4xl md:text-5xl font-extrabold mb-6">Are you ready to get</h2>
+        <h3 className="text-6xl md:text-7xl font-black text-yellow-300 mb-4">STRONGER at HOME</h3>
+        <p className="text-xl mb-6 font-light">I’m ready, take the Strength Training Essentials course</p>
+        <a
+          href={profile.ctaUrl}
+          className="inline-block px-8 py-3 bg-yellow-400 text-black font-semibold rounded-lg shadow hover:bg-yellow-300 transition"
+        >
+          Enroll Now
+        </a>
       </section>
 
-      {/* What I Offer Section */}
-      <section className="bg-gray-50 py-12 px-6 md:px-20 text-center">
-        <h2 className="text-2xl font-semibold mb-6">What I Offer</h2>
-        <div className="grid md:grid-cols-3 gap-8 text-left max-w-5xl mx-auto">
-          <div>
-            <h3 className="text-lg font-bold mb-2">Personal Training</h3>
-            <p className="text-gray-600">Tailored sessions to help you move better, build strength, and feel powerful in your daily life.</p>
-          </div>
-          <div>
-            <h3 className="text-lg font-bold mb-2">Physiotherapy Rehab</h3>
-            <p className="text-gray-600">Evidence-based care to support recovery from injury, manage pain, and restore optimal function.</p>
-          </div>
-          <div>
-            <h3 className="text-lg font-bold mb-2">Postpartum Strength</h3>
-            <p className="text-gray-600">Compassionate coaching to rebuild core strength and reconnect with your body post-baby.</p>
-          </div>
-        </div>
+      {/* About Section */}
+      <section className="py-24 px-6 max-w-4xl mx-auto text-center bg-white">
+        <h2 className="text-4xl font-bold mb-6 text-[#104378]">Hi, I’m {profile.name}</h2>
+        <p className="mb-4 text-lg leading-relaxed text-gray-700">{profile.bio}</p>
+        <p className="text-lg leading-relaxed text-gray-700">{profile.location}</p>
       </section>
+
+      {/* Services Section */}
+      {profile.services?.length > 0 && (
+        <section className="bg-gradient-to-br from-[#d0f0f7] via-[#f7faff] to-[#ffffff] py-24 px-6">
+          <div className="max-w-6xl mx-auto text-center">
+            <h2 className="text-4xl font-bold mb-14 text-[#104378]">What I Offer</h2>
+            <div className="grid md:grid-cols-3 gap-10">
+              {profile.services.map((service, idx) => {
+                const [title, ...desc] = service.split(":");
+                return (
+                  <div
+                    key={idx}
+                    className="bg-white p-8 rounded-2xl shadow-xl border-l-8 border-[#4cb6c3] transform hover:scale-105 transition-all"
+                  >
+                    <h3 className="text-2xl font-bold mb-3 text-[#104378]">{title.trim()}</h3>
+                    <p className="text-gray-700">{desc.join(":").trim()}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Philosophy Section */}
-      <section className="bg-white py-12 px-6 md:px-20 text-center">
-        <h2 className="text-2xl font-semibold mb-4">My Philosophy</h2>
-        <p className="max-w-3xl mx-auto text-gray-700">
-          Sustainable results come from empowering women with tools they can use for life.
-          I'm here to help you grow stronger — not just in the gym, but in every part of your life.
-          We work together to create progress that feels good, honors your body, and sticks.
-        </p>
-      </section>
+      {profile.philosophy && (
+        <section className="py-24 px-6 max-w-3xl mx-auto text-center bg-gradient-to-br from-[#fef6f2] to-[#e8f5e9] rounded-xl">
+          <h2 className="text-4xl font-bold mb-6 text-[#104378]">My Philosophy</h2>
+          <p className="text-xl font-light text-gray-700 leading-relaxed">{profile.philosophy}</p>
+        </section>
+      )}
 
-      {/* Testimonials Section */}
-      <section className="bg-gray-50 py-12 px-6 md:px-20 text-center">
-        <h2 className="text-2xl font-semibold mb-6">Client Love</h2>
-        <div className="max-w-4xl mx-auto space-y-6">
-          <blockquote className="text-gray-700 italic">"Ashley helped me feel stronger after my second baby than I did before pregnancy. She's truly amazing." – Sarah L.</blockquote>
-          <blockquote className="text-gray-700 italic">"I no longer fear movement. Ashley's rehab approach was empowering and changed how I see my body." – Jen M.</blockquote>
-        </div>
-      </section>
+      {/* Testimonials */}
+      {profile.testimonials?.length > 0 && (
+        <section className="bg-gradient-to-br from-[#fdf6f9] via-[#f1f8ff] to-[#e3f2fd] py-24 px-6">
+          <div className="max-w-5xl mx-auto text-center">
+            <h2 className="text-4xl font-bold mb-12 text-[#104378]">Client Love</h2>
+            <div className="grid md:grid-cols-2 gap-8">
+              {profile.testimonials.map((quote, idx) => (
+                <div
+                  key={idx}
+                  className="bg-white p-6 rounded-2xl shadow-lg border-l-8 border-[#4cb6c3]"
+                >
+                  <p className="italic text-gray-700">
+                    {quote.replace(/^"|"$/g, "")}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
-      {/* Call to Action */}
-      <section className="bg-blue-600 py-12 px-6 md:px-20 text-center text-white">
-        <h2 className="text-2xl font-semibold mb-4">Ready to Get Started?</h2>
-        <p className="mb-6">Take the first step toward feeling stronger, more confident, and in control of your wellness.</p>
-        <a
-          href="https://physioprofile.z33.web.core.windows.net"
-          className="bg-white text-blue-600 font-semibold px-6 py-3 rounded-full shadow hover:bg-gray-100 transition"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Visit My Website
-        </a>
+      {/* CTA Footer */}
+      <section className="text-center py-24 px-6 bg-[#104378] text-white">
+        <h3 className="text-3xl font-bold mb-4">Get Started Today</h3>
+        <p className="text-lg mb-6 max-w-xl mx-auto leading-relaxed">{profile.ctaText}</p>
+        {profile.qr && (
+          <img
+            src={profile.qr}
+            alt="QR Code"
+            className="mx-auto w-56 h-56 rounded-xl shadow-lg border-4 border-white hover:scale-105 transition"
+          />
+        )}
       </section>
     </div>
   );
-};
-
-export default ProfileViewer;
+}

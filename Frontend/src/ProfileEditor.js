@@ -41,31 +41,44 @@ const EditableText = ({ label, value, onSave }) => {
 
 const ProfileEditor = () => {
   const [name, setName] = useState("Ashley Thompson");
-  const [title, setTitle] = useState("Helping women move stronger, feel better, and thrive.");
-  const [bio, setBio] = useState("I thrive on building robust web apps...");
+  const [title, setTitle] = useState("Feel strong, capable, and confident in your body.");
+  const [bio, setBio] = useState("I help women reconnect with their bodies...");
   const [location, setLocation] = useState("London, UK");
   const [image, setImage] = useState("/avatar-placeholder.png");
+  const [logo, setLogo] = useState("/ashleylogo.png");
+  const [qr, setQr] = useState("/qr.png");
+  const [ctaText, setCtaText] = useState("Ready to feel stronger, more confident, and in control of your wellness?");
+  const [ctaUrl, setCtaUrl] = useState("https://yourlink.com");
   const [services, setServices] = useState([
-    "Personal Training",
-    "Physiotherapy Rehab",
-    "Postpartum Strength",
+    "Personal Training: Tailored sessions to help you move better...",
+    "Physiotherapy Rehab: Evidence-based care to support recovery...",
+    "Postpartum Strength: Coaching to rebuild core strength..."
   ]);
-  const [philosophy, setPhilosophy] = useState("Sustainable results come from empowering women with tools they can use for life...");
+  const [philosophy, setPhilosophy] = useState("Sustainable results come from empowering women...");
   const [testimonials, setTestimonials] = useState([
-    "Ashley helped me feel stronger after my second baby than I did before pregnancy.",
-    "I no longer fear movement. Ashley's rehab approach was empowering and changed how I see my body.",
+    "\"Ashley helped me feel stronger after my second baby...\" – Sarah L.",
+    "\"I no longer fear movement. Ashley's rehab approach...\" – Jen M."
   ]);
-  const [ctaUrl, setCtaUrl] = useState("https://physioprofile.z33.web.core.windows.net");
 
   const [modalOpen, setModalOpen] = useState(false);
   const [profileUrl, setProfileUrl] = useState("");
 
-  const handleImageChange = (e) => {
+  const handleImageUpload = (file, setState) => {
+    const url = URL.createObjectURL(file);
+    fetch(url)
+      .then((res) => res.blob())
+      .then((blob) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setState(reader.result);
+        };
+        reader.readAsDataURL(blob);
+      });
+  };
+
+  const handleFileChange = (e, setState) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImage(url);
-    }
+    if (file) handleImageUpload(file, setState);
   };
 
   const handlePublish = async () => {
@@ -75,35 +88,21 @@ const ProfileEditor = () => {
       bio,
       location,
       image,
+      logo,
+      qr,
+      ctaText,
+      ctaUrl,
       services,
       philosophy,
-      testimonials,
-      ctaUrl,
+      testimonials
     };
 
-    if (image.startsWith("blob:")) {
-      const blob = await fetch(image).then((r) => r.blob());
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        profile.image = reader.result;
-        await sendToPowerAutomate(profile);
-      };
-      reader.readAsDataURL(blob);
-    } else {
-      await sendToPowerAutomate(profile);
-    }
-  };
-
-  const sendToPowerAutomate = async (profile) => {
     try {
-      const response = await fetch(
-        "https://prod-21.uksouth.logic.azure.com:443/workflows/ec195a72fd3a45a6839ecce2fb2f8c40/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Sy9RnMnNvTOxCzXAD2cq6PtXo-jE4hrbctx6hm5pqbw",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(profile),
-        }
-      );
+      const response = await fetch("https://prod-21.uksouth.logic.azure.com:443/workflows/ec195a72fd3a45a6839ecce2fb2f8c40/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Sy9RnMnNvTOxCzXAD2cq6PtXo-jE4hrbctx6hm5pqbw", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(profile),
+      });
 
       const result = await response.json();
       if (result.url) {
@@ -121,21 +120,29 @@ const ProfileEditor = () => {
   return (
     <div className="ml-[72px] mt-[64px] p-6 bg-gray-100 min-h-[calc(100vh-64px)]">
       <div className="max-w-3xl mx-auto bg-white p-6 rounded-xl shadow-md">
-        <div className="flex items-center space-x-4 mb-6">
-          <div className="relative group">
+        {/* Image Uploads */}
+        <div className="flex items-center gap-6 mb-6">
+          <div className="space-y-2 text-center">
             <img src={image} alt="Profile" className="w-24 h-24 rounded-full object-cover" />
-            <label className="absolute inset-0 bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition">
-              <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
-              <Pencil className="text-white" size={20} />
-            </label>
+            <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setImage)} />
+            <div className="text-xs text-gray-600">Profile Image</div>
           </div>
-          <div className="flex-1">
-            <EditableText label="Name" value={name} onSave={setName} />
-            <EditableText label="Title" value={title} onSave={setTitle} />
-            <EditableText label="Location" value={location} onSave={setLocation} />
+          <div className="space-y-2 text-center">
+            <img src={logo} alt="Logo" className="w-16 h-16 object-contain" />
+            <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setLogo)} />
+            <div className="text-xs text-gray-600">Logo</div>
+          </div>
+          <div className="space-y-2 text-center">
+            <img src={qr} alt="QR Code" className="w-16 h-16 object-contain" />
+            <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setQr)} />
+            <div className="text-xs text-gray-600">QR Code</div>
           </div>
         </div>
 
+        {/* Editable Fields */}
+        <EditableText label="Name" value={name} onSave={setName} />
+        <EditableText label="Title" value={title} onSave={setTitle} />
+        <EditableText label="Location" value={location} onSave={setLocation} />
         <EditableText label="Bio" value={bio} onSave={setBio} />
 
         {/* Services */}
@@ -164,14 +171,15 @@ const ProfileEditor = () => {
             label={`Testimonial ${index + 1}`}
             value={quote}
             onSave={(val) => {
-              const newQuotes = [...testimonials];
-              newQuotes[index] = val;
-              setTestimonials(newQuotes);
+              const updated = [...testimonials];
+              updated[index] = val;
+              setTestimonials(updated);
             }}
           />
         ))}
 
         {/* CTA */}
+        <EditableText label="CTA Text" value={ctaText} onSave={setCtaText} />
         <EditableText label="CTA Button URL" value={ctaUrl} onSave={setCtaUrl} />
 
         <button
@@ -188,7 +196,12 @@ const ProfileEditor = () => {
           <div className="bg-white rounded-xl shadow-lg p-6 max-w-md w-full text-center">
             <h2 className="text-xl font-bold mb-2 text-green-600">Profile Published Successfully!</h2>
             <p className="text-gray-700 mb-4">Here is your profile URL:</p>
-            <a href={profileUrl} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline break-all">
+            <a
+              href={profileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 underline break-all"
+            >
               {profileUrl}
             </a>
             <button
