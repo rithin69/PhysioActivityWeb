@@ -89,9 +89,9 @@ const ProfileEditor = () => {
       location,
       image,
       logo,
-      qr,
+      // qr,
       ctaText,
-      ctaUrl,
+      // ctaUrl,
       services,
       philosophy,
       testimonials
@@ -132,11 +132,11 @@ const ProfileEditor = () => {
             <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setLogo)} />
             <div className="text-xs text-gray-600">Logo</div>
           </div>
-          <div className="space-y-2 text-center">
+          {/* <div className="space-y-2 text-center">
             <img src={qr} alt="QR Code" className="w-16 h-16 object-contain" />
             <input type="file" accept="image/*" onChange={(e) => handleFileChange(e, setQr)} />
             <div className="text-xs text-gray-600">QR Code</div>
-          </div>
+          </div> */}
         </div>
 
         {/* Editable Fields */}
@@ -179,8 +179,8 @@ const ProfileEditor = () => {
         ))}
 
         {/* CTA */}
-        <EditableText label="CTA Text" value={ctaText} onSave={setCtaText} />
-        <EditableText label="CTA Button URL" value={ctaUrl} onSave={setCtaUrl} />
+        <EditableText label="Bottom Text" value={ctaText} onSave={setCtaText} />
+        {/* <EditableText label="CTA Button URL" value={ctaUrl} onSave={setCtaUrl} /> */}
 
         <button
           onClick={handlePublish}

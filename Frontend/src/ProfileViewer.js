@@ -28,7 +28,7 @@ export default function ProfileViewer() {
       {/* Header */}
       <header className="bg-[#104378] py-4 px-6 flex justify-between items-center shadow-md sticky top-0 z-50">
         <div className="flex items-center gap-3">
-          <img src="/logo.png" alt="PhysioActivity Logo" className="h-12" />
+          <img src="/images/logo.png" alt="PhysioActivity Logo" className="h-12" />
           <span className="text-white text-xl font-bold tracking-wide">PhysioActivity</span>
         </div>
         <span className="text-white text-lg font-medium">Partnering with {profile.name}</span>
@@ -54,23 +54,13 @@ export default function ProfileViewer() {
 
       {/* Promo Section */}
       <section className="text-center py-24 px-6 bg-[#e50000] text-white relative">
-        <h2 className="text-4xl md:text-5xl font-extrabold mb-6">Are you ready to get</h2>
-        <h3 className="text-6xl md:text-7xl font-black text-yellow-300 mb-4">STRONGER at HOME</h3>
-        <p className="text-xl mb-6 font-light">I’m ready, take the Strength Training Essentials course</p>
-        <a
-          href={profile.ctaUrl}
-          className="inline-block px-8 py-3 bg-yellow-400 text-black font-semibold rounded-lg shadow hover:bg-yellow-300 transition"
-        >
-          Enroll Now
-        </a>
+        <h2 className="text-4xl md:text-5xl font-extrabold mb-6">Hi, I’m {profile.name}</h2>
+        <h3 className="text-6xl md:text-7xl font-black text-yellow-300 mb-4">{profile.bio}</h3>
+        <p className="text-xl mb-6 font-light">{profile.location}</p>
+      
       </section>
 
-      {/* About Section */}
-      <section className="py-24 px-6 max-w-4xl mx-auto text-center bg-white">
-        <h2 className="text-4xl font-bold mb-6 text-[#104378]">Hi, I’m {profile.name}</h2>
-        <p className="mb-4 text-lg leading-relaxed text-gray-700">{profile.bio}</p>
-        <p className="text-lg leading-relaxed text-gray-700">{profile.location}</p>
-      </section>
+     
 
       {/* Services Section */}
       {profile.services?.length > 0 && (
