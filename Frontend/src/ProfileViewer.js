@@ -120,7 +120,7 @@ export default function ProfileViewer() {
         <p className="text-lg mb-6 max-w-xl mx-auto leading-relaxed">{profile.ctaText}</p>
         {profile.qr && (
           <img
-            src={profile.qr}
+            src="/images/qr.png"
             alt="QR Code"
             className="mx-auto w-56 h-56 rounded-xl shadow-lg border-4 border-white hover:scale-105 transition"
           />
