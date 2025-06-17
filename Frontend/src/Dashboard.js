@@ -12,13 +12,13 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 
 const Dashboard = () => {
 
-  const [isFitbitExpanded, setFitbitExpanded] = useState(false);
-  const [isGarminExpanded, setGarminExpanded] = useState(false);
-  const [isStravaExpanded, setStravaExpanded] = useState(false);
-  const [isApplewatchExpanded, setApplewatchExpanded] = useState(false)
-  const [isdatavisExpanded, setdatavisExpanded] = useState(false)
-  const [isdatavisExpanded1, setdatavisExpanded1] = useState(false)
-  const [isPromExpanded, setPromExpanded] = useState(false)
+  // const [isFitbitExpanded, setFitbitExpanded] = useState(false);
+  // const [isGarminExpanded, setGarminExpanded] = useState(false);
+  // const [isStravaExpanded, setStravaExpanded] = useState(false);
+  // const [isApplewatchExpanded, setApplewatchExpanded] = useState(false)
+  // const [isdatavisExpanded, setdatavisExpanded] = useState(false)
+  // const [isdatavisExpanded1, setdatavisExpanded1] = useState(false)
+  // const [isPromExpanded, setPromExpanded] = useState(false)
   const [isLoading, setIsLoading] = useState(false); // New Loading State
 
 

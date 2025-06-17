@@ -7,12 +7,12 @@ import Connector from './Connector';
 import Lab from './Lab';
 import ProfileEditor from './ProfileEditor';
 import Dashboard from './Dashboard';
-import Settings from './Settings';
-import SiriAdPage from './SiriAdPage';
+// import Settings from './Settings';
+// import SiriAdPage from './SiriAdPage';
 import Patientdashboard from './Patientdashboard';
 import Navbar from './Navbar';
-import Exercise from './Exercise';
-import ScrollToTop from './ScrollToTop';
+// import Exercise from './Exercise';
+// import ScrollToTop from './ScrollToTop';
 import Otherprofidashboard from './Otherprofidashboard';
 import PhysioDashboard from './PhysioDashboard';
 import ProfileViewer from './ProfileViewer';
@@ -84,17 +84,17 @@ const AppContent = () => {
             !isProfileViewer && isSidebarExpanded ? 'ml-64' : ''
           } bg-gray-100`}
         >
-          <ScrollToTop />
+          {/* <ScrollToTop /> */}
           <Routes>
-            <Route path="/physio/siri" element={<SiriAdPage />} />
+            {/* <Route path="/physio/siri" element={<SiriAdPage />} /> */}
             <Route path="/Patientdashboard" element={<Patientdashboard />} />
             <Route path="/" element={getDashboardComponent()} />
             <Route path="/patients" element={<Patients />} />
             <Route path="/profilee" element={<ProfileEditor />} />
             <Route path="/connectors" element={<Connector />} />
             <Route path="/lab" element={<Lab />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/exercise" element={<Exercise />} />
+            {/* <Route path="/settings" element={<Settings />} /> */}
+            {/* <Route path="/exercise" element={<Exercise />} /> */}
             <Route path="/profile/:id" element={<ProfileViewer />} />
           </Routes>
         </main>

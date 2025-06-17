@@ -25,11 +25,13 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
       case 'Researcher':
         return [
           { to: '/', label: 'Dashboard', icon: faTachometerAlt },
-          { to: '/Patientdashboard', label: 'Patients', icon: faUserFriends },
-          { to: '/profilee', label: 'My Page', icon: faUser },
+          { to: '/Patientdashboard', label: 'Schedule', icon: faUserFriends },
+          { to: '/profilee', label: 'Goals & Plans', icon: faUser },
           { to: '/exercise', label: 'Library', icon: faBook },
-          { to: '/connectors', label: 'Connect', icon: faPlug },
-          { to: '/lab', label: 'Research Labs', icon: faFlask },
+          { to: '/connectors', label: 'Reports', icon: faPlug },
+          { to: '/lab', label: 'Monetization', icon: faFlask },
+          { to: '/lab', label: 'Settings', icon: faFlask },
+          { to: '/lab', label: 'Help & Support', icon: faFlask },
         ];
       case 'Physio':
         return [

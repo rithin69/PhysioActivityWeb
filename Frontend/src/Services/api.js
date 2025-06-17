@@ -6,10 +6,10 @@ const api = axios.create({
 });
 
 // Define functions to make requests to your server
-export const createEntity = (entity) => api.post('/entity', entity);
+// export const createEntity = (entity) => api.post('/entity', entity);
 export const getEntities = () => api.get('/entities');
-export const updateEntity = (entity) => api.put('/entity', entity);
-export const deleteEntity = (keys) => api.delete('/entity', { data: keys });
+// export const updateEntity = (entity) => api.put('/entity', entity);
+// export const deleteEntity = (keys) => api.delete('/entity', { data: keys });
 export const createfeedback=(entity)=>api.post("/feedback",entity)
 
 export default api; // Export the Axios instance
