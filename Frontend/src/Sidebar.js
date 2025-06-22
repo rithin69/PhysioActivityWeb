@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';  // Import the hook to access the role
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTachometerAlt, faUserFriends, faUser, faBook, faPlug, faFlask } from '@fortawesome/free-solid-svg-icons';
+import { faTachometerAlt, faUserFriends, faUser, faBook, faPlug, faFlask,faDollarSign } from '@fortawesome/free-solid-svg-icons';
 
 const Sidebar = ({ isExpanded, setIsExpanded }) => {
   const userRole = useSelector((state) => state.role.role);  // Access the current role from the Redux store
@@ -21,6 +21,7 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
           { to: '/exercise', label: 'Library', icon: faBook },
           { to: '/connectors', label: 'Connect', icon: faPlug },
           { to: '/lab', label: 'Research Labs', icon: faFlask },
+          { to: '/monetization', label: 'Monetization', icon: faDollarSign  },
         ];
       case 'Researcher':
         return [
@@ -29,9 +30,8 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
           { to: '/profilee', label: 'Goals & Plans', icon: faUser },
           { to: '/exercise', label: 'Library', icon: faBook },
           { to: '/connectors', label: 'Reports', icon: faPlug },
-          { to: '/lab', label: 'Monetization', icon: faFlask },
-          { to: '/lab', label: 'Settings', icon: faFlask },
-          { to: '/lab', label: 'Help & Support', icon: faFlask },
+          { to: '/lab', label: 'Research Labs', icon: faFlask },
+     
         ];
       case 'Physio':
         return [

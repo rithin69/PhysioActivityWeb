@@ -16,6 +16,7 @@ import Navbar from './Navbar';
 import Otherprofidashboard from './Otherprofidashboard';
 import PhysioDashboard from './PhysioDashboard';
 import ProfileViewer from './ProfileViewer';
+import Monetization from './Monetization';
 
 const AppContent = () => {
   const location = useLocation();
@@ -92,6 +93,7 @@ const AppContent = () => {
             <Route path="/patients" element={<Patients />} />
             <Route path="/profilee" element={<ProfileEditor />} />
             <Route path="/connectors" element={<Connector />} />
+            <Route path="/monetization" element={<Monetization />} />
             <Route path="/lab" element={<Lab />} />
             {/* <Route path="/settings" element={<Settings />} /> */}
             {/* <Route path="/exercise" element={<Exercise />} /> */}
