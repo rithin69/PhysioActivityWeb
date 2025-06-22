@@ -264,7 +264,7 @@ const Monetization = () => {
   return (
     <div className="p-6 bg-gray-50 min-h-screen rounded-xl shadow-inner">
       <h1 className="text-3xl font-bold text-[#4cb6c3] mb-6 flex items-center">
-        <DollarSign size={28} className="mr-3" /> Monetization Tracking
+        <DollarSign size={28} className="mr-3" /> 
       </h1>
 
       {/* Add New Charge Section */}
