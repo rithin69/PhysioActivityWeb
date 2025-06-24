@@ -116,8 +116,8 @@ const ProfileEditor = () => {
   const [bio, setBio] = useState("I help women reconnect with their bodies through evidence-based physiotherapy and personalized training. My approach combines movement science with compassionate care to help you feel stronger, more confident, and in control of your wellness journey.");
   const [location, setLocation] = useState("London, UK");
   // Fixed image paths - use working placeholder URLs
-  const [image, setImage] = useState("https://via.placeholder.com/300x300/4F46E5/FFFFFF?text=Profile");
-  const [logo, setLogo] = useState("https://via.placeholder.com/200x100/6366F1/FFFFFF?text=Logo");
+  const [image, setImage] = useState("/images/physiopropic.jpg");
+  const [logo, setLogo] = useState("/images/physiologo.jpg");
   const [ctaText, setCtaText] = useState("Ready to feel stronger, more confident, and in control of your wellness?");
   const [services, setServices] = useState([
     "Personal Training: Tailored sessions to help you move better and feel stronger in your body.",
