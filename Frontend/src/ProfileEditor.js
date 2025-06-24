@@ -432,7 +432,7 @@ const ProfileEditor = () => {
                 </svg>
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Profile Published!</h2>
-              <p className="text-gray-600 mb-6">Your professional profile is now live and ready to share.</p>
+              <p className="text-gray-600 mb-6">Your profile is now live and ready to share.</p>
 
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <div className="text-sm text-gray-600 mb-2">Your Profile URL:</div>
