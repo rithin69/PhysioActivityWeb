@@ -41,8 +41,14 @@ export default function ProfileViewer() {
           alt={profile.name}
           className="mx-auto w-80 h-80 rounded-full mb-6 object-cover border-4 border-white shadow-2xl"
         />
-         <p className="text-xl mb-6 font-light">{profile.location}</p>
-        <h1 className="text-5xl font-extrabold mb-4 drop-shadow-md">{profile.title}</h1>
+        <p className="text-xl mb-6 font-light flex items-center justify-center gap-2">
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+          </svg>
+          {profile.location}
+        </p>
+        <h1 className="text-5xl font-extrabold mb-4 drop-shadow-md">{profile.name}</h1>
+        <p className="text-2xl mb-6 font-medium text-yellow-300">{profile.title}</p>
         <p className="text-xl max-w-2xl mx-auto font-light leading-relaxed">{profile.bio}</p>
         {profile.logo && (
           <img
@@ -53,15 +59,35 @@ export default function ProfileViewer() {
         )}
       </section>
 
+      {/* Stats Section */}
+      {profile.stats && (
+        <section className="py-16 px-6 bg-white">
+          <div className="max-w-4xl mx-auto">
+            <div className="grid grid-cols-3 gap-8 text-center">
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-xl">
+                <div className="text-4xl font-bold text-[#104378] mb-2">{profile.stats.clients}</div>
+                <div className="text-gray-600 font-medium">Clients Helped</div>
+              </div>
+              <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-xl">
+                <div className="text-4xl font-bold text-[#104378] mb-2">{profile.stats.experience}</div>
+                <div className="text-gray-600 font-medium">Years Experience</div>
+              </div>
+              <div className="bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-xl">
+                <div className="text-4xl font-bold text-[#104378] mb-2">{profile.stats.success}</div>
+                <div className="text-gray-600 font-medium">Success Rate</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Promo Section */}
       <section className="text-center py-24 px-6 bg-[#e50000] text-white relative">
-        <h2 className="text-4xl md:text-5xl font-extrabold mb-6">Hi, I’m {profile.name}</h2>
-        <h3 className="text-4xl md:text-5xl font-black text-yellow-300 mb-4">{profile.bio}</h3>
-       
-      
+        <h2 className="text-4xl md:text-5xl font-extrabold mb-6">Hi, I'm {profile.name}</h2>
+        <h3 className="text-2xl md:text-3xl font-bold text-yellow-300 mb-4 leading-relaxed max-w-4xl mx-auto">
+          {profile.title}
+        </h3>
       </section>
-
-     
 
       {/* Services Section */}
       {profile.services?.length > 0 && (
@@ -77,7 +103,7 @@ export default function ProfileViewer() {
                     className="bg-white p-8 rounded-2xl shadow-xl border-l-8 border-[#4cb6c3] transform hover:scale-105 transition-all"
                   >
                     <h3 className="text-2xl font-bold mb-3 text-[#104378]">{title.trim()}</h3>
-                    <p className="text-gray-700">{desc.join(":").trim()}</p>
+                    <p className="text-gray-700 leading-relaxed">{desc.join(":").trim()}</p>
                   </div>
                 );
               })}
@@ -88,9 +114,11 @@ export default function ProfileViewer() {
 
       {/* Philosophy Section */}
       {profile.philosophy && (
-        <section className="py-24 px-6 max-w-3xl mx-auto text-center bg-gradient-to-br from-[#fef6f2] to-[#e8f5e9] rounded-xl">
-          <h2 className="text-4xl font-bold mb-6 text-[#104378]">My Philosophy</h2>
-          <p className="text-xl font-light text-gray-700 leading-relaxed">{profile.philosophy}</p>
+        <section className="py-24 px-6">
+          <div className="max-w-4xl mx-auto text-center bg-gradient-to-br from-[#fef6f2] to-[#e8f5e9] rounded-2xl p-12">
+            <h2 className="text-4xl font-bold mb-8 text-[#104378]">My Philosophy</h2>
+            <p className="text-xl font-light text-gray-700 leading-relaxed">{profile.philosophy}</p>
+          </div>
         </section>
       )}
 
@@ -103,9 +131,10 @@ export default function ProfileViewer() {
               {profile.testimonials.map((quote, idx) => (
                 <div
                   key={idx}
-                  className="bg-white p-6 rounded-2xl shadow-lg border-l-8 border-[#4cb6c3]"
+                  className="bg-white p-8 rounded-2xl shadow-lg border-l-8 border-[#4cb6c3] transform hover:scale-105 transition-all"
                 >
-                  <p className="italic text-gray-700">
+                  <div className="text-4xl text-[#4cb6c3] mb-4">"</div>
+                  <p className="italic text-gray-700 text-lg leading-relaxed">
                     {quote.replace(/^"|"$/g, "")}
                   </p>
                 </div>
@@ -117,8 +146,8 @@ export default function ProfileViewer() {
 
       {/* CTA Footer */}
       <section className="text-center py-24 px-6 bg-[#104378] text-white">
-        <h3 className="text-3xl font-bold mb-4">Get Started Today</h3>
-        <p className="text-lg mb-6 max-w-xl mx-auto leading-relaxed">{profile.ctaText}</p>
+        <h3 className="text-4xl font-bold mb-6">Get Started Today</h3>
+        <p className="text-xl mb-8 max-w-2xl mx-auto leading-relaxed">{profile.ctaText}</p>
         {profile.qr && (
           <img
             src="/images/qr.png"
@@ -126,6 +155,11 @@ export default function ProfileViewer() {
             className="mx-auto w-56 h-56 rounded-xl shadow-lg border-4 border-white hover:scale-105 transition"
           />
         )}
+        <div className="mt-12 pt-8 border-t border-blue-400">
+          <p className="text-lg opacity-90">
+            Powered by <span className="font-bold">PhysioActivity</span>
+          </p>
+        </div>
       </section>
     </div>
   );
