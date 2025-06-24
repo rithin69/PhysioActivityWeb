@@ -41,6 +41,7 @@ export default function ProfileViewer() {
           alt={profile.name}
           className="mx-auto w-80 h-80 rounded-full mb-6 object-cover border-4 border-white shadow-2xl"
         />
+         <p className="text-xl mb-6 font-light">{profile.location}</p>
         <h1 className="text-5xl font-extrabold mb-4 drop-shadow-md">{profile.title}</h1>
         <p className="text-xl max-w-2xl mx-auto font-light leading-relaxed">{profile.bio}</p>
         {profile.logo && (
@@ -55,8 +56,8 @@ export default function ProfileViewer() {
       {/* Promo Section */}
       <section className="text-center py-24 px-6 bg-[#e50000] text-white relative">
         <h2 className="text-4xl md:text-5xl font-extrabold mb-6">Hi, I’m {profile.name}</h2>
-        <h3 className="text-6xl md:text-7xl font-black text-yellow-300 mb-4">{profile.bio}</h3>
-        <p className="text-xl mb-6 font-light">{profile.location}</p>
+        <h3 className="text-4xl md:text-5xl font-black text-yellow-300 mb-4">{profile.bio}</h3>
+       
       
       </section>
 
