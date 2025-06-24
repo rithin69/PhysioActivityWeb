@@ -115,8 +115,9 @@ const ProfileEditor = () => {
   const [title, setTitle] = useState("Feel strong, capable, and confident in your body.");
   const [bio, setBio] = useState("I help women reconnect with their bodies through evidence-based physiotherapy and personalized training. My approach combines movement science with compassionate care to help you feel stronger, more confident, and in control of your wellness journey.");
   const [location, setLocation] = useState("London, UK");
-  const [image, setImage] = useState("/images/physiopropic.jpg");
-  const [logo, setLogo] = useState("/images/physiologo.jpg");
+  // Fixed image paths - use working placeholder URLs
+  const [image, setImage] = useState("https://via.placeholder.com/300x300/4F46E5/FFFFFF?text=Profile");
+  const [logo, setLogo] = useState("https://via.placeholder.com/200x100/6366F1/FFFFFF?text=Logo");
   const [ctaText, setCtaText] = useState("Ready to feel stronger, more confident, and in control of your wellness?");
   const [services, setServices] = useState([
     "Personal Training: Tailored sessions to help you move better and feel stronger in your body.",
@@ -185,13 +186,25 @@ const ProfileEditor = () => {
           {/* Profile Header */}
           <div className="px-6 pb-6">
             <div className="flex items-start -mt-16 mb-4">
-              <ImageUpload
-                src={image}
-                alt="Profile"
-                onUpload={setImage}
-                className="w-32 h-32 rounded-full border-4 border-white object-cover"
-                label="Profile Photo"
-              />
+              <div className="text-center">
+                <ImageUpload
+                  src={image}
+                  alt="Profile"
+                  onUpload={setImage}
+                  className="w-32 h-32 rounded-full border-4 border-white object-cover"
+                  label="Profile Photo"
+                />
+                {/* Location below profile pic */}
+                <div className="flex items-center justify-center mt-2 text-gray-600">
+                  <MapPin size={14} className="mr-1" />
+                  <EditableText
+                    value={location}
+                    onSave={setLocation}
+                    placeholder="Enter location"
+                    headerStyle={false}
+                  />
+                </div>
+              </div>
               <div className="ml-6 mt-16 flex-1">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
@@ -201,17 +214,6 @@ const ProfileEditor = () => {
                       placeholder="Enter your name"
                       headerStyle={true}
                     />
-                    <div className="flex items-center mt-1">
-                      <MapPin size={16} className="mr-1 text-gray-600" />
-                      <div className="flex-1">
-                        <EditableText
-                          value={location}
-                          onSave={setLocation}
-                          placeholder="Enter location"
-                          headerStyle={false}
-                        />
-                      </div>
-                    </div>
                   </div>
                   <div className="flex items-center gap-2">
                     {isPublished && (
@@ -432,7 +434,7 @@ const ProfileEditor = () => {
                 </svg>
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Profile Published!</h2>
-              <p className="text-gray-600 mb-6">Your profile is now live and ready to share.</p>
+              <p className="text-gray-600 mb-6">Your professional profile is now live and ready to share.</p>
 
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <div className="text-sm text-gray-600 mb-2">Your Profile URL:</div>
