@@ -49,7 +49,7 @@ export default function ProfileViewer() {
         </p>
         <h1 className="text-5xl font-extrabold mb-4 drop-shadow-md">{profile.name}</h1>
         <p className="text-2xl mb-6 font-medium text-yellow-300">{profile.title}</p>
-        <p className="text-xl max-w-2xl mx-auto font-light leading-relaxed">{profile.bio}</p>
+      
         {profile.logo && (
           <img
             src={profile.logo}
@@ -85,7 +85,7 @@ export default function ProfileViewer() {
       <section className="text-center py-24 px-6 bg-[#e50000] text-white relative">
         <h2 className="text-4xl md:text-5xl font-extrabold mb-6">Hi, I'm {profile.name}</h2>
         <h3 className="text-2xl md:text-3xl font-bold text-yellow-300 mb-4 leading-relaxed max-w-4xl mx-auto">
-          {profile.title}
+          {profile.bio}
         </h3>
       </section>
 
