@@ -115,7 +115,6 @@ const ProfileEditor = () => {
   const [title, setTitle] = useState("Feel strong, capable, and confident in your body.");
   const [bio, setBio] = useState("I help women reconnect with their bodies through evidence-based physiotherapy and personalized training. My approach combines movement science with compassionate care to help you feel stronger, more confident, and in control of your wellness journey.");
   const [location, setLocation] = useState("London, UK");
-  // Fixed image paths - use working placeholder URLs
   const [image, setImage] = useState("/images/physiopropic.jpg");
   const [logo, setLogo] = useState("/images/physiologo.jpg");
   const [ctaText, setCtaText] = useState("Ready to feel stronger, more confident, and in control of your wellness?");
@@ -183,7 +182,7 @@ const ProfileEditor = () => {
           {/* Cover Area */}
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-32"></div>
 
-          {/* Profile Header */}
+          {/* Profile Header - NON-EDITABLE DISPLAY ONLY */}
           <div className="px-6 pb-6">
             <div className="flex items-start -mt-16 mb-4">
               <div className="text-center">
@@ -194,26 +193,17 @@ const ProfileEditor = () => {
                   className="w-32 h-32 rounded-full border-4 border-white object-cover"
                   label="Profile Photo"
                 />
-                {/* Location below profile pic */}
+                {/* Location below profile pic - DISPLAY ONLY */}
                 <div className="flex items-center justify-center mt-2 text-gray-600">
                   <MapPin size={14} className="mr-1" />
-                  <EditableText
-                    value={location}
-                    onSave={setLocation}
-                    placeholder="Enter location"
-                    headerStyle={false}
-                  />
+                  <span className="text-sm">{location}</span>
                 </div>
               </div>
               <div className="ml-6 mt-16 flex-1">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    <EditableText
-                      value={name}
-                      onSave={setName}
-                      placeholder="Enter your name"
-                      headerStyle={true}
-                    />
+                    {/* Name - DISPLAY ONLY */}
+                    <h1 className="text-2xl font-bold text-gray-900">{name}</h1>
                   </div>
                   <div className="flex items-center gap-2">
                     {isPublished && (
@@ -238,17 +228,12 @@ const ProfileEditor = () => {
                     )}
                   </div>
                 </div>
-                <EditableText
-                  value={title}
-                  onSave={setTitle}
-                  placeholder="Enter your tagline"
-                  headerStyle={true}
-                  multiline={true}
-                />
+                {/* Title - DISPLAY ONLY */}
+                <p className="text-lg text-gray-700 font-medium mt-2">{title}</p>
               </div>
             </div>
 
-            {/* Stats Preview - Now Editable */}
+            {/* Stats Preview - Editable */}
             <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-200">
               <div className="text-center group relative">
                 <EditableText
@@ -283,7 +268,7 @@ const ProfileEditor = () => {
 
         {/* Editor Sections */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          {/* Basic Information */}
+          {/* Basic Information - THE ONLY PLACE TO EDIT NAME, TITLE, LOCATION */}
           <div className="bg-white rounded-xl shadow-sm p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
               <User className="mr-2" size={20} />
