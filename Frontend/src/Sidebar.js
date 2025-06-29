@@ -22,6 +22,7 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
           { to: '/connectors', label: 'Connect', icon: faPlug },
           { to: '/lab', label: 'Research Labs', icon: faFlask },
           { to: '/monetization', label: 'Monetization', icon: faDollarSign  },
+          { to: '/dashboard_v2', label: 'dashboard_v2', icon: faTachometerAlt  },
         ];
       case 'Researcher':
         return [

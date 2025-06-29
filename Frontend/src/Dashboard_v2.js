@@ -82,7 +82,7 @@ const Dashboard_v2 = () => {
 
   if (loading) {
     return (
-      <div className="pl-64 pt-16 bg-gray-50 min-h-screen flex items-center justify-center">
+      <div className="pl-64 bg-gray-50 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading dashboard data...</p>
@@ -93,7 +93,7 @@ const Dashboard_v2 = () => {
 
   if (error) {
     return (
-      <div className="pl-64 pt-16 bg-gray-50 min-h-screen flex items-center justify-center">
+      <div className="pl-64 bg-gray-50 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-600 mb-4">Error loading dashboard: {error}</p>
           <button 
@@ -108,16 +108,16 @@ const Dashboard_v2 = () => {
   }
 
   return (
-    <div className="pl-64 pt-16 bg-gray-50 min-h-screen">
-      <div className="p-4">
+    <div className="pl-64 bg-gray-50 min-h-screen">
+      <div className="p-6">
         {/* Header */}
-        <div className="mb-6">
+        <div className="mb-8">
           <h1 className="text-3xl font-bold text-teal-600 mb-2">Welcome, Sarah!</h1>
           <p className="text-gray-600">Here's your client overview.</p>
         </div>
 
         {/* Filter Only */}
-        <div className="flex justify-end items-center mb-4">
+        <div className="flex justify-end items-center mb-6">
           <select className="border border-gray-300 rounded-lg px-4 py-2 bg-white focus:ring-2 focus:ring-teal-500 focus:border-transparent">
             <option>All Clients (No Date Filter)</option>
             <option>This Week</option>
@@ -127,7 +127,7 @@ const Dashboard_v2 = () => {
         </div>
 
         {/* Client Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {clients.map((client, index) => {
             const activityPercentage = getActivityPercentage(client.ActivityAchieved, client.ActivityTarget);
             
@@ -213,7 +213,7 @@ const Dashboard_v2 = () => {
         )}
 
         {/* Refresh Button */}
-        <div className="mt-6 text-center">
+        <div className="mt-8 text-center">
           <button 
             onClick={fetchDashboardData}
             className="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition-colors font-medium"
