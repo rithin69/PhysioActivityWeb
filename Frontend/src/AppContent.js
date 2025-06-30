@@ -53,7 +53,6 @@ const AppContent = () => {
       case 'Personal Trainer':
       case 'Researcher':
       case 'Admin':
-        return <Dashboard_v2 />
       case 'Patient':
         return <Otherprofidashboard data={mockData} />;
       default:

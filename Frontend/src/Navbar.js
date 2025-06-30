@@ -1,229 +1,163 @@
-import React, { useState, useEffect } from 'react';
-import { Activity, Clock, Heart, Target, TrendingUp, Users } from 'lucide-react';
+import React, { useState,useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux'; // Import hooks
+import { setRole } from './redux/roleSlice'; // Import the action to set the role
+import { ChevronDownIcon } from '@heroicons/react/solid'; // For the dropdown arrow icon
+import SidePanel from './Sidepanel';
+import {
+  CogIcon,
+  QuestionMarkCircleIcon,
+  ChatAlt2Icon,
+} from '@heroicons/react/solid'; // Correct icons imported
 
-const Dashboard_v2 = () => {
-  const [clients, setClients] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+const Navbar = ({ isSidebarExpanded }) => {
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false); // Dropdown state
+  const dispatch = useDispatch(); // Hook to dispatch actions
+  const userRole = useSelector((state) => state.role.role); // Hook to access the current role from the Redux store
+  // const userId = useSelector((state) => state.user.id); // Replace with your app's user ID selector
 
-  // Function to get initials from client name
-  const getInitials = (name) => {
-    if (!name) return 'NA';
-    const nameParts = name.split(' ');
-    if (nameParts.length >= 2) {
-      return (nameParts[0][0] + nameParts[1][0]).toUpperCase();
-    }
-    return name.substring(0, 2).toUpperCase();
+ 
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+  const handleOpenPanel = () => {
+    setIsPanelOpen(true);
   };
 
-  // Function to get background color based on client index
-  const getAvatarColor = (index) => {
-    const colors = [
-      'bg-purple-500',
-      'bg-orange-500', 
-      'bg-green-500',
-      'bg-blue-500',
-      'bg-pink-500',
-      'bg-yellow-500',
-      'bg-indigo-500',
-      'bg-red-500'
-    ];
-    return colors[index % colors.length];
+  const handleClosePanel = () => {
+    setIsPanelOpen(false);
   };
 
-  // Function to get activity percentage
-  const getActivityPercentage = (achieved, target) => {
-    if (!achieved || !target) return 0;
-    return Math.round((parseInt(achieved) / parseInt(target)) * 100);
+  const handleRoleSelect = (role) => {
+    dispatch(setRole(role)); // Update the role in the Redux store
+    setIsDropdownOpen(false); // Close the dropdown after selection
   };
 
-  // Function to get progress bar color based on percentage
-  const getProgressColor = (percentage) => {
-    if (percentage >= 90) return 'bg-green-500';
-    if (percentage >= 70) return 'bg-yellow-500';
-    return 'bg-red-500';
-  };
+  const redirectToFitbit = () => {
+    const state1=123456
+  //  const fitbitAuthUrl=`physioactivitybackend-gjb3dnbsgdcbgjfj.uksouth-01.azurewebsites.net\fitbit\auth`
+  const fitbitAuthUrl = `https://www.fitbit.com/oauth2/authorize?client_id=23RQGB&response_type=code&code_challenge=iuI14a-HY3uhrVZxBHauT1EoYcBN1HoRWSjVl3_wAeA&code_challenge_method=S256&redirect_uri=${encodeURIComponent('https://physioactivity-master-bch8c8b5eyg9g3g2.uksouth-01.azurewebsites.net/')}&scope=activity%20heartrate%20location%20nutrition%20oxygen_saturation%20profile%20respiratory_rate%20settings%20sleep%20social%20temperature%20weight&state=${state1}`;
 
-  // Function to trigger Power Automate flow
-  const fetchDashboardData = async () => {
-    setLoading(true);
-    setError(null);
+  window.location.href = fitbitAuthUrl;
+  
+
+ 
+  
+   
     
-    try {
-      const response = await fetch('https://prod-08.uksouth.logic.azure.com:443/workflows/62834f9020f246e093b95f32a7f23a45/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ChqHsiDF1WDBn0X2ZBQ0lWFivpIuXa7lMILRSh_GbEc', {
+  }
+  const handleFitbitRedirect = () => {
+    console.log("ghgh")
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    const state = urlParams.get('state');
+    console.log(state)
+  
+    if (code && state) {
+      // Send the code and state to the backend
+      fetch('https://physioactivitybackend-gjb3dnbsgdcbgjfj.uksouth-01.azurewebsites.net/fitbit/callback', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          userId: "100001"
+        body: JSON.stringify({ code, state }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log('Token exchange response:', data);
+          // Handle the response (e.g., save tokens, redirect user, etc.)
         })
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setClients(data);
-        console.log('Dashboard data received:', data);
-      } else {
-        throw new Error(`API call failed: ${response.statusText}`);
-      }
-    } catch (err) {
-      console.error('Error fetching dashboard data:', err);
-      setError(err.message);
-    } finally {
-      setLoading(false);
+        .catch(error => {
+          console.error('Error exchanging token:', error);
+        });
     }
   };
-
-  // Trigger API call when component mounts
   useEffect(() => {
-    fetchDashboardData();
-  }, []);
-
-  if (loading) {
-    return (
-      <div className="pl-64 pt-16 bg-gray-50 min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading dashboard data...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="pl-64 pt-16 bg-gray-50 min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-600 mb-4">Error loading dashboard: {error}</p>
-          <button 
-            onClick={fetchDashboardData}
-            className="bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition-colors"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
+    handleFitbitRedirect(); // Runs when the component mounts
+  }, []); 
+  
 
   return (
-    <div className="pl-64 pt-16 bg-gray-50 min-h-screen">
-      <div className="p-4">
-        {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold text-teal-600 mb-2">Welcome, Sarah!</h1>
-          <p className="text-gray-600">Here's your client overview.</p>
-        </div>
+    
+    <div
+  className={`fixed top-0 z-50 bg-white flex items-center justify-between px-6 py-2 shadow-md transition-all duration-300 ${
+    isSidebarExpanded ? 'ml-64' : 'ml-20'
+  } w-[calc(100%-80px)]`}
+>
 
-        {/* Filter Only */}
-        <div className="flex justify-end items-center mb-4">
-          <select className="border border-gray-300 rounded-lg px-4 py-2 bg-white focus:ring-2 focus:ring-teal-500 focus:border-transparent">
-            <option>All Clients (No Date Filter)</option>
-            <option>This Week</option>
-            <option>This Month</option>
-            <option>Last 30 Days</option>
-          </select>
-        </div>
+      {console.log("hhhhhhhhhhhhhhhhh")}
+      <div className="flex items-center">{/* Add a brand logo or name */}</div>
 
-        {/* Client Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {clients.map((client, index) => {
-            const activityPercentage = getActivityPercentage(client.ActivityAchieved, client.ActivityTarget);
-            
-            return (
-              <div key={client.ID || index} className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
-                {/* Avatar and Name */}
-                <div className="flex flex-col items-center mb-4">
-                  <div className={`w-20 h-20 rounded-full ${getAvatarColor(index)} flex items-center justify-center text-white text-xl font-bold mb-3`}>
-                    {getInitials(client.clientName)}
-                  </div>
-                  <h3 className="text-lg font-semibold text-gray-900 text-center">{client.clientName}</h3>
-                  <p className="text-sm text-gray-500">{client.Goal}</p>
-                </div>
+      {/* Right Section with Icons */}
+      <div className="flex items-center space-x-4">
+        {/* Feedback (Chat Bubble) Icon */}
+        <ChatAlt2Icon
+          className="h-6 w-6 text-gray-500 hover:text-gray-700 cursor-pointer"
+          onClick={handleOpenPanel} // Open the side panel on click
+        />
 
-                {/* Stats */}
-                <div className="space-y-3">
-                  {/* Steps */}
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Activity className="w-4 h-4 mr-2 text-teal-500" />
-                    <span>Steps: <strong>{client.ActivityAchieved || '0'}</strong></span>
-                  </div>
+      
+        {/* Help (Question Mark) Icon */}
+        <QuestionMarkCircleIcon className="h-6 w-6 text-gray-500 hover:text-gray-700 cursor-pointer" />
 
-                  {/* Recovery Score */}
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Heart className="w-4 h-4 mr-2 text-teal-500" />
-                    <span>Recovery: <strong>{client.RecoveryScore || '0'}</strong></span>
-                  </div>
+   
+        {/* <button
+          
+           onClick={redirectToFitbit}
+           className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 focus:outline-none"
+         >
+           Connect to Fitbit
+         </button> */}
 
-                  {/* Performance Score */}
-                  <div className="flex items-center text-sm text-gray-600">
-                    <TrendingUp className="w-4 h-4 mr-2 text-teal-500" />
-                    <span>Performance: <strong>{client.PerfScore || '0'}</strong></span>
-                  </div>
-
-                  {/* Session Type */}
-                  <div className="flex items-center text-sm text-gray-600">
-                    <Users className="w-4 h-4 mr-2 text-teal-500" />
-                    <span>{client.inPersonOrRemote === 'inPerson' ? 'In-Person' : 'Remote'}</span>
-                  </div>
-                </div>
-
-                {/* Weekly Activity Progress */}
-                <div className="mt-4">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm font-medium text-gray-700">Weekly Activity:</span>
-                    <span className="text-sm font-bold text-gray-900">{activityPercentage}%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
-                      className={`h-2 rounded-full transition-all duration-300 ${getProgressColor(activityPercentage)}`}
-                      style={{ width: `${Math.min(activityPercentage, 100)}%` }}
-                    ></div>
-                  </div>
-                </div>
-
-                {/* Next Session */}
-                {client.nextScheduledDate && (
-                  <div className="mt-4 pt-4 border-t border-gray-100">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <Clock className="w-4 h-4 mr-2 text-teal-500" />
-                      <span>Next: {client.nextScheduledDate}</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Empty State */}
-        {clients.length === 0 && !loading && (
-          <div className="text-center py-12">
-            <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No clients found</h3>
-            <p className="text-gray-500 mb-4">No client data available at the moment.</p>
-            <button 
-              onClick={fetchDashboardData}
-              className="bg-teal-500 text-white px-6 py-2 rounded-lg hover:bg-teal-600 transition-colors"
-            >
-              Refresh Data
-            </button>
-          </div>
-        )}
-
-        {/* Refresh Button */}
-        <div className="mt-6 text-center">
-          <button 
-            onClick={fetchDashboardData}
-            className="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition-colors font-medium"
+        {/* Role Dropdown */}
+        <div className="relative">
+          <button
+            onClick={toggleDropdown}
+            className="flex items-center bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 focus:outline-none"
           >
-            Refresh Dashboard
+            {userRole ? userRole : "Login"} {/* Default to "Login" if no role is selected */}
+            <ChevronDownIcon
+              className={`h-5 w-5 ml-2 transform ${
+                isDropdownOpen ? 'rotate-180' : 'rotate-0'
+              } transition-transform`}
+            />
           </button>
+
+          {isDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 shadow-lg rounded-md z-10">
+              {[
+                'Guest',
+                'Patient',
+                'Physio',
+                'OT',
+                'Personal Trainer',
+                'Nutritionist',
+                'Researcher',
+                'Admin',
+                'GP',
+                'OA/RA',
+                'Surgeon'
+
+              ].map((role) => (
+                <a
+                  key={role}
+                  href="#"
+                  className="block px-4 py-2 text-gray-700 hover:bg-green-100"
+                  onClick={() => handleRoleSelect(role)} // Update the role when clicked
+                >
+                  {role}
+                </a>
+              ))}
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Side Panel */}
+      <SidePanel isOpen={isPanelOpen} onClose={handleClosePanel} />
     </div>
   );
 };
 
-export default Dashboard_v2;
+export default Navbar;
