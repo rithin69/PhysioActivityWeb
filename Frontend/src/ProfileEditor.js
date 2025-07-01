@@ -123,8 +123,8 @@ const ProfileEditor = () => {
   ]);
   const [philosophy, setPhilosophy] = useState("Sustainable results come from empowering women with knowledge, building strength progressively, and creating lasting habits that support long-term wellness.");
   const [testimonials, setTestimonials] = useState([
-    "\"Ashley helped me feel stronger after my second baby. Her postpartum program was exactly what I needed.\" – Sarah L.",
-    "\"I no longer fear movement. Ashley's rehab approach gave me confidence to get back to activities I love.\" – Jen M."
+    "\"Ashley helped me feel stronger after my second baby. Her postpartum program was exactly what I needed.\" â€“ Sarah L.",
+    "\"I no longer fear movement. Ashley's rehab approach gave me confidence to get back to activities I love.\" â€“ Jen M."
   ]);
   const [socialMedia, setSocialMedia] = useState({
     facebook: "https://facebook.com/ashleythompsonphysio",
@@ -211,13 +211,13 @@ const ProfileEditor = () => {
                     {/* Name - DISPLAY ONLY */}
                     <h1 className="text-2xl font-bold text-gray-900">{name}</h1>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     {isPublished && (
                       <button
                         onClick={copyToClipboard}
-                        className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold text-sm"
+                        className="flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
                       >
-                        <Copy size={18} />
+                        <Copy size={16} />
                         Copy Link
                       </button>
                     )}
@@ -226,9 +226,9 @@ const ProfileEditor = () => {
                         href={profileUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold text-sm"
+                        className="flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-200 transition-colors"
                       >
-                        <ExternalLink size={18} />
+                        <ExternalLink size={16} />
                         View Live
                       </a>
                     )}
