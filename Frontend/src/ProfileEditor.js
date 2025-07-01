@@ -211,13 +211,13 @@ const ProfileEditor = () => {
                     {/* Name - DISPLAY ONLY */}
                     <h1 className="text-2xl font-bold text-gray-900">{name}</h1>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     {isPublished && (
                       <button
                         onClick={copyToClipboard}
-                        className="flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
+                        className="flex items-center gap-2 bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold text-sm"
                       >
-                        <Copy size={16} />
+                        <Copy size={18} />
                         Copy Link
                       </button>
                     )}
@@ -226,9 +226,9 @@ const ProfileEditor = () => {
                         href={profileUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-lg hover:bg-blue-200 transition-colors"
+                        className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-3 rounded-xl hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105 font-semibold text-sm"
                       >
-                        <ExternalLink size={16} />
+                        <ExternalLink size={18} />
                         View Live
                       </a>
                     )}
