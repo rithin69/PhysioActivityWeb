@@ -120,12 +120,45 @@ const Monetization = () => {
   const [selectedGoalFilter, setSelectedGoalFilter] = useState('');
   const [selectedProgramTypeFilter, setSelectedProgramTypeFilter] = useState('');
   const [selectedDifficultyFilter, setSelectedDifficultyFilter] = useState('');
+  const [selectedTableStatusFilter, setSelectedTableStatusFilter] = useState(''); // New filter for table
 
   // New charge form state variables
   const [newChargeClient, setNewChargeClient] = useState('');
   const [newChargeAmount, setNewChargeAmount] = useState('');
   const [newChargeDescription, setNewChargeDescription] = useState('');
   const [newChargeDate, setNewChargeDate] = useState(new Date().toISOString().slice(0, 10));
+
+  // Function to determine charge status
+  const getChargeStatus = (charge) => {
+    const chargeDate = new Date(charge.date);
+    const today = new Date();
+    const daysDiff = Math.floor((today - chargeDate) / (1000 * 60 * 60 * 24));
+    
+    // Example logic - you can modify this based on your requirements
+    if (daysDiff < 0) {
+      return "Processing"; // Future dates are processing
+    } else if (charge.amount > 0 && daysDiff >= 0 && daysDiff <= 30) {
+      return "Successful"; // Recent completed charges
+    } else if (charge.amount > 0 && daysDiff > 30) {
+      return "Successful"; // Older completed charges
+    } else {
+      return "Failed"; // You can add more complex logic here
+    }
+  };
+
+  // Function to get status color classes
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Successful':
+        return 'bg-green-100 text-green-800';
+      case 'Failed':
+        return 'bg-red-100 text-red-800';
+      case 'Processing':
+        return 'bg-yellow-100 text-yellow-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
 
   const allCharges = useMemo(() => {
     return clients.flatMap(client =>
@@ -152,10 +185,18 @@ const Monetization = () => {
       const programTypeMatch = !selectedProgramTypeFilter || charge.programType === selectedProgramTypeFilter;
       const difficultyMatch = !selectedDifficultyFilter ||
         (clients.find(c => c.id === charge.clientId)?.programs?.some(p => p.difficulty === selectedDifficultyFilter) || false);
-
+      
       return clientMatch && genderMatch && ageMatch && goalMatch && programTypeMatch && difficultyMatch;
     });
   }, [allCharges, selectedClientFilter, selectedGenderFilter, selectedAgeRangeFilter, selectedGoalFilter, selectedProgramTypeFilter, selectedDifficultyFilter, clients]);
+
+  // Separate filter for the table
+  const tableFilteredCharges = useMemo(() => {
+    return filteredCharges.filter(charge => {
+      const statusMatch = !selectedTableStatusFilter || getChargeStatus(charge) === selectedTableStatusFilter;
+      return statusMatch;
+    });
+  }, [filteredCharges, selectedTableStatusFilter]);
 
   const totalEarnings = filteredCharges.reduce((sum, charge) => sum + charge.amount, 0);
 
@@ -265,6 +306,7 @@ const Monetization = () => {
     <div className="p-6 bg-gray-50 min-h-screen rounded-xl shadow-inner">
       <h1 className="text-3xl font-bold text-[#4cb6c3] mb-6 flex items-center">
         <DollarSign size={28} className="mr-3" /> 
+        Monetization Dashboard
       </h1>
 
       {/* Add New Charge Section */}
@@ -275,7 +317,7 @@ const Monetization = () => {
             <label htmlFor="newChargeClient" className="block text-sm font-medium text-gray-700 mb-1">Client</label>
             <select
               id="newChargeClient"
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#4cb6c3] focus:border-[#4cb6c3]"
               value={newChargeClient}
               onChange={(e) => setNewChargeClient(e.target.value)}
             >
@@ -291,7 +333,7 @@ const Monetization = () => {
               type="number"
               step="0.01"
               id="newChargeAmount"
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#4cb6c3] focus:border-[#4cb6c3]"
               value={newChargeAmount}
               onChange={(e) => setNewChargeAmount(e.target.value)}
               placeholder="e.g., 150.00"
@@ -302,7 +344,7 @@ const Monetization = () => {
             <input
               type="text"
               id="newChargeDescription"
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#4cb6c3] focus:border-[#4cb6c3]"
               value={newChargeDescription}
               onChange={(e) => setNewChargeDescription(e.target.value)}
               placeholder="e.g., Monthly Program Fee"
@@ -313,7 +355,7 @@ const Monetization = () => {
             <input
               type="date"
               id="newChargeDate"
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-purple-500 focus:border-purple-500"
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#4cb6c3] focus:border-[#4cb6c3]"
               value={newChargeDate}
               onChange={(e) => setNewChargeDate(e.target.value)}
             />
@@ -441,7 +483,7 @@ const Monetization = () => {
               <YAxis />
               <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
               <Legend />
-              <Bar dataKey="revenue" fill="#6B46C1" radius={[5, 5, 0, 0]} />
+              <Bar dataKey="revenue" fill="#4cb6c3" radius={[5, 5, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         ) : (
@@ -451,26 +493,44 @@ const Monetization = () => {
 
       {/* All Charges Table */}
       <div className="bg-white rounded-xl shadow-md p-6">
-        <h3 className="text-xl font-semibold text-[#4cb6c3] mb-4">All Charges</h3>
-        {filteredCharges.length > 0 ? (
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-xl font-semibold text-[#4cb6c3]">All Charges</h3>
+          <div className="w-48">
+            <label htmlFor="tableStatusFilter" className="block text-sm font-medium text-gray-700 mb-1">Filter by Status</label>
+            <select
+              id="tableStatusFilter"
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#4cb6c3] focus:border-[#4cb6c3]"
+              value={selectedTableStatusFilter}
+              onChange={(e) => setSelectedTableStatusFilter(e.target.value)}
+            >
+              <option value="">All Statuses</option>
+              <option value="Successful">Successful</option>
+              <option value="Failed">Failed</option>
+              <option value="Processing">Processing</option>
+            </select>
+          </div>
+        </div>
+        {tableFilteredCharges.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredCharges.map(charge => (
+                {tableFilteredCharges.map(charge => (
                   <tr key={charge.id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{charge.date}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{charge.clientName}</td>
                     <td className="px-6 py-4 whitespace-normal text-sm text-gray-700">{charge.description}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{charge.programType || 'N/A'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(getChargeStatus(charge))}`}>
+                        {getChargeStatus(charge)}
+                      </span>
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-right">${charge.amount.toFixed(2)}</td>
                   </tr>
                 ))}
