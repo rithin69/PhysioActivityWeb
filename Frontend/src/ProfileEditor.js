@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Pencil, Copy, ExternalLink, User, MapPin, Briefcase, Heart, MessageCircle, Star } from "lucide-react";
+import { Pencil, Copy, ExternalLink, User, MapPin, Briefcase, Heart, MessageCircle, Star, Facebook, Instagram, Twitter, Linkedin, Award, Stethoscope } from "lucide-react";
 
 const EditableText = ({ label, value, onSave, multiline = false, placeholder, headerStyle = false }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -106,15 +106,13 @@ const ImageUpload = ({ src, alt, onUpload, className, label }) => {
 };
 
 const ProfileEditor = () => {
-  const [stats, setStats] = useState({
-    clients: "150+",
-    experience: "5",
-    success: "98%"
-  });
   const [name, setName] = useState("Ashley Thompson");
   const [title, setTitle] = useState("Feel strong, capable, and confident in your body.");
   const [bio, setBio] = useState("I help women reconnect with their bodies through evidence-based physiotherapy and personalized training. My approach combines movement science with compassionate care to help you feel stronger, more confident, and in control of your wellness journey.");
   const [location, setLocation] = useState("London, UK");
+  const [experience, setExperience] = useState("5 years");
+  const [accreditations, setAccreditations] = useState("BSc Physiotherapy, MCSP, HCPC Registered");
+  const [specialties, setSpecialties] = useState("Women's Health, Sports Rehabilitation, Postpartum Recovery");
   const [image, setImage] = useState("/images/physiopropic.jpg");
   const [logo, setLogo] = useState("/images/physiologo.jpg");
   const [ctaText, setCtaText] = useState("Ready to feel stronger, more confident, and in control of your wellness?");
@@ -128,6 +126,12 @@ const ProfileEditor = () => {
     "\"Ashley helped me feel stronger after my second baby. Her postpartum program was exactly what I needed.\" – Sarah L.",
     "\"I no longer fear movement. Ashley's rehab approach gave me confidence to get back to activities I love.\" – Jen M."
   ]);
+  const [socialMedia, setSocialMedia] = useState({
+    facebook: "https://facebook.com/ashleythompsonphysio",
+    instagram: "https://instagram.com/ashleythompsonphysio",
+    twitter: "https://twitter.com/ashleythompsonphysio",
+    linkedin: "https://linkedin.com/in/ashleythompsonphysio"
+  });
 
   const [modalOpen, setModalOpen] = useState(false);
   const [profileUrl, setProfileUrl] = useState("");
@@ -139,13 +143,16 @@ const ProfileEditor = () => {
       title,
       bio,
       location,
+      experience,
+      accreditations,
+      specialties,
       image,
       logo,
       ctaText,
       services,
       philosophy,
       testimonials,
-      stats
+      socialMedia
     };
 
     try {
@@ -181,7 +188,6 @@ const ProfileEditor = () => {
         <div className="bg-white rounded-xl shadow-sm mb-6 overflow-hidden">
           {/* Cover Area */}
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-32"></div>
-
           {/* Profile Header - NON-EDITABLE DISPLAY ONLY */}
           <div className="px-6 pb-6">
             <div className="flex items-start -mt-16 mb-4">
@@ -232,37 +238,6 @@ const ProfileEditor = () => {
                 <p className="text-lg text-gray-700 font-medium mt-2">{title}</p>
               </div>
             </div>
-
-            {/* Stats Preview - Editable */}
-            <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-gray-200">
-              <div className="text-center group relative">
-                <EditableText
-                  label=""
-                  value={stats.clients || "150+"}
-                  onSave={(val) => setStats({ ...stats, clients: val })}
-                  placeholder="150+"
-                />
-                <div className="text-sm text-gray-600">Clients Helped</div>
-              </div>
-              <div className="text-center group relative">
-                <EditableText
-                  label=""
-                  value={stats.experience || "5"}
-                  onSave={(val) => setStats({ ...stats, experience: val })}
-                  placeholder="5"
-                />
-                <div className="text-sm text-gray-600">Years Experience</div>
-              </div>
-              <div className="text-center group relative">
-                <EditableText
-                  label=""
-                  value={stats.success || "98%"}
-                  onSave={(val) => setStats({ ...stats, success: val })}
-                  placeholder="98%"
-                />
-                <div className="text-sm text-gray-600">Success Rate</div>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -293,6 +268,12 @@ const ProfileEditor = () => {
               placeholder="City, Country"
             />
             <EditableText
+              label="Years of Experience"
+              value={experience}
+              onSave={setExperience}
+              placeholder="e.g., 5 years"
+            />
+            <EditableText
               label="About Me"
               value={bio}
               onSave={setBio}
@@ -301,13 +282,13 @@ const ProfileEditor = () => {
             />
           </div>
 
-          {/* Brand Logo */}
+          {/* Brand Logo & Social Media */}
           <div className="bg-white rounded-xl shadow-sm p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
               <Briefcase className="mr-2" size={20} />
-              Brand Logo
+              Brand & Social Media
             </h2>
-            <div className="flex justify-center">
+            <div className="flex justify-center mb-6">
               <ImageUpload
                 src={logo}
                 alt="Brand Logo"
@@ -316,6 +297,87 @@ const ProfileEditor = () => {
                 label="Upload your brand logo"
               />
             </div>
+            
+            {/* Social Media Section */}
+            <div className="text-center">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Connect With Me</h3>
+              <p className="text-sm text-gray-600 mb-4">Stay updated with my latest tips, success stories, and wellness insights across all platforms</p>
+              
+              <div className="flex justify-center gap-3 mb-4">
+                <a href={socialMedia.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 transition-colors">
+                  <Facebook size={18} />
+                </a>
+                <a href={socialMedia.instagram} target="_blank" rel="noopener noreferrer" className="p-2 bg-pink-100 text-pink-600 rounded-full hover:bg-pink-200 transition-colors">
+                  <Instagram size={18} />
+                </a>
+                <a href={socialMedia.twitter} target="_blank" rel="noopener noreferrer" className="p-2 bg-blue-100 text-blue-500 rounded-full hover:bg-blue-200 transition-colors">
+                  <Twitter size={18} />
+                </a>
+                <a href={socialMedia.linkedin} target="_blank" rel="noopener noreferrer" className="p-2 bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-colors">
+                  <Linkedin size={18} />
+                </a>
+              </div>
+
+              {/* <div className="space-y-2">
+                <EditableText
+                  label="Facebook URL"
+                  value={socialMedia.facebook}
+                  onSave={(val) => setSocialMedia({...socialMedia, facebook: val})}
+                  placeholder="https://facebook.com/yourprofile"
+                />
+                <EditableText
+                  label="Instagram URL"
+                  value={socialMedia.instagram}
+                  onSave={(val) => setSocialMedia({...socialMedia, instagram: val})}
+                  placeholder="https://instagram.com/yourprofile"
+                />
+                <EditableText
+                  label="Twitter URL"
+                  value={socialMedia.twitter}
+                  onSave={(val) => setSocialMedia({...socialMedia, twitter: val})}
+                  placeholder="https://twitter.com/yourprofile"
+                />
+                <EditableText
+                  label="LinkedIn URL"
+                  value={socialMedia.linkedin}
+                  onSave={(val) => setSocialMedia({...socialMedia, linkedin: val})}
+                  placeholder="https://linkedin.com/in/yourprofile"
+                />
+              </div> */}
+            </div>
+          </div>
+        </div>
+
+        {/* Credentials Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          {/* Accreditations */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+              <Award className="mr-2" size={20} />
+              Accreditations & Certifications
+            </h2>
+            <EditableText
+              label="Professional Qualifications"
+              value={accreditations}
+              onSave={setAccreditations}
+              multiline={true}
+              placeholder="List your qualifications, certifications, and professional memberships..."
+            />
+          </div>
+
+          {/* Specialties */}
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+              <Stethoscope className="mr-2" size={20} />
+              Areas of Expertise
+            </h2>
+            <EditableText
+              label="Specialties"
+              value={specialties}
+              onSave={setSpecialties}
+              multiline={true}
+              placeholder="List your areas of specialization and expertise..."
+            />
           </div>
         </div>
 
