@@ -56,12 +56,12 @@ export default function ProfileViewer() {
           </div>
         )}
 
-        {/* Brand Logo - Made Bigger */}
+        {/* Brand Logo - Made Even Bigger */}
         {profile.logo && (
           <img
             src={profile.logo}
             alt="Brand Logo"
-            className="absolute top-6 right-8 w-32 h-24 object-contain drop-shadow-lg bg-white/10 backdrop-blur-sm rounded-lg p-2"
+            className="absolute top-6 right-8 w-48 h-36 object-contain drop-shadow-lg bg-white/10 backdrop-blur-sm rounded-lg p-4"
           />
         )}
 
@@ -225,83 +225,18 @@ export default function ProfileViewer() {
         </section>
       )}
 
-      {/* CTA Footer */}
+      {/* CTA Footer - Simplified */}
       <section className="text-center py-24 px-6 bg-[#104378] text-white">
         <div className="max-w-4xl mx-auto">
           <h3 className="text-4xl font-bold mb-6">Ready to Start Your Journey?</h3>
           <p className="text-xl mb-8 leading-relaxed opacity-90">
             {profile.ctaText || "Take the first step towards a healthier, stronger you. Let's work together to achieve your wellness goals."}
           </p>
-          
-          {/* Contact Information */}
-          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 mb-8">
-            <h4 className="text-2xl font-bold mb-4">Get In Touch</h4>
-            <p className="text-lg mb-4">Ready to begin your transformation? Contact me today!</p>
-            
-            {/* Social Media Links */}
-            {profile.socialMedia && (
-              <div className="flex justify-center gap-4 mt-6">
-                {profile.socialMedia.facebook && (
-                  <a 
-                    href={profile.socialMedia.facebook} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="p-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all hover:scale-110"
-                  >
-                    <Facebook size={24} />
-                  </a>
-                )}
-                {profile.socialMedia.instagram && (
-                  <a 
-                    href={profile.socialMedia.instagram} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="p-3 bg-pink-600 text-white rounded-full hover:bg-pink-700 transition-all hover:scale-110"
-                  >
-                    <Instagram size={24} />
-                  </a>
-                )}
-                {profile.socialMedia.twitter && (
-                  <a 
-                    href={profile.socialMedia.twitter} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="p-3 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition-all hover:scale-110"
-                  >
-                    <Twitter size={24} />
-                  </a>
-                )}
-                {profile.socialMedia.linkedin && (
-                  <a 
-                    href={profile.socialMedia.linkedin} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="p-3 bg-blue-700 text-white rounded-full hover:bg-blue-800 transition-all hover:scale-110"
-                  >
-                    <Linkedin size={24} />
-                  </a>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* QR Code */}
-          {profile.qr && (
-            <div className="mb-8">
-              <img
-                src="/images/qr.png"
-                alt="QR Code"
-                className="mx-auto w-56 h-56 rounded-xl shadow-lg border-4 border-white hover:scale-105 transition-transform duration-300"
-              />
-              <p className="mt-4 text-sm opacity-80">Scan to connect instantly</p>
-            </div>
-          )}
 
           <div className="mt-12 pt-8 border-t border-blue-400">
             <p className="text-lg opacity-90">
               Powered by <span className="font-bold">PhysioActivity</span>
             </p>
-            <p className="text-sm opacity-70 mt-2">Professional physiotherapy profiles made simple</p>
           </div>
         </div>
       </section>
