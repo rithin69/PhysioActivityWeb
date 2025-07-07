@@ -1,33 +1,31 @@
 import React, { useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import Sidebar from './Sidebar';
+// ...other imports...
+import Dashboard_v2 from './Dashboard_v2';
+import PatientDetails from './PatientDetails';
+import Navbar from './Navbar';
+import Sidebar from "./Sidebar"
+import Patientdashboard from './Patientdashboard';
+// import Navbar from './Navbar';
 import Patients from './Patients';
 import Connector from './Connector';
-import Lab from './Lab';
 import ProfileEditor from './ProfileEditor';
-import Dashboard from './Dashboard';
-// import Settings from './Settings';
-// import SiriAdPage from './SiriAdPage';
-import Patientdashboard from './Patientdashboard';
-import Navbar from './Navbar';
-// import Exercise from './Exercise';
-// import ScrollToTop from './ScrollToTop';
-import Otherprofidashboard from './Otherprofidashboard';
-import PhysioDashboard from './PhysioDashboard';
 import ProfileViewer from './ProfileViewer';
 import Monetization from './Monetization';
-import Dashboard_v2 from './Dashboard_v2';
+import Lab from './Lab';
+import Dashboard from './Dashboard';
+import Otherprofidashboard from './Otherprofidashboard';
 
+import PhysioDashboard from './PhysioDashboard';
+// import ProfileViewer from './ProfileViewer';
 const AppContent = () => {
   const location = useLocation();
   const userRole = useSelector((state) => state.role.role);
-
-  // Determine if the current route is exactly "/profile/:id"
   const isProfileViewer = /^\/profile\/[^/]+$/.test(location.pathname);
 
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(false);
-
+  const [selectedPatientId, setSelectedPatientId] = useState(null); // <-- THIS IS THE FIX
   const mockData = {
     weekDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
     totalSteps: 70000,
@@ -41,7 +39,7 @@ const AppContent = () => {
     avgStepsPerDay: 10000,
     avgRestingHeartRate: 60,
     weight: 70,
-  };
+    };
 
   const getDashboardComponent = () => {
     switch (userRole) {
@@ -58,20 +56,16 @@ const AppContent = () => {
       default:
         return <Dashboard data={mockData} />;
     }
-  };
+  }
 
   return (
     <div className="flex flex-col h-screen">
-      {/* Navbar - hide on profile viewer */}
       {!isProfileViewer && <Navbar isSidebarExpanded={isSidebarExpanded} />}
-
       <div className="flex flex-grow h-full">
-        {/* Sidebar - hide on profile viewer */}
         {!isProfileViewer && (
           <div
-            className={`h-full transition-all duration-300 ${
-              isSidebarExpanded ? 'w-64' : 'w-20'
-            } bg-gray-800`}
+            className={`h-full transition-all duration-300 ${isSidebarExpanded ? 'w-64' : 'w-20'
+              } bg-gray-800`}
           >
             <Sidebar
               isExpanded={isSidebarExpanded}
@@ -79,14 +73,10 @@ const AppContent = () => {
             />
           </div>
         )}
-
-        {/* Main Content */}
         <main
-          className={`flex-grow transition-all duration-300 ${
-            !isProfileViewer && isSidebarExpanded ? 'ml-64' : ''
-          } bg-gray-100`}
+          className={`flex-grow transition-all duration-300 ${!isProfileViewer && isSidebarExpanded ? 'ml-64' : ''
+            } bg-gray-100`}
         >
-          {/* <ScrollToTop /> */}
           <Routes>
             {/* <Route path="/physio/siri" element={<SiriAdPage />} /> */}
             <Route path="/Patientdashboard" element={<Patientdashboard />} />
@@ -99,7 +89,15 @@ const AppContent = () => {
             {/* <Route path="/settings" element={<Settings />} /> */}
             {/* <Route path="/exercise" element={<Exercise />} /> */}
             <Route path="/profile/:id" element={<ProfileViewer />} />
-            <Route path ="/Dashboard_v2" element={<Dashboard_v2/>}/>
+            {/* ...other routes... */}
+            <Route
+              path="/Dashboard_v2"
+              element={
+                selectedPatientId
+                  ? <PatientDetails userId={selectedPatientId} onBack={() => setSelectedPatientId(null)} />
+                  : <Dashboard_v2 onPatientClick={setSelectedPatientId} />
+              }
+            />
           </Routes>
         </main>
       </div>

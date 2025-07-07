@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Activity, Clock, Heart, Target, TrendingUp, Users } from 'lucide-react';
+import { Activity, Clock, Heart, TrendingUp, Users } from 'lucide-react';
 
-const Dashboard_v2 = () => {
+const Dashboard_v2 = ({ onPatientClick }) => {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Function to get initials from client name
   const getInitials = (name) => {
     if (!name) return 'NA';
     const nameParts = name.split(' ');
@@ -16,11 +15,10 @@ const Dashboard_v2 = () => {
     return name.substring(0, 2).toUpperCase();
   };
 
-  // Function to get background color based on client index
   const getAvatarColor = (index) => {
     const colors = [
       'bg-purple-500',
-      'bg-orange-500', 
+      'bg-orange-500',
       'bg-green-500',
       'bg-blue-500',
       'bg-pink-500',
@@ -31,51 +29,39 @@ const Dashboard_v2 = () => {
     return colors[index % colors.length];
   };
 
-  // Function to get activity percentage
   const getActivityPercentage = (achieved, target) => {
     if (!achieved || !target) return 0;
     return Math.round((parseInt(achieved) / parseInt(target)) * 100);
   };
 
-  // Function to get progress bar color based on percentage
   const getProgressColor = (percentage) => {
     if (percentage >= 90) return 'bg-green-500';
     if (percentage >= 70) return 'bg-yellow-500';
     return 'bg-red-500';
   };
 
-  // Function to trigger Power Automate flow
   const fetchDashboardData = async () => {
     setLoading(true);
     setError(null);
-    
     try {
       const response = await fetch('https://prod-08.uksouth.logic.azure.com:443/workflows/62834f9020f246e093b95f32a7f23a45/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ChqHsiDF1WDBn0X2ZBQ0lWFivpIuXa7lMILRSh_GbEc', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: "100001"
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: "100001" })
       });
-
       if (response.ok) {
         const data = await response.json();
         setClients(data);
-        console.log('Dashboard data received:', data);
       } else {
         throw new Error(`API call failed: ${response.statusText}`);
       }
     } catch (err) {
-      console.error('Error fetching dashboard data:', err);
       setError(err.message);
     } finally {
       setLoading(false);
     }
   };
 
-  // Trigger API call when component mounts
   useEffect(() => {
     fetchDashboardData();
   }, []);
@@ -96,7 +82,7 @@ const Dashboard_v2 = () => {
       <div className="pl-64 bg-gray-50 min-h-screen flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-600 mb-4">Error loading dashboard: {error}</p>
-          <button 
+          <button
             onClick={fetchDashboardData}
             className="bg-teal-500 text-white px-4 py-2 rounded-lg hover:bg-teal-600 transition-colors"
           >
@@ -108,15 +94,11 @@ const Dashboard_v2 = () => {
   }
 
   return (
-    <div className=" bg-gray-50 min-h-screen">
+    <div className="bg-gray-50 min-h-screen">
       <div className="p-6">
-        {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-teal-600 mb-2">Welcome, Sarah!</h1>
-          {/* <p className="text-gray-600">Here's your client overview.</p> */}
         </div>
-
-        {/* Filter Only */}
         <div className="flex justify-end items-center mb-6">
           <select className="border border-gray-300 rounded-lg px-4 py-2 bg-white focus:ring-2 focus:ring-teal-500 focus:border-transparent">
             <option>All Clients (No Date Filter)</option>
@@ -125,15 +107,15 @@ const Dashboard_v2 = () => {
             <option>Last 30 Days</option>
           </select>
         </div>
-
-        {/* Client Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {clients.map((client, index) => {
             const activityPercentage = getActivityPercentage(client.ActivityAchieved, client.ActivityTarget);
-            
             return (
-              <div key={client.ID || index} className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow">
-                {/* Avatar and Name */}
+              <div
+                key={client.ID || index}
+                className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => onPatientClick(client.ID)}
+              >
                 <div className="flex flex-col items-center mb-4">
                   <div className={`w-20 h-20 rounded-full ${getAvatarColor(index)} flex items-center justify-center text-white text-xl font-bold mb-3`}>
                     {getInitials(client.clientName)}
@@ -141,49 +123,36 @@ const Dashboard_v2 = () => {
                   <h3 className="text-lg font-semibold text-gray-900 text-center">{client.clientName}</h3>
                   <p className="text-sm text-gray-500">{client.Goal}</p>
                 </div>
-
-                {/* Stats */}
                 <div className="space-y-3">
-                  {/* Steps */}
                   <div className="flex items-center text-sm text-gray-600">
                     <Activity className="w-4 h-4 mr-2 text-teal-500" />
                     <span>Steps: <strong>{client.ActivityAchieved || '0'}</strong></span>
                   </div>
-
-                  {/* Recovery Score */}
                   <div className="flex items-center text-sm text-gray-600">
                     <Heart className="w-4 h-4 mr-2 text-teal-500" />
                     <span>Recovery: <strong>{client.RecoveryScore || '0'}</strong></span>
                   </div>
-
-                  {/* Performance Score */}
                   <div className="flex items-center text-sm text-gray-600">
                     <TrendingUp className="w-4 h-4 mr-2 text-teal-500" />
                     <span>Performance: <strong>{client.PerfScore || '0'}</strong></span>
                   </div>
-
-                  {/* Session Type */}
                   <div className="flex items-center text-sm text-gray-600">
                     <Users className="w-4 h-4 mr-2 text-teal-500" />
                     <span>{client.inPersonOrRemote === 'inPerson' ? 'In-Person' : 'Remote'}</span>
                   </div>
                 </div>
-
-                {/* Weekly Activity Progress */}
                 <div className="mt-4">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-sm font-medium text-gray-700">Weekly Activity:</span>
                     <span className="text-sm font-bold text-gray-900">{activityPercentage}%</span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div 
+                    <div
                       className={`h-2 rounded-full transition-all duration-300 ${getProgressColor(activityPercentage)}`}
                       style={{ width: `${Math.min(activityPercentage, 100)}%` }}
                     ></div>
                   </div>
                 </div>
-
-                {/* Next Session */}
                 {client.nextScheduledDate && (
                   <div className="mt-4 pt-4 border-t border-gray-100">
                     <div className="flex items-center text-sm text-gray-600">
@@ -196,14 +165,12 @@ const Dashboard_v2 = () => {
             );
           })}
         </div>
-
-        {/* Empty State */}
         {clients.length === 0 && !loading && (
           <div className="text-center py-12">
             <Users className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">No clients found</h3>
             <p className="text-gray-500 mb-4">No client data available at the moment.</p>
-            <button 
+            <button
               onClick={fetchDashboardData}
               className="bg-teal-500 text-white px-6 py-2 rounded-lg hover:bg-teal-600 transition-colors"
             >
@@ -211,10 +178,8 @@ const Dashboard_v2 = () => {
             </button>
           </div>
         )}
-
-        {/* Refresh Button */}
         <div className="mt-8 text-center">
-          <button 
+          <button
             onClick={fetchDashboardData}
             className="bg-teal-500 text-white px-6 py-3 rounded-lg hover:bg-teal-600 transition-colors font-medium"
           >
