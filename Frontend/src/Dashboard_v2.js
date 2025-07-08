@@ -105,7 +105,7 @@ const Dashboard_v2 = ({ onPatientClick }) => {
           onPatientClick(retrievedUserId);
           setFetchError('');
         } else {
-          setFetchError('User ID not found in response');
+          setFetchError('ERROR');
         }
       } catch {
         setFetchError('Unexpected response from server');
