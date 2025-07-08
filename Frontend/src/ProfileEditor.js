@@ -117,9 +117,7 @@ const ProfileEditor = () => {
   const [logo, setLogo] = useState("/images/physiologo.jpg");
   const [ctaText, setCtaText] = useState("Ready to feel stronger, more confident, and in control of your wellness?");
   const [services, setServices] = useState([
-    "Personal Training: Tailored sessions to help you move better and feel stronger in your body.",
-    "Physiotherapy Rehab: Evidence-based care to support recovery and prevent future injury.",
-    "Postpartum Strength: Coaching to rebuild core strength and confidence after childbirth."
+    "Personal Training: Tailored sessions to help you move better and feel stronger in your body."
   ]);
   const [philosophy, setPhilosophy] = useState("Sustainable results come from empowering women with knowledge, building strength progressively, and creating lasting habits that support long-term wellness.");
   const [testimonials, setTestimonials] = useState([
@@ -318,7 +316,7 @@ const ProfileEditor = () => {
                 </a>
               </div>
 
-              {/* <div className="space-y-2">
+               <div className="space-y-2">
                 <EditableText
                   label="Facebook URL"
                   value={socialMedia.facebook}
@@ -343,7 +341,7 @@ const ProfileEditor = () => {
                   onSave={(val) => setSocialMedia({...socialMedia, linkedin: val})}
                   placeholder="https://linkedin.com/in/yourprofile"
                 />
-              </div> */}
+              </div> 
             </div>
           </div>
         </div>
