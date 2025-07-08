@@ -25,7 +25,7 @@ const EditableText = ({ label, value, onSave, multiline = false, placeholder, he
               {value || placeholder}
             </p>
           ) : (
-            <span 
+            <span
               className={`block pr-8 overflow-hidden text-ellipsis whitespace-nowrap ${headerStyle ? 'text-2xl font-bold text-gray-900' : 'text-gray-800'}`}
               title={value || placeholder}
             >
@@ -107,6 +107,8 @@ const ImageUpload = ({ src, alt, onUpload, className, label }) => {
 
 const ProfileEditor = () => {
   const [name, setName] = useState("Ashley Thompson");
+  const [servicePrice, setServicePrice] = useState("£50");
+
   const [title, setTitle] = useState("Feel strong, capable, and confident in your body.");
   const [bio, setBio] = useState("I help women reconnect with their bodies through evidence-based physiotherapy and personalized training. My approach combines movement science with compassionate care to help you feel stronger, more confident, and in control of your wellness journey.");
   const [location, setLocation] = useState("London, UK");
@@ -148,6 +150,7 @@ const ProfileEditor = () => {
       logo,
       ctaText,
       services,
+      servicePrice,
       philosophy,
       testimonials,
       socialMedia
@@ -295,12 +298,12 @@ const ProfileEditor = () => {
                 label="Upload your brand logo"
               />
             </div>
-            
+
             {/* Social Media Section */}
             <div className="text-center">
               <h3 className="text-lg font-medium text-gray-900 mb-2">Connect With Me</h3>
               <p className="text-sm text-gray-600 mb-4">Stay updated with my latest tips, success stories, and wellness insights across all platforms</p>
-              
+
               <div className="flex justify-center gap-3 mb-4">
                 <a href={socialMedia.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 transition-colors">
                   <Facebook size={18} />
@@ -316,32 +319,32 @@ const ProfileEditor = () => {
                 </a>
               </div>
 
-               <div className="space-y-2">
+              <div className="space-y-2">
                 <EditableText
                   label="Facebook URL"
                   value={socialMedia.facebook}
-                  onSave={(val) => setSocialMedia({...socialMedia, facebook: val})}
+                  onSave={(val) => setSocialMedia({ ...socialMedia, facebook: val })}
                   placeholder="https://facebook.com/yourprofile"
                 />
                 <EditableText
                   label="Instagram URL"
                   value={socialMedia.instagram}
-                  onSave={(val) => setSocialMedia({...socialMedia, instagram: val})}
+                  onSave={(val) => setSocialMedia({ ...socialMedia, instagram: val })}
                   placeholder="https://instagram.com/yourprofile"
                 />
                 <EditableText
                   label="Twitter URL"
                   value={socialMedia.twitter}
-                  onSave={(val) => setSocialMedia({...socialMedia, twitter: val})}
+                  onSave={(val) => setSocialMedia({ ...socialMedia, twitter: val })}
                   placeholder="https://twitter.com/yourprofile"
                 />
                 <EditableText
                   label="LinkedIn URL"
                   value={socialMedia.linkedin}
-                  onSave={(val) => setSocialMedia({...socialMedia, linkedin: val})}
+                  onSave={(val) => setSocialMedia({ ...socialMedia, linkedin: val })}
                   placeholder="https://linkedin.com/in/yourprofile"
                 />
-              </div> 
+              </div>
             </div>
           </div>
         </div>
@@ -381,27 +384,33 @@ const ProfileEditor = () => {
 
         {/* Services */}
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center justify-center">
             <Heart className="mr-2" size={20} />
             What I Offer
           </h2>
-          <div className="space-y-4">
-            {services.map((service, index) => (
-              <EditableText
-                key={index}
-                label={`Service ${index + 1}`}
-                value={service}
-                onSave={(val) => {
-                  const newServices = [...services];
-                  newServices[index] = val;
-                  setServices(newServices);
-                }}
-                multiline={true}
-                placeholder="Describe your service offering..."
-              />
-            ))}
+          <div className="flex flex-col items-center gap-4">
+            <div className="flex flex-col md:flex-row items-center gap-4 w-full max-w-xl">
+              <div className="flex-1 w-full">
+                <EditableText
+                  label="Service"
+                  value={services[0]}
+                  onSave={val => setServices([val])}
+                  multiline={true}
+                  placeholder="Describe your service offering..."
+                />
+              </div>
+              <div className="w-full md:w-40">
+                <EditableText
+                  label="Price"
+                  value={servicePrice}
+                  onSave={setServicePrice}
+                  placeholder="e.g. £50"
+                />
+              </div>
+            </div>
           </div>
         </div>
+
 
         {/* Philosophy & Testimonials */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
