@@ -2,10 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { Activity, Clock, Heart, TrendingUp, Users } from 'lucide-react';
 
 const Dashboard_v2 = ({ onPatientClick }) => {
+  // Sharing code states
+  const [sharingCode, setSharingCode] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [fetchError, setFetchError] = useState('');
+
+  // Dashboard states
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Avatar and progress helpers
   const getInitials = (name) => {
     if (!name) return 'NA';
     const nameParts = name.split(' ');
@@ -40,6 +47,7 @@ const Dashboard_v2 = ({ onPatientClick }) => {
     return 'bg-red-500';
   };
 
+  // Fetch dashboard data
   const fetchDashboardData = async () => {
     setLoading(true);
     setError(null);
@@ -65,6 +73,49 @@ const Dashboard_v2 = ({ onPatientClick }) => {
   useEffect(() => {
     fetchDashboardData();
   }, []);
+
+  // Sharing code handler
+  const handleFetchUserId = async () => {
+    if (!sharingCode.trim()) {
+      setFetchError('Please enter a sharing code');
+      return;
+    }
+    setIsLoading(true);
+    setFetchError('');
+
+    try {
+      const response = await fetch(
+        "https://prod-33.uksouth.logic.azure.com:443/workflows/ae7905b16a744f849b8d29e96f463633/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=U2__LcFx41-n29gGBBA7WKcCYrKdDheaf0ylOrH6A68",
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify({ sharingcode: sharingCode }),
+        }
+      );
+
+      const text = await response.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+        const retrievedUserId = data.userId || data.UserID || data.id;
+        if (retrievedUserId) {
+          onPatientClick(retrievedUserId);
+          setFetchError('');
+        } else {
+          setFetchError('User ID not found in response');
+        }
+      } catch {
+        setFetchError('Unexpected response from server');
+      }
+    } catch (e) {
+      setFetchError('Failed to retrieve user ID. Please try again later.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -96,9 +147,11 @@ const Dashboard_v2 = ({ onPatientClick }) => {
   return (
     <div className="bg-gray-50 min-h-screen">
       <div className="p-6">
+        {/* Dashboard Heading */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-teal-600 mb-2">Welcome, Sarah!</h1>
         </div>
+        {/* Filter */}
         <div className="flex justify-end items-center mb-6">
           <select className="border border-gray-300 rounded-lg px-4 py-2 bg-white focus:ring-2 focus:ring-teal-500 focus:border-transparent">
             <option>All Clients (No Date Filter)</option>
@@ -107,6 +160,33 @@ const Dashboard_v2 = ({ onPatientClick }) => {
             <option>Last 30 Days</option>
           </select>
         </div>
+        {/* Sharing Code Entry - aligned to the left */}
+        <div className="flex mb-8">
+          <div className="bg-white rounded-xl shadow-md p-8 w-full max-w-2xl flex flex-col items-start">
+            <h2 className="text-2xl font-bold text-gray-800 mb-6">Enter Sharing Code</h2>
+            <div className="flex w-full gap-4">
+              <input
+                type="text"
+                placeholder="Sharing Code"
+                value={sharingCode}
+                onChange={(e) => {
+                  setSharingCode(e.target.value);
+                  setFetchError('');
+                }}
+                className="flex-grow border border-gray-300 rounded-lg px-6 py-4 text-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+              />
+              <button
+                onClick={handleFetchUserId}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg text-lg font-semibold transition disabled:opacity-50"
+                disabled={isLoading || !sharingCode.trim()}
+              >
+                {isLoading ? 'Loading...' : 'Enter'}
+              </button>
+            </div>
+            {fetchError && <p className="text-red-600 mt-4">{fetchError}</p>}
+          </div>
+        </div>
+        {/* Client Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {clients.map((client, index) => {
             const activityPercentage = getActivityPercentage(client.ActivityAchieved, client.ActivityTarget);
