@@ -1,548 +1,157 @@
-import React, { useState, useMemo } from 'react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer 
-} from 'recharts';
-import { DollarSign, PlusCircle } from 'lucide-react';
+import React, { useEffect, useState, useMemo } from "react";
 
-const Monetization = () => {
-  // Hardcoded clients data with sample charges
-  const [clients, setClients] = useState([
-    {
-      id: 'client1',
-      name: 'John Smith',
-      gender: 'Male',
-      age: 28,
-      primaryGoal: 'Weight Loss',
-      programCharges: [
-        {
-          id: 'charge1',
-          date: '2025-06-15',
-          amount: 150,
-          description: 'Personal Training Session',
-          programType: 'In-person Session'
-        },
-        {
-          id: 'charge2',
-          date: '2025-06-10',
-          amount: 200,
-          description: 'Monthly Fitness Program',
-          programType: 'Remote Program'
+// Helper: Convert Excel serial date to yyyy-mm-dd
+function excelSerialDateToISO(serial) {
+  if (!serial) return '';
+  const date = new Date(Math.round((serial - 25569) * 86400 * 1000));
+  return date.toISOString().slice(0, 10);
+}
+
+const POWER_AUTOMATE_URL =
+  "https://prod-52.uksouth.logic.azure.com:443/workflows/8b8b2803c6584b8f8d33c5a1168e8adf/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2simhHaA_7klSYNhPhJqY9_OBT97gjbc4WEdnuf0kwE";
+
+const AllCharges = () => {
+  const [charges, setCharges] = useState([]);
+  const [selectedTableStatusFilter, setSelectedTableStatusFilter] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function fetchCharges() {
+      setLoading(true);
+      setError("");
+      try {
+        // POST request to your Power Automate URL
+        const response = await fetch(POWER_AUTOMATE_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: "100001" }) // Adjust userId as needed
+        });
+
+        const data = await response.json();
+
+        // If response is an array, use it directly; if it's a single object, wrap it in an array
+        let items = [];
+        if (Array.isArray(data)) {
+          items = data;
+        } else if (data.value && Array.isArray(data.value)) {
+          items = data.value;
+        } else if (typeof data === "object") {
+          items = [data];
         }
-      ],
-      programs: [
-        { name: 'Weight Loss Program', difficulty: 'Intermediate' }
-      ]
-    },
-    {
-      id: 'client2',
-      name: 'Sarah Johnson',
-      gender: 'Female',
-      age: 35,
-      primaryGoal: 'Muscle Building',
-      programCharges: [
-        {
-          id: 'charge3',
-          date: '2025-06-20',
-          amount: 180,
-          description: 'Strength Training Session',
-          programType: 'In-person Session'
-        },
-        {
-          id: 'charge4',
-          date: '2025-06-05',
-          amount: 120,
-          description: 'Nutrition Consultation',
-          programType: 'Remote Program'
-        }
-      ],
-      programs: [
-        { name: 'Strength Program', difficulty: 'Advanced' }
-      ]
-    },
-    {
-      id: 'client3',
-      name: 'Mike Davis',
-      gender: 'Male',
-      age: 42,
-      primaryGoal: 'General Fitness',
-      programCharges: [
-        {
-          id: 'charge5',
-          date: '2025-06-18',
-          amount: 100,
-          description: 'Cardio Training Session',
-          programType: 'In-person Session'
-        }
-      ],
-      programs: [
-        { name: 'Cardio Program', difficulty: 'Beginner' }
-      ]
-    },
-    {
-      id: 'client4',
-      name: 'Emily Wilson',
-      gender: 'Female',
-      age: 29,
-      primaryGoal: 'Flexibility',
-      programCharges: [
-        {
-          id: 'charge6',
-          date: '2025-06-12',
-          amount: 90,
-          description: 'Yoga Session',
-          programType: 'In-person Session'
-        },
-        {
-          id: 'charge7',
-          date: '2025-06-08',
-          amount: 75,
-          description: 'Online Flexibility Program',
-          programType: 'Remote Program'
-        }
-      ],
-      programs: [
-        { name: 'Flexibility Program', difficulty: 'Beginner' }
-      ]
+
+        setCharges(items);
+      } catch (e) {
+        setError("Failed to fetch charges.");
+        setCharges([]);
+      }
+      setLoading(false);
     }
-  ]);
+    fetchCharges();
+  }, []);
 
-  // Filter state variables
-  const [selectedClientFilter, setSelectedClientFilter] = useState('');
-  const [selectedGenderFilter, setSelectedGenderFilter] = useState('');
-  const [selectedAgeRangeFilter, setSelectedAgeRangeFilter] = useState('');
-  const [selectedGoalFilter, setSelectedGoalFilter] = useState('');
-  const [selectedProgramTypeFilter, setSelectedProgramTypeFilter] = useState('');
-  const [selectedDifficultyFilter, setSelectedDifficultyFilter] = useState('');
-  const [selectedTableStatusFilter, setSelectedTableStatusFilter] = useState(''); // New filter for table
-
-  // New charge form state variables
-  const [newChargeClient, setNewChargeClient] = useState('');
-  const [newChargeAmount, setNewChargeAmount] = useState('');
-  const [newChargeDescription, setNewChargeDescription] = useState('');
-  const [newChargeDate, setNewChargeDate] = useState(new Date().toISOString().slice(0, 10));
-
-  // Function to determine charge status
-  const getChargeStatus = (charge) => {
-    const chargeDate = new Date(charge.date);
-    const today = new Date();
-    const daysDiff = Math.floor((today - chargeDate) / (1000 * 60 * 60 * 24));
-    
-    // Example logic - you can modify this based on your requirements
-    if (daysDiff < 0) {
-      return "Processing"; // Future dates are processing
-    } else if (charge.amount > 0 && daysDiff >= 0 && daysDiff <= 30) {
-      return "Successful"; // Recent completed charges
-    } else if (charge.amount > 0 && daysDiff > 30) {
-      return "Successful"; // Older completed charges
-    } else {
-      return "Failed"; // You can add more complex logic here
-    }
-  };
-
-  // Function to get status color classes
+  // Status color
   const getStatusColor = (status) => {
     switch (status) {
-      case 'Successful':
-        return 'bg-green-100 text-green-800';
-      case 'Failed':
-        return 'bg-red-100 text-red-800';
-      case 'Processing':
-        return 'bg-yellow-100 text-yellow-800';
+      case "Successful":
+        return "bg-green-100 text-green-800";
+      case "Failed":
+        return "bg-red-100 text-red-800";
+      case "Processing":
+        return "bg-yellow-100 text-yellow-800";
       default:
-        return 'bg-gray-100 text-gray-800';
+        return "bg-gray-100 text-gray-800";
     }
   };
 
-  const allCharges = useMemo(() => {
-    return clients.flatMap(client =>
-      (client.programCharges || []).map(charge => ({
-        ...charge,
-        clientId: client.id,
-        clientName: client.name,
-        clientGender: client.gender,
-        clientAge: client.age,
-        clientPrimaryGoal: client.primaryGoal,
-      }))
-    ).sort((a, b) => new Date(b.date) - new Date(a.date));
-  }, [clients]);
-
-  const filteredCharges = useMemo(() => {
-    return allCharges.filter(charge => {
-      const clientMatch = !selectedClientFilter || charge.clientId === selectedClientFilter;
-      const genderMatch = !selectedGenderFilter || charge.clientGender === selectedGenderFilter;
-      const ageMatch = !selectedAgeRangeFilter ||
-        (selectedAgeRangeFilter === '<30' && charge.clientAge < 30) ||
-        (selectedAgeRangeFilter === '30-50' && charge.clientAge >= 30 && charge.clientAge <= 50) ||
-        (selectedAgeRangeFilter === '>50' && charge.clientAge > 50);
-      const goalMatch = !selectedGoalFilter || charge.clientPrimaryGoal === selectedGoalFilter;
-      const programTypeMatch = !selectedProgramTypeFilter || charge.programType === selectedProgramTypeFilter;
-      const difficultyMatch = !selectedDifficultyFilter ||
-        (clients.find(c => c.id === charge.clientId)?.programs?.some(p => p.difficulty === selectedDifficultyFilter) || false);
-      
-      return clientMatch && genderMatch && ageMatch && goalMatch && programTypeMatch && difficultyMatch;
-    });
-  }, [allCharges, selectedClientFilter, selectedGenderFilter, selectedAgeRangeFilter, selectedGoalFilter, selectedProgramTypeFilter, selectedDifficultyFilter, clients]);
-
-  // Separate filter for the table
+  // Filter by status
   const tableFilteredCharges = useMemo(() => {
-    return filteredCharges.filter(charge => {
-      const statusMatch = !selectedTableStatusFilter || getChargeStatus(charge) === selectedTableStatusFilter;
+    return charges.filter((charge) => {
+      const statusMatch =
+        !selectedTableStatusFilter ||
+        (charge.Status || charge.status) === selectedTableStatusFilter;
       return statusMatch;
     });
-  }, [filteredCharges, selectedTableStatusFilter]);
-
-  const totalEarnings = filteredCharges.reduce((sum, charge) => sum + charge.amount, 0);
-
-  // Monthly earnings data for chart
-  const monthlyEarningsData = useMemo(() => {
-    const earningsMap = new Map();
-    filteredCharges.forEach(charge => {
-      const monthYear = charge.date.substring(0, 7);
-      earningsMap.set(monthYear, (earningsMap.get(monthYear) || 0) + charge.amount);
-    });
-
-    return Array.from(earningsMap.entries())
-      .map(([monthYear, amount]) => ({ name: monthYear, earnings: amount }))
-      .sort((a, b) => a.name.localeCompare(b.name));
-  }, [filteredCharges]);
-
-  // Revenue by program type data
-  const revenueByTypeData = useMemo(() => {
-    const typeEarnings = {
-      'In-person Session': 0,
-      'Remote Program': 0,
-      'Other': 0,
-    };
-
-    filteredCharges.forEach(charge => {
-      if (charge.programType === 'In-person Session') {
-        typeEarnings['In-person Session'] += charge.amount;
-      } else if (charge.programType === 'Remote Program') {
-        typeEarnings['Remote Program'] += charge.amount;
-      } else {
-        typeEarnings['Other'] += charge.amount;
-      }
-    });
-
-    return Object.keys(typeEarnings).map(type => ({
-      name: type,
-      revenue: typeEarnings[type],
-    }));
-  }, [filteredCharges]);
-
-  const handleAddCharge = () => {
-    if (!newChargeClient || !newChargeAmount || !newChargeDescription || !newChargeDate) {
-      alert("All fields are required to add a charge.");
-      return;
-    }
-
-    const newCharge = {
-      id: `charge-${Date.now()}`,
-      date: newChargeDate,
-      amount: parseFloat(newChargeAmount),
-      description: newChargeDescription,
-      programType: newChargeDescription.toLowerCase().includes('in-person') || 
-                   newChargeDescription.toLowerCase().includes('session') ? 
-                   'In-person Session' : 'Remote Program',
-    };
-
-    // Update clients state
-    setClients(prevClients => 
-      prevClients.map(client => 
-        client.id === newChargeClient 
-          ? { 
-              ...client, 
-              programCharges: [...(client.programCharges || []), newCharge] 
-            }
-          : client
-      )
-    );
-
-    // Reset form
-    setNewChargeClient('');
-    setNewChargeAmount('');
-    setNewChargeDescription('');
-    setNewChargeDate(new Date().toISOString().slice(0, 10));
-    
-    alert('Charge added successfully!');
-  };
-
-  const uniqueProgramTypes = useMemo(() => {
-    const types = new Set();
-    clients.forEach(client => {
-      (client.programCharges || []).forEach(charge => {
-        if (charge.programType) types.add(charge.programType);
-      });
-    });
-    return Array.from(types);
-  }, [clients]);
-
-  const uniqueGoals = useMemo(() => {
-    const goals = new Set();
-    clients.forEach(client => {
-      if (client.primaryGoal) goals.add(client.primaryGoal);
-    });
-    return Array.from(goals);
-  }, [clients]);
-
-  const uniqueDifficulties = useMemo(() => {
-    const difficulties = new Set();
-    clients.forEach(client => {
-      (client.programs || []).forEach(program => {
-        if (program.difficulty) difficulties.add(program.difficulty);
-      });
-    });
-    return Array.from(difficulties);
-  }, [clients]);
+  }, [charges, selectedTableStatusFilter]);
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen rounded-xl shadow-inner">
-      <h1 className="text-3xl font-bold text-[#4cb6c3] mb-6 flex items-center">
-        <DollarSign size={28} className="mr-3" /> 
-        Monetization Dashboard
-      </h1>
-
-      {/* Add New Charge Section */}
-      <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-        <h3 className="text-xl font-semibold text-[#4cb6c3] mb-4">Add New Charge</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-          <div>
-            <label htmlFor="newChargeClient" className="block text-sm font-medium text-gray-700 mb-1">Client</label>
-            <select
-              id="newChargeClient"
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#4cb6c3] focus:border-[#4cb6c3]"
-              value={newChargeClient}
-              onChange={(e) => setNewChargeClient(e.target.value)}
-            >
-              <option value="">Select Client</option>
-              {clients.map(client => (
-                <option key={client.id} value={client.id}>{client.name}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="newChargeAmount" className="block text-sm font-medium text-gray-700 mb-1">Amount ($)</label>
-            <input
-              type="number"
-              step="0.01"
-              id="newChargeAmount"
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#4cb6c3] focus:border-[#4cb6c3]"
-              value={newChargeAmount}
-              onChange={(e) => setNewChargeAmount(e.target.value)}
-              placeholder="e.g., 150.00"
-            />
-          </div>
-          <div>
-            <label htmlFor="newChargeDescription" className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-            <input
-              type="text"
-              id="newChargeDescription"
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#4cb6c3] focus:border-[#4cb6c3]"
-              value={newChargeDescription}
-              onChange={(e) => setNewChargeDescription(e.target.value)}
-              placeholder="e.g., Monthly Program Fee"
-            />
-          </div>
-          <div>
-            <label htmlFor="newChargeDate" className="block text-sm font-medium text-gray-700 mb-1">Date</label>
-            <input
-              type="date"
-              id="newChargeDate"
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#4cb6c3] focus:border-[#4cb6c3]"
-              value={newChargeDate}
-              onChange={(e) => setNewChargeDate(e.target.value)}
-            />
-          </div>
+    <div className="bg-white rounded-xl shadow-md p-6 mt-16">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-xl font-semibold text-[#4cb6c3]">All Charges</h3>
+        <div className="w-48">
+          <label
+            htmlFor="tableStatusFilter"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Filter by Status
+          </label>
+          <select
+            id="tableStatusFilter"
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#4cb6c3] focus:border-[#4cb6c3]"
+            value={selectedTableStatusFilter}
+            onChange={(e) => setSelectedTableStatusFilter(e.target.value)}
+          >
+            <option value="">All Statuses</option>
+            <option value="Successful">Successful</option>
+            <option value="Failed">Failed</option>
+            <option value="Processing">Processing</option>
+          </select>
         </div>
-        <button
-          onClick={handleAddCharge}
-          className="px-5 py-2 bg-[#4cb6c3] text-white rounded-md hover:bg-[#3a9aa5] transition-colors duration-200 font-medium flex items-center"
-        >
-          <PlusCircle size={20} className="mr-2" /> Add Charge
-        </button>
       </div>
-
-      {/* Earnings Overview with Filters */}
-      <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-        <h3 className="text-xl font-semibold text-[#4cb6c3] mb-4">Earnings Overview</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-          <div>
-            <label htmlFor="filterClient" className="block text-sm font-medium text-gray-700 mb-1">Filter by Client</label>
-            <select
-              id="filterClient"
-              className="w-full p-2 border border-gray-300 rounded-md"
-              value={selectedClientFilter}
-              onChange={(e) => setSelectedClientFilter(e.target.value)}
-            >
-              <option value="">All Clients</option>
-              {clients.map(client => (
-                <option key={client.id} value={client.id}>{client.name}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="filterGender" className="block text-sm font-medium text-gray-700 mb-1">Filter by Gender</label>
-            <select
-              id="filterGender"
-              className="w-full p-2 border border-gray-300 rounded-md"
-              value={selectedGenderFilter}
-              onChange={(e) => setSelectedGenderFilter(e.target.value)}
-            >
-              <option value="">All Genders</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="filterAge" className="block text-sm font-medium text-gray-700 mb-1">Filter by Age</label>
-            <select
-              id="filterAge"
-              className="w-full p-2 border border-gray-300 rounded-md"
-              value={selectedAgeRangeFilter}
-              onChange={(e) => setSelectedAgeRangeFilter(e.target.value)}
-            >
-              <option value="">All Ages</option>
-              <option value="<30">{'< 30'}</option>
-              <option value="30-50">30-50</option>
-              <option value=">50">{'> 50'}</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="filterGoal" className="block text-sm font-medium text-gray-700 mb-1">Filter by Goal</label>
-            <select
-              id="filterGoal"
-              className="w-full p-2 border border-gray-300 rounded-md"
-              value={selectedGoalFilter}
-              onChange={(e) => setSelectedGoalFilter(e.target.value)}
-            >
-              <option value="">All Goals</option>
-              {uniqueGoals.map(goal => <option key={goal} value={goal}>{goal}</option>)}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="filterProgramType" className="block text-sm font-medium text-gray-700 mb-1">Filter by Program Type</label>
-            <select
-              id="filterProgramType"
-              className="w-full p-2 border border-gray-300 rounded-md"
-              value={selectedProgramTypeFilter}
-              onChange={(e) => setSelectedProgramTypeFilter(e.target.value)}
-            >
-              <option value="">All Program Types</option>
-              {uniqueProgramTypes.map(type => <option key={type} value={type}>{type}</option>)}
-            </select>
-          </div>
-          <div>
-            <label htmlFor="filterDifficulty" className="block text-sm font-medium text-gray-700 mb-1">Filter by Difficulty</label>
-            <select
-              id="filterDifficulty"
-              className="w-full p-2 border border-gray-300 rounded-md"
-              value={selectedDifficultyFilter}
-              onChange={(e) => setSelectedDifficultyFilter(e.target.value)}
-            >
-              <option value="">All Difficulties</option>
-              {uniqueDifficulties.map(diff => <option key={diff} value={diff}>{diff}</option>)}
-            </select>
-          </div>
-        </div>
-
-        <div className="mb-4 text-right">
-          <p className="text-lg font-bold text-green-700">Total Earnings: ${totalEarnings.toFixed(2)}</p>
-        </div>
-
-        <h4 className="text-lg font-semibold text-[#4cb6c3] mb-4">Monthly Earnings Trend</h4>
-        {monthlyEarningsData.length > 0 ? (
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={monthlyEarningsData} margin={{ top: 10, right: 30, left: 0, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
-              <Bar dataKey="earnings" fill="#82ca9d" radius={[5, 5, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        ) : (
-          <p className="text-gray-600 text-center">No earnings data to display for the selected filters.</p>
-        )}
-      </div>
-
-      {/* Revenue by Program Type Chart */}
-      <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-        <h3 className="text-xl font-semibold text-[#4cb6c3] mb-4">Revenue by Service Type</h3>
-        {revenueByTypeData.some(d => d.revenue > 0) ? (
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={revenueByTypeData} margin={{ top: 10, right: 30, left: 0, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip formatter={(value) => `$${value.toFixed(2)}`} />
-              <Legend />
-              <Bar dataKey="revenue" fill="#4cb6c3" radius={[5, 5, 0, 0]} />
-            </BarChart>
-          </ResponsiveContainer>
-        ) : (
-          <p className="text-gray-600 text-center">No revenue data by type to display for the selected filters.</p>
-        )}
-      </div>
-
-      {/* All Charges Table */}
-      <div className="bg-white rounded-xl shadow-md p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-xl font-semibold text-[#4cb6c3]">All Charges</h3>
-          <div className="w-48">
-            <label htmlFor="tableStatusFilter" className="block text-sm font-medium text-gray-700 mb-1">Filter by Status</label>
-            <select
-              id="tableStatusFilter"
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-[#4cb6c3] focus:border-[#4cb6c3]"
-              value={selectedTableStatusFilter}
-              onChange={(e) => setSelectedTableStatusFilter(e.target.value)}
-            >
-              <option value="">All Statuses</option>
-              <option value="Successful">Successful</option>
-              <option value="Failed">Failed</option>
-              <option value="Processing">Processing</option>
-            </select>
-          </div>
-        </div>
-        {tableFilteredCharges.length > 0 ? (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+      {loading ? (
+        <p className="text-gray-600">Loading...</p>
+      ) : error ? (
+        <p className="text-red-600">{error}</p>
+      ) : tableFilteredCharges.length > 0 ? (
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Date
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Description
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Amount
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {tableFilteredCharges.map((charge, idx) => (
+                <tr key={charge.ID || charge.id || idx}>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    {excelSerialDateToISO(charge.dateCreated || charge.date)}
+                  </td>
+                  <td className="px-6 py-4 whitespace-normal text-sm text-gray-700">
+                    {charge.description}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                        charge.Status || charge.status
+                      )}`}
+                    >
+                      {charge.Status || charge.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-right">
+                    ${Number(charge.amount).toFixed(2)}
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {tableFilteredCharges.map(charge => (
-                  <tr key={charge.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{charge.date}</td>
-                    <td className="px-6 py-4 whitespace-normal text-sm text-gray-700">{charge.description}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(getChargeStatus(charge))}`}>
-                        {getChargeStatus(charge)}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-right">${charge.amount.toFixed(2)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <p className="text-gray-600">No charges match the selected filters.</p>
-        )}
-      </div>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <p className="text-gray-600">No charges match the selected filters.</p>
+      )}
     </div>
   );
 };
 
-export default Monetization;
+export default AllCharges;
