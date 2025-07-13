@@ -108,7 +108,6 @@ const ImageUpload = ({ src, alt, onUpload, className, label }) => {
 const ProfileEditor = () => {
   const [name, setName] = useState("Ashley Thompson");
   const [servicePrice, setServicePrice] = useState("£50");
-
   const [title, setTitle] = useState("Feel strong, capable, and confident in your body.");
   const [bio, setBio] = useState("I help women reconnect with their bodies through evidence-based physiotherapy and personalized training. My approach combines movement science with compassionate care to help you feel stronger, more confident, and in control of your wellness journey.");
   const [location, setLocation] = useState("London, UK");
@@ -123,14 +122,15 @@ const ProfileEditor = () => {
   ]);
   const [philosophy, setPhilosophy] = useState("Sustainable results come from empowering women with knowledge, building strength progressively, and creating lasting habits that support long-term wellness.");
   const [testimonials, setTestimonials] = useState([
-    "\"Ashley helped me feel stronger after my second baby. Her postpartum program was exactly what I needed.\" â€“ Sarah L.",
-    "\"I no longer fear movement. Ashley's rehab approach gave me confidence to get back to activities I love.\" â€“ Jen M."
+    "\"Ashley helped me feel stronger after my second baby. Her postpartum program was exactly what I needed.\" – Sarah L.",
+    "\"I no longer fear movement. Ashley's rehab approach gave me confidence to get back to activities I love.\" – Jen M."
   ]);
+  // Social media URLs are blank by default
   const [socialMedia, setSocialMedia] = useState({
-    facebook: "https://facebook.com/ashleythompsonphysio",
-    instagram: "https://instagram.com/ashleythompsonphysio",
-    twitter: "https://twitter.com/ashleythompsonphysio",
-    linkedin: "https://linkedin.com/in/ashleythompsonphysio"
+    facebook: "",
+    instagram: "",
+    twitter: "",
+    linkedin: ""
   });
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -187,9 +187,7 @@ const ProfileEditor = () => {
       <div className="max-w-4xl mx-auto p-6">
         {/* Header with Profile Preview */}
         <div className="bg-white rounded-xl shadow-sm mb-6 overflow-hidden">
-          {/* Cover Area */}
           <div className="bg-gradient-to-r from-blue-500 to-purple-600 h-32"></div>
-          {/* Profile Header - NON-EDITABLE DISPLAY ONLY */}
           <div className="px-6 pb-6">
             <div className="flex items-start -mt-16 mb-4">
               <div className="text-center">
@@ -200,7 +198,6 @@ const ProfileEditor = () => {
                   className="w-32 h-32 rounded-full border-4 border-white object-cover"
                   label="Profile Photo"
                 />
-                {/* Location below profile pic - DISPLAY ONLY */}
                 <div className="flex items-center justify-center mt-2 text-gray-600">
                   <MapPin size={14} className="mr-1" />
                   <span className="text-sm">{location}</span>
@@ -209,7 +206,6 @@ const ProfileEditor = () => {
               <div className="ml-6 mt-16 flex-1">
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
-                    {/* Name - DISPLAY ONLY */}
                     <h1 className="text-2xl font-bold text-gray-900">{name}</h1>
                   </div>
                   <div className="flex items-center gap-2">
@@ -235,7 +231,6 @@ const ProfileEditor = () => {
                     )}
                   </div>
                 </div>
-                {/* Title - DISPLAY ONLY */}
                 <p className="text-lg text-gray-700 font-medium mt-2">{title}</p>
               </div>
             </div>
@@ -244,7 +239,7 @@ const ProfileEditor = () => {
 
         {/* Editor Sections */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          {/* Basic Information - THE ONLY PLACE TO EDIT NAME, TITLE, LOCATION */}
+          {/* Basic Information */}
           <div className="bg-white rounded-xl shadow-sm p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
               <User className="mr-2" size={20} />
@@ -298,27 +293,31 @@ const ProfileEditor = () => {
                 label="Upload your brand logo"
               />
             </div>
-
-            {/* Social Media Section */}
             <div className="text-center">
               <h3 className="text-lg font-medium text-gray-900 mb-2">Connect With Me</h3>
               <p className="text-sm text-gray-600 mb-4">Stay updated with my latest tips, success stories, and wellness insights across all platforms</p>
-
               <div className="flex justify-center gap-3 mb-4">
-                <a href={socialMedia.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 transition-colors">
-                  <Facebook size={18} />
-                </a>
-                <a href={socialMedia.instagram} target="_blank" rel="noopener noreferrer" className="p-2 bg-pink-100 text-pink-600 rounded-full hover:bg-pink-200 transition-colors">
-                  <Instagram size={18} />
-                </a>
-                <a href={socialMedia.twitter} target="_blank" rel="noopener noreferrer" className="p-2 bg-blue-100 text-blue-500 rounded-full hover:bg-blue-200 transition-colors">
-                  <Twitter size={18} />
-                </a>
-                <a href={socialMedia.linkedin} target="_blank" rel="noopener noreferrer" className="p-2 bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-colors">
-                  <Linkedin size={18} />
-                </a>
+                {socialMedia.facebook && (
+                  <a href={socialMedia.facebook} target="_blank" rel="noopener noreferrer" className="p-2 bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 transition-colors">
+                    <Facebook size={18} />
+                  </a>
+                )}
+                {socialMedia.instagram && (
+                  <a href={socialMedia.instagram} target="_blank" rel="noopener noreferrer" className="p-2 bg-pink-100 text-pink-600 rounded-full hover:bg-pink-200 transition-colors">
+                    <Instagram size={18} />
+                  </a>
+                )}
+                {socialMedia.twitter && (
+                  <a href={socialMedia.twitter} target="_blank" rel="noopener noreferrer" className="p-2 bg-blue-100 text-blue-500 rounded-full hover:bg-blue-200 transition-colors">
+                    <Twitter size={18} />
+                  </a>
+                )}
+                {socialMedia.linkedin && (
+                  <a href={socialMedia.linkedin} target="_blank" rel="noopener noreferrer" className="p-2 bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-colors">
+                    <Linkedin size={18} />
+                  </a>
+                )}
               </div>
-
               <div className="space-y-2">
                 <EditableText
                   label="Facebook URL"
@@ -365,7 +364,6 @@ const ProfileEditor = () => {
               placeholder="List your qualifications, certifications, and professional memberships..."
             />
           </div>
-
           {/* Specialties */}
           <div className="bg-white rounded-xl shadow-sm p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
@@ -411,7 +409,6 @@ const ProfileEditor = () => {
           </div>
         </div>
 
-
         {/* Philosophy & Testimonials */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* Philosophy */}
@@ -428,7 +425,6 @@ const ProfileEditor = () => {
               placeholder="Share your professional philosophy and approach..."
             />
           </div>
-
           {/* Testimonials */}
           <div className="bg-white rounded-xl shadow-sm p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
@@ -489,7 +485,6 @@ const ProfileEditor = () => {
               </div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">Profile Published!</h2>
               <p className="text-gray-600 mb-6">Your professional profile is now live and ready to share.</p>
-
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <div className="text-sm text-gray-600 mb-2">Your Profile URL:</div>
                 <div className="flex items-center gap-2">
@@ -507,7 +502,6 @@ const ProfileEditor = () => {
                   </button>
                 </div>
               </div>
-
               <div className="flex gap-3">
                 <a
                   href={profileUrl}
