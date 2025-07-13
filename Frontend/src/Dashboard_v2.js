@@ -52,7 +52,7 @@ const Dashboard_v2 = ({ onPatientClick }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch('https://prod-08.uksouth.logic.azure.com:443/workflows/62834f9020f246e093b95f32a7f23a45/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=ChqHsiDF1WDBn0X2ZBQ0lWFivpIuXa7lMILRSh_GbEc', {
+      const response = await fetch('https://prod-32.uksouth.logic.azure.com:443/workflows/d84cb30b31564a54a14df0c4467f4b93/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=RIDM84vImCGaHu71_rHkj5jgoXy6LSaxprx99LAM0b4', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: "100001" })
