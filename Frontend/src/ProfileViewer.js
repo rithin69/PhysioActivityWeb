@@ -48,15 +48,11 @@ export default function ProfileViewer() {
         </p>
         <h1 className="text-5xl font-extrabold mb-4 drop-shadow-md">{profile.name}</h1>
         <p className="text-2xl mb-6 font-medium text-yellow-300">{profile.title}</p>
-        
-        {/* Years of Experience */}
         {profile.experience && (
           <div className="bg-white/20 backdrop-blur-sm rounded-xl px-6 py-3 inline-block mb-6">
             <p className="text-lg font-semibold">{profile.experience} of Experience</p>
           </div>
         )}
-
-        {/* Brand Logo - Made Even Bigger */}
         {profile.logo && (
           <img
             src={profile.logo}
@@ -64,8 +60,6 @@ export default function ProfileViewer() {
             className="absolute top-6 right-8 w-48 h-36 object-contain drop-shadow-lg bg-white/10 backdrop-blur-sm rounded-lg p-4"
           />
         )}
-
-        {/* Social Media Icons */}
         {profile.socialMedia && (
           <div className="mt-8">
             <h3 className="text-lg font-medium mb-4">Connect With Me</h3>
@@ -116,7 +110,7 @@ export default function ProfileViewer() {
         )}
       </section>
 
-      {/* About Me Section - Removed Red Background */}
+      {/* About Me Section */}
       <section className="text-center py-24 px-6 bg-gradient-to-br from-blue-50 to-purple-50">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-extrabold mb-6 text-[#104378]">Hi, I'm {profile.name}</h2>
@@ -133,7 +127,6 @@ export default function ProfileViewer() {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16 text-[#104378]">Professional Credentials</h2>
           <div className="grid md:grid-cols-2 gap-12">
-            {/* Accreditations */}
             {profile.accreditations && (
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl shadow-lg">
                 <div className="flex items-center mb-4">
@@ -143,8 +136,6 @@ export default function ProfileViewer() {
                 <p className="text-gray-700 leading-relaxed text-lg">{profile.accreditations}</p>
               </div>
             )}
-
-            {/* Specialties */}
             {profile.specialties && (
               <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-2xl shadow-lg">
                 <div className="flex items-center mb-4">
@@ -158,28 +149,25 @@ export default function ProfileViewer() {
         </div>
       </section>
       {profile.services?.length > 0 && (
-  <section className="bg-gradient-to-br from-[#d0f0f7] via-[#f7faff] to-[#ffffff] py-24 px-6">
-    <div className="max-w-6xl mx-auto text-center">
-      <h2 className="text-4xl font-bold mb-14 text-[#104378]">What I Offer</h2>
-      <div className="flex justify-center">
-        <div className="bg-white p-8 rounded-2xl shadow-xl border-l-8 border-[#4cb6c3] max-w-xl w-full">
-          {(() => {
-            const [title, ...desc] = profile.services[0].split(":");
-            return (
-              <>
-                <h3 className="text-2xl font-bold mb-4 text-[#104378]">{title.trim()}</h3>
-                <p className="text-gray-700 leading-relaxed text-lg">{desc.join(":").trim()}</p>
-              </>
-            );
-          })()}
-        </div>
-      </div>
-    </div>
-  </section>
-)}
-
-
-      {/* Philosophy Section */}
+        <section className="bg-gradient-to-br from-[#d0f0f7] via-[#f7faff] to-[#ffffff] py-24 px-6">
+          <div className="max-w-6xl mx-auto text-center">
+            <h2 className="text-4xl font-bold mb-14 text-[#104378]">What I Offer</h2>
+            <div className="flex justify-center">
+              <div className="bg-white p-8 rounded-2xl shadow-xl border-l-8 border-[#4cb6c3] max-w-xl w-full">
+                {(() => {
+                  const [title, ...desc] = profile.services[0].split(":");
+                  return (
+                    <>
+                      <h3 className="text-2xl font-bold mb-4 text-[#104378]">{title.trim()}</h3>
+                      <p className="text-gray-700 leading-relaxed text-lg">{desc.join(":").trim()}</p>
+                    </>
+                  );
+                })()}
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
       {profile.philosophy && (
         <section className="py-24 px-6 bg-white">
           <div className="max-w-4xl mx-auto text-center">
@@ -193,8 +181,6 @@ export default function ProfileViewer() {
           </div>
         </section>
       )}
-
-      {/* Testimonials */}
       {profile.testimonials?.length > 0 && (
         <section className="bg-gradient-to-br from-[#fdf6f9] via-[#f1f8ff] to-[#e3f2fd] py-24 px-6">
           <div className="max-w-5xl mx-auto text-center">
@@ -222,15 +208,12 @@ export default function ProfileViewer() {
           </div>
         </section>
       )}
-
-      {/* CTA Footer - Simplified */}
       <section className="text-center py-24 px-6 bg-[#104378] text-white">
         <div className="max-w-4xl mx-auto">
           <h3 className="text-4xl font-bold mb-6">Ready to Start Your Journey?</h3>
           <p className="text-xl mb-8 leading-relaxed opacity-90">
             {profile.ctaText || "Take the first step towards a healthier, stronger you. Let's work together to achieve your wellness goals."}
           </p>
-
           <div className="mt-12 pt-8 border-t border-blue-400">
             <p className="text-lg opacity-90">
               Powered by <span className="font-bold">PhysioActivity</span>
