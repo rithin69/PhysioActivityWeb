@@ -63,7 +63,7 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: ${{ secrets.AZURE_CREDENTIALSV2 }}
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
@@ -71,4 +71,4 @@ jobs:
         with:
           app-name: 'physioactivity-master'
           slot-name: 'Production'
-          package: . # Update this path after inspecting the artifact structure
+          package: . # Update this path after inspecting the artifact Structure
