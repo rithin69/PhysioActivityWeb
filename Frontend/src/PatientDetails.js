@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Activity, Heart, TrendingUp } from 'lucide-react';
+import ProgramsTab from './ProgramsTab'; // ← Import it here
 
 const PatientDetails = ({ userId, onBack }) => {
   const [patient, setPatient] = useState(null);
@@ -133,7 +134,7 @@ const PatientDetails = ({ userId, onBack }) => {
         )}
         {activeTab === 'Programs' && (
           <div>
-            <div className="text-gray-600">No program data available.</div>
+            <ProgramsTab userId={userId} />
           </div>
         )}
       </div>
