@@ -136,8 +136,11 @@ const ProfileEditor = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [profileUrl, setProfileUrl] = useState("");
   const [isPublished, setIsPublished] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handlePublish = async () => {
+    setIsLoading(true);
+    
     const profile = {
       name,
       title,
@@ -157,6 +160,7 @@ const ProfileEditor = () => {
     };
 
     try {
+      // Step 1: Send profile data and get the profile URL
       const response = await fetch("https://prod-21.uksouth.logic.azure.com:443/workflows/ec195a72fd3a45a6839ecce2fb2f8c40/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Sy9RnMnNvTOxCzXAD2cq6PtXo-jE4hrbctx6hm5pqbw", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -164,16 +168,37 @@ const ProfileEditor = () => {
       });
 
       const result = await response.json();
+      
       if (result.url) {
         setProfileUrl(result.url);
         setIsPublished(true);
+        
+        // Step 2: Send the profile URL back to save it in the blob
+        const urlSaveResponse = await fetch("https://prod-21.uksouth.logic.azure.com:443/workflows/ec195a72fd3a45a6839ecce2fb2f8c40/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Sy9RnMnNvTOxCzXAD2cq6PtXo-jE4hrbctx6hm5pqbw", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...profile,
+            profileUrl: result.url,
+            action: "saveUrl"
+          }),
+        });
+
+        if (urlSaveResponse.ok) {
+          console.log("Profile URL saved successfully");
+        } else {
+          console.warn("Profile created but URL save failed");
+        }
+        
         setModalOpen(true);
       } else {
         alert("Failed to get profile URL");
       }
     } catch (err) {
       console.error("Upload error:", err);
-      alert("Upload failed.");
+      alert("Upload failed: " + err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -209,7 +234,7 @@ const ProfileEditor = () => {
                     <h1 className="text-2xl font-bold text-gray-900">{name}</h1>
                   </div>
                   <div className="flex items-center gap-2">
-                    {isPublished && (
+                    {isPublished && profileUrl && (
                       <button
                         onClick={copyToClipboard}
                         className="flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors"
@@ -466,9 +491,10 @@ const ProfileEditor = () => {
         <div className="text-center">
           <button
             onClick={handlePublish}
-            className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+            disabled={isLoading}
+            className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isPublished ? 'Update Profile' : 'Publish Profile'}
+            {isLoading ? 'Publishing...' : (isPublished ? 'Update Profile' : 'Publish Profile')}
           </button>
         </div>
       </div>
@@ -483,7 +509,9 @@ const ProfileEditor = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Profile Published!</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                {isPublished ? 'Profile Updated!' : 'Profile Published!'}
+              </h2>
               <p className="text-gray-600 mb-6">Your professional profile is now live and ready to share.</p>
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
                 <div className="text-sm text-gray-600 mb-2">Your Profile URL:</div>
