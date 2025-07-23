@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Calendar, FileText, Send, CheckCircle, AlertCircle } from 'lucide-react';
 
 const ProgramsTab = ({ userId }) => {
   const [date, setDate] = useState('');
@@ -30,15 +31,15 @@ const ProgramsTab = ({ userId }) => {
       );
 
       if (response.ok) {
-        setMessage('✅ Submitted successfully!');
+        setMessage('success');
         setDate('');
         setText('');
         setType('Assessment');
       } else {
-        setMessage('❌ Submission failed. Please try again.');
+        setMessage('error');
       }
     } catch (err) {
-      setMessage('❌ Error submitting your program.');
+      setMessage('error');
       console.error(err);
     } finally {
       setSubmitting(false);
@@ -46,31 +47,34 @@ const ProgramsTab = ({ userId }) => {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold text-teal-600 mb-6">Programs</h1>
-      <form
-        onSubmit={handleSubmit}
-        className="max-w-2xl bg-white rounded-lg shadow-md p-6 space-y-6"
-        autoComplete="off"
-      >
+    <div className="max-w-2xl">
+      <div className="mb-6">
+        <h3 className="text-xl font-semibold text-gray-900 mb-2">Create Program Entry</h3>
+        <p className="text-gray-600">Add assessments and recommendations for this patient.</p>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-sm font-medium mb-1">Date</label>
-          {/* Use type="date" for the browser picker, placeholder not visible in most browsers for date inputs */}
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Date
+          </label>
           <input
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="w-full border border-gray-300 rounded px-4 py-2 text-lg"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Type</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Type
+          </label>
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="w-full border border-gray-300 rounded px-4 py-2 text-lg"
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500"
             required
           >
             <option value="Assessment">Assessment</option>
@@ -79,29 +83,57 @@ const ProgramsTab = ({ userId }) => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Text</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Notes
+          </label>
           <textarea
             value={text}
             onChange={(e) => setText(e.target.value)}
             rows={6}
-            className="w-full border border-gray-300 rounded px-4 py-2 text-lg"
-            placeholder="Write your notes here..."
+            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-none"
+            placeholder="Enter your notes here..."
             required
           />
         </div>
 
-        <div className="flex justify-end pt-2">
+        <div className="flex justify-end">
           <button
             type="submit"
             disabled={submitting}
-            className="bg-teal-600 hover:bg-teal-700 text-white px-8 py-2 rounded-md text-lg font-semibold disabled:opacity-50"
+            className="inline-flex items-center px-6 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors"
           >
-            {submitting ? 'Submitting...' : 'Submit'}
+            {submitting ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
+                Submitting...
+              </>
+            ) : (
+              <>
+                <Send className="w-4 h-4 mr-2" />
+                Submit
+              </>
+            )}
           </button>
         </div>
 
         {message && (
-          <div className="pt-2 text-base font-medium text-teal-700">{message}</div>
+          <div className={`flex items-center p-3 rounded-lg ${
+            message === 'success'
+              ? 'bg-green-50 text-green-800 border border-green-200'
+              : 'bg-red-50 text-red-800 border border-red-200'
+          }`}>
+            {message === 'success' ? (
+              <>
+                <CheckCircle className="w-5 h-5 mr-2" />
+                Successfully submitted!
+              </>
+            ) : (
+              <>
+                <AlertCircle className="w-5 h-5 mr-2" />
+                Submission failed. Please try again.
+              </>
+            )}
+          </div>
         )}
       </form>
     </div>

@@ -73,9 +73,15 @@ const Dashboard_v2 = () => {
   };
 
   const getProgressColor = (pct) => {
-    if (pct >= 90) return 'bg-green-500';
-    if (pct >= 70) return 'bg-yellow-500';
-    return 'bg-red-500';
+    if (pct >= 90) return 'bg-gradient-to-r from-green-400 to-green-600';
+    if (pct >= 70) return 'bg-gradient-to-r from-yellow-400 to-orange-500';
+    return 'bg-gradient-to-r from-red-400 to-red-600';
+  };
+
+  const getProgressBorderColor = (pct) => {
+    if (pct >= 90) return 'border-green-200';
+    if (pct >= 70) return 'border-yellow-200';
+    return 'border-red-200';
   };
 
   if (selectedUserId) {
@@ -84,8 +90,6 @@ const Dashboard_v2 = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen p-6 max-w-7xl" style={{ marginLeft: '0' }}>
-      {/* <h1 className="text-3xl font-bold text-teal-600 mb-6"></h1> */}
-
       {/* App Download Instructions */}
       <div className="mb-6 max-w-3xl pt-16">
         <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-lg p-4">
@@ -110,7 +114,6 @@ const Dashboard_v2 = () => {
       <div className="mb-8 max-w-5xl">
         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
           <div className="flex items-center space-x-2 mb-4">
-            {/* <Info className="w-5 h-5 text-teal-600" /> */}
             <h2 className="text-xl font-semibold text-gray-800">Enter Sharing Code</h2>
           </div>
           <div className="flex gap-4">
@@ -141,7 +144,7 @@ const Dashboard_v2 = () => {
       </div>
 
       {/* Patient Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {clients.map((client, idx) => {
           const pct = client.ActivityTarget
             ? Math.round((parseInt(client.ActivityAchieved) / parseInt(client.ActivityTarget)) * 100)
@@ -151,32 +154,91 @@ const Dashboard_v2 = () => {
             <div
               key={client.ID}
               onClick={() => setSelectedUserId(client.ID)}
-              className="bg-white rounded-lg p-6 cursor-pointer hover:shadow-md transition"
+              className={`
+                relative bg-white rounded-2xl p-6 cursor-pointer transition-all duration-300 
+                border-2 border-gray-100 hover:border-teal-200 
+                shadow-lg hover:shadow-2xl transform hover:-translate-y-2
+                before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br 
+                before:from-white before:via-gray-50 before:to-gray-100 before:opacity-50
+                hover:before:from-teal-50 hover:before:via-blue-50 hover:before:to-indigo-50
+                ${getProgressBorderColor(pct)} hover:border-opacity-60
+                backdrop-blur-sm
+              `}
             >
-              <div className="flex flex-col items-center">
-                <div className="w-16 h-16 rounded-full bg-teal-500 text-white flex items-center justify-center text-xl font-bold">
-                  {getInitials(client.clientName)}
-                </div>
-                <h3 className="mt-3 text-lg font-semibold">{client.clientName}</h3>
-                <p className="text-sm text-gray-500 mb-2">{client.Goal}</p>
-              </div>
+              {/* Decorative corner accent */}
+              <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-br from-teal-100 to-transparent rounded-bl-3xl rounded-tr-2xl opacity-30"></div>
+              
+              {/* Progress indicator dot */}
+              <div className={`absolute top-4 right-4 w-3 h-3 rounded-full ${pct >= 90 ? 'bg-green-400' : pct >= 70 ? 'bg-yellow-400' : 'bg-red-400'} shadow-sm`}></div>
 
-              <div className="space-y-2 text-sm text-gray-600 mt-4">
-                <div className="flex items-center">
-                  <Activity className="w-4 h-4 mr-2 text-teal-500" />
-                  Steps: {client.ActivityAchieved}
+              <div className="relative z-10">
+                <div className="flex flex-col items-center mb-6">
+                  <div className="relative">
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 text-white flex items-center justify-center text-2xl font-bold shadow-lg ring-4 ring-teal-100">
+                      {getInitials(client.clientName)}
+                    </div>
+                    {/* Online status indicator */}
+                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-400 rounded-full border-3 border-white shadow-sm flex items-center justify-center">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                  </div>
+                  <h3 className="mt-4 text-xl font-bold text-gray-800 text-center">{client.clientName}</h3>
+                  <p className="text-sm text-gray-500 text-center mt-1 px-2 py-1 bg-gray-50 rounded-full border">
+                    {client.Goal}
+                  </p>
                 </div>
-                <div className="flex items-center">
-                  <Heart className="w-4 h-4 mr-2 text-teal-500" />
-                  Recovery: {client.RecoveryScore}
+
+                {/* Stats Section */}
+                <div className="space-y-3 mb-4">
+                  <div className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200">
+                    <div className="flex items-center">
+                      <div className="p-2 bg-teal-100 rounded-lg mr-3">
+                        <Activity className="w-4 h-4 text-teal-600" />
+                      </div>
+                      <span className="text-sm font-medium text-gray-700">Steps</span>
+                    </div>
+                    <span className="text-lg font-bold text-gray-800">{client.ActivityAchieved}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200">
+                    <div className="flex items-center">
+                      <div className="p-2 bg-red-100 rounded-lg mr-3">
+                        <Heart className="w-4 h-4 text-red-600" />
+                      </div>
+                      <span className="text-sm font-medium text-gray-700">Recovery</span>
+                    </div>
+                    <span className="text-lg font-bold text-gray-800">{client.RecoveryScore}</span>
+                  </div>
+
+                  <div className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border border-gray-200">
+                    <div className="flex items-center">
+                      <div className="p-2 bg-blue-100 rounded-lg mr-3">
+                        <TrendingUp className="w-4 h-4 text-blue-600" />
+                      </div>
+                      <span className="text-sm font-medium text-gray-700">Performance</span>
+                    </div>
+                    <span className="text-lg font-bold text-gray-800">{client.PerfScore}</span>
+                  </div>
                 </div>
-                <div className="flex items-center">
-                  <TrendingUp className="w-4 h-4 mr-2 text-teal-500" />
-                  Perf: {client.PerfScore}
+
+                {/* Progress Bar */}
+                <div className="mt-6">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium text-gray-600">Progress</span>
+                    <span className="text-sm font-bold text-gray-800">{pct}%</span>
+                  </div>
+                  <div className="h-3 rounded-full bg-gray-200 border border-gray-300 overflow-hidden shadow-inner">
+                    <div 
+                      className={`h-full rounded-full ${getProgressColor(pct)} shadow-sm transition-all duration-500 ease-out`} 
+                      style={{ width: `${pct}%` }}
+                    >
+                      <div className="h-full bg-gradient-to-r from-white/20 to-transparent rounded-full"></div>
+                    </div>
+                  </div>
                 </div>
-                <div className="h-2 rounded-full w-full bg-gray-200 mt-2">
-                  <div className={`h-2 rounded-full ${getProgressColor(pct)}`} style={{ width: `${pct}%` }} />
-                </div>
+
+                {/* Bottom accent line */}
+                <div className="absolute bottom-0 left-6 right-6 h-1 bg-gradient-to-r from-teal-200 via-blue-200 to-indigo-200 rounded-full opacity-60"></div>
               </div>
             </div>
           );
