@@ -65,7 +65,7 @@ const Navbar = ({ isSidebarExpanded }) => {
       })
         .then(response => response.json())
         .then(data => {
-          console.log('Token exchange response:', data);
+          console.log('Token Exchange response:', data);
           // Handle the response (e.g., save tokens, redirect user, etc.)
         })
         .catch(error => {
