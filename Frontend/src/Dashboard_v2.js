@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Activity, Clock, Heart, TrendingUp, Users } from 'lucide-react';
+import { Activity, Clock, Heart, TrendingUp, Users, Info } from 'lucide-react';
 import PatientDetails from './PatientDetails';
 
 const Dashboard_v2 = () => {
@@ -83,33 +83,60 @@ const Dashboard_v2 = () => {
   }
 
   return (
-    <div className="bg-gray-50 min-h-screen p-6 mx-auto max-w-7xl">
-      <h1 className="text-3xl font-bold text-teal-600 mb-6">Welcome, Sarah!</h1>
+    <div className="bg-gray-50 min-h-screen p-6 max-w-7xl" style={{ marginLeft: '0' }}>
+      {/* <h1 className="text-3xl font-bold text-teal-600 mb-6"></h1> */}
+
+      {/* App Download Instructions */}
+      <div className="mb-6 max-w-3xl pt-16">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-lg p-4">
+          <div className="flex items-start space-x-3">
+            <div className="flex-shrink-0">
+              <Info className="w-5 h-5 text-blue-600 mt-0.5" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-sm font-semibold text-blue-900 mb-1">
+                Get Started with Our Mobile App
+              </h3>
+              <p className="text-sm text-blue-700 leading-relaxed">
+                Download our mobile app to generate your unique sharing code. Once installed, 
+                open the app, navigate to settings, and find your personal sharing code to enter below.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Sharing Code */}
-      <div className="mb-8 max-w-3xl">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold mb-4">Enter Sharing Code</h2>
+      <div className="mb-8 max-w-5xl">
+        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div className="flex items-center space-x-2 mb-4">
+            {/* <Info className="w-5 h-5 text-teal-600" /> */}
+            <h2 className="text-xl font-semibold text-gray-800">Enter Sharing Code</h2>
+          </div>
           <div className="flex gap-4">
             <input
               type="text"
-              placeholder="Sharing Code"
+              placeholder="Enter your sharing code from the app"
               value={sharingCode}
               onChange={(e) => {
                 setSharingCode(e.target.value);
                 setFetchError('');
               }}
-              className="flex-grow border border-gray-300 rounded px-4 py-2"
+              className="flex-grow border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all duration-200 text-gray-700 placeholder-gray-500"
             />
             <button
               onClick={handleFetchUserId}
               disabled={isLoading || !sharingCode.trim()}
-              className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700"
+              className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed transition-all duration-200 font-medium shadow-sm hover:shadow-md"
             >
               {isLoading ? 'Loading...' : 'Enter'}
             </button>
           </div>
-          {fetchError && <p className="text-red-600 mt-2">{fetchError}</p>}
+          {fetchError && (
+            <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-700 text-sm font-medium">{fetchError}</p>
+            </div>
+          )}
         </div>
       </div>
 
