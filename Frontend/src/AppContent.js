@@ -16,7 +16,7 @@ import Monetization from './Monetization';
 import Lab from './Lab';
 import Dashboard from './Dashboard';
 import Otherprofidashboard from './Otherprofidashboard';
-
+import Library from './Library';
 import PhysioDashboard from './PhysioDashboard';
 // import ProfileViewer from './ProfileViewer';
 const AppContent = () => {
@@ -86,6 +86,7 @@ const AppContent = () => {
             <Route path="/connectors" element={<Connector />} />
             <Route path="/monetization" element={<Monetization />} />
             <Route path="/lab" element={<Lab />} />
+            <Route path="/library" element={<Library/>} />
             {/* <Route path="/settings" element={<Settings />} /> */}
             {/* <Route path="/exercise" element={<Exercise />} /> */}
             <Route path="/profile/:id" element={<ProfileViewer />} />
