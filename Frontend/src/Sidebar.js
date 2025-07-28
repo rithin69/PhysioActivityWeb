@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';  // Import the hook to access the role
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTachometerAlt, faUserFriends, faUser, faBook, faPlug, faFlask,faDollarSign,faVideo  } from '@fortawesome/free-solid-svg-icons';
+import { faTachometerAlt, faUserFriends, faUser, faBook, faPlug, faFlask,faDollarSign,faVideo,faBullseye } from '@fortawesome/free-solid-svg-icons';
 
 const Sidebar = ({ isExpanded, setIsExpanded }) => {
   const userRole = useSelector((state) => state.role.role);  // Access the current role from the Redux store
@@ -24,6 +24,7 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
           { to: '/monetization', label: 'Revenue', icon: faDollarSign  },
           { to: '/dashboard_v2', label: 'dashboard_v2', icon: faTachometerAlt  },
           { to: '/library', label: 'Library', icon: faVideo },
+          { to: '/goalplan', label: 'Goals & Plans', icon: faBullseye  },
         ];
       case 'Researcher':
         return [

@@ -18,6 +18,7 @@ import Dashboard from './Dashboard';
 import Otherprofidashboard from './Otherprofidashboard';
 import Library from './Library';
 import PhysioDashboard from './PhysioDashboard';
+import GoalPlan from './GoalPlan';
 // import ProfileViewer from './ProfileViewer';
 const AppContent = () => {
   const location = useLocation();
@@ -87,6 +88,8 @@ const AppContent = () => {
             <Route path="/monetization" element={<Monetization />} />
             <Route path="/lab" element={<Lab />} />
             <Route path="/library" element={<Library/>} />
+            <Route path="/GoalPlan" element={<GoalPlan/>} />
+
             {/* <Route path="/settings" element={<Settings />} /> */}
             {/* <Route path="/exercise" element={<Exercise />} /> */}
             <Route path="/profile/:id" element={<ProfileViewer />} />
