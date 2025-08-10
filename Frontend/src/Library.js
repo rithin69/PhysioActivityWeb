@@ -1,326 +1,293 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Video, Plus, Tag, Link, Play, Edit, Trash2, Search } from 'lucide-react';
 
-// Helper function to extract YouTube video ID and generate embed URL/thumbnail
-const getYouTubeInfo = (url) => {
-  if (!url || typeof url !== 'string') {
+// YouTube info function
+function getYouTubeInfo(url) {
+  if (!url) return null;
+  try {
+    console.log('Processing URL:', url);
+    
+    const u = new URL(url);
+    const host = u.hostname.replace('www.', '');
+    
+    let videoId = null;
+    
+    if (host === 'youtube.com' || host === 'm.youtube.com') {
+      videoId = u.searchParams.get('v');
+    } else if (host === 'youtu.be') {
+      videoId = u.pathname.replace('/', '');
+    }
+    
+    console.log('Extracted video ID:', videoId);
+    
+    if (!videoId) return null;
+    
+    const result = {
+      id: videoId,
+      thumbnailUrl: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+    };
+    
+    console.log('Generated YouTube info:', result);
+    return result;
+  } catch (error) {
+    console.error('Error parsing YouTube URL:', url, error);
     return null;
   }
+}
 
-  const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
-  const match = url.match(regExp);
-  const videoId = (match && match[1]) ? match[1] : null;
-  
-  if (videoId) {
-    return {
-      videoId,
-      embedUrl: `https://www.youtube.com/embed/${videoId}`,
-      thumbnailUrl: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
-      watchUrl: `https://www.youtube.com/watch?v=${videoId}`
-    };
-  }
-  return null;
-};
-
-// Video Card Component
+// VideoCard component
 const VideoCard = ({ video, onPlay, onEdit, onDelete }) => {
   const [imageError, setImageError] = useState(false);
-  const youtubeInfo = getYouTubeInfo(video.url);
-  
-  const thumbnailUrl = youtubeInfo?.thumbnailUrl || video.thumbnail;
+  const [imageLoaded, setImageLoaded] = useState(false);
+
+  const handleImageError = () => {
+    console.log('Thumbnail failed to load:', video.thumbnail);
+    setImageError(true);
+  };
+
+  const handleImageLoad = () => {
+    console.log('Thumbnail loaded successfully:', video.thumbnail);
+    setImageLoaded(true);
+  };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition-shadow group">
-      {/* Thumbnail */}
-      <div className="relative aspect-video bg-gray-100">
-        <img 
-          src={imageError ? 'https://via.placeholder.com/320x180/e5e7eb/6b7280?text=Error' : thumbnailUrl}
-          alt={video.title}
-          className="w-full h-full object-cover"
-          onError={() => setImageError(true)}
-        />
-        
-        {/* Overlay controls */}
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all duration-300 flex items-center justify-center">
-          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex space-x-2">
-            <button
-              onClick={() => onPlay(video)}
-              className="p-3 bg-white text-gray-900 rounded-full hover:bg-gray-100 transition-colors shadow-lg"
-              title="Play video"
-            >
-              <Play size={20} />
-            </button>
-            <button
-              onClick={() => onEdit(video)}
-              className="p-3 bg-white text-gray-900 rounded-full hover:bg-gray-100 transition-colors shadow-lg"
-              title="Edit video"
-            >
-              <Edit size={20} />
-            </button>
-            <button
-              onClick={() => onDelete(video.id)}
-              className="p-3 bg-white text-red-600 rounded-full hover:bg-red-50 transition-colors shadow-lg"
-              title="Delete video"
-            >
-              <Trash2 size={20} />
-            </button>
-          </div>
-        </div>
-        
-        {/* Duration badge */}
-        {video.duration && (
-          <div className="absolute bottom-2 right-2 px-2 py-1 bg-black bg-opacity-75 text-white text-xs rounded">
-            {video.duration}
+    <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+      <div className="relative">
+        {video.thumbnail && !imageError ? (
+          <img 
+            src={video.thumbnail} 
+            alt={video.title} 
+            className="w-full h-40 object-cover" 
+            onError={handleImageError}
+            onLoad={handleImageLoad}
+            crossOrigin="anonymous"
+          />
+        ) : (
+          <div className="w-full h-40 bg-gray-100 flex items-center justify-center text-gray-400">
+            <Video size={40} />
+            <div className="absolute bottom-1 left-1 text-xs bg-red-500 text-white px-1 rounded">
+              {video.url ? 'Thumbnail failed' : 'No URL'}
+            </div>
           </div>
         )}
+        <button
+          onClick={() => onPlay(video)}
+          className="absolute bottom-3 right-3 bg-purple-600 text-white rounded-full p-3 hover:bg-purple-700 shadow"
+          title="Play"
+        >
+          <Play size={18} />
+        </button>
       </div>
-      
-      {/* Video info */}
       <div className="p-4">
-        <h3 className="font-semibold text-gray-900 text-sm leading-tight mb-2 line-clamp-2">
-          {video.title}
-        </h3>
-        
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
-          {video.description}
-        </p>
-        
-        {/* Tags */}
-        <div className="flex flex-wrap gap-1">
-          {video.tags?.slice(0, 3).map(tag => (
-            <span key={tag} className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
-              {tag}
+        <h3 className="font-semibold text-gray-800 line-clamp-2">{video.title || 'Untitled'}</h3>
+        <p className="text-sm text-gray-500 mt-1 line-clamp-2">{video.description}</p>
+        <div className="flex flex-wrap gap-2 mt-3">
+          {(video.tags || []).map((t, i) => (
+            <span key={i} className="inline-flex items-center text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded">
+              <Tag size={12} className="mr-1" />
+              {t}
             </span>
           ))}
-          {video.tags?.length > 3 && (
-            <span className="text-xs text-gray-500">+{video.tags.length - 3}</span>
-          )}
+        </div>
+        <div className="flex items-center justify-between mt-4">
+          {/* <button
+            onClick={() => onEdit(video)}
+            className="inline-flex items-center text-gray-600 hover:text-gray-900"
+            title="Edit"
+          >
+            <Edit size={16} className="mr-1" /> Edit
+          </button>
+          <button
+            onClick={() => onDelete(video.id)}
+            className="inline-flex items-center text-red-600 hover:text-red-700"
+            title="Delete"
+          >
+            <Trash2 size={16} className="mr-1" /> Delete
+          </button>
+           */}
         </div>
       </div>
     </div>
   );
 };
 
-// Add Video Modal (keeping your existing modal code)
+// AddVideoModal component
 const AddVideoModal = ({ isOpen, onClose, onAddVideo }) => {
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    url: '',
-    tags: ''
-  });
-  
-  const [errors, setErrors] = useState({});
-  const [previewData, setPreviewData] = useState(null);
+  const [title, setTitle] = useState('');
+  const [url, setUrl] = useState('');
+  const [description, setDescription] = useState('');
+  const [tags, setTags] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
 
-  React.useEffect(() => {
-    if (isOpen) {
-      setFormData({ title: '', description: '', url: '', tags: '' });
-      setErrors({});
-      setPreviewData(null);
+  const WRITE_API_URL = 'https://prod-05.uksouth.logic.azure.com:443/workflows/e727b483ccca45ce8ff8e46903f2e21f/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=MlYrP257QWooRwLDQoPsuDIU24ZeI9dnRIBwLGYdTY0';
+
+  useEffect(() => {
+    if (!isOpen) {
+      setTitle('');
+      setUrl('');
+      setDescription('');
+      setTags('');
+      setIsSubmitting(false);
+      setSubmitError(null);
     }
   }, [isOpen]);
 
-  React.useEffect(() => {
-    if (formData.url) {
-      const youtubeInfo = getYouTubeInfo(formData.url);
-      if (youtubeInfo) {
-        setPreviewData(youtubeInfo);
-      } else {
-        setPreviewData(null);
-      }
-    } else {
-      setPreviewData(null);
-    }
-  }, [formData.url]);
-
-  const handleChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors = {};
-    
-    if (!formData.title.trim()) {
-      newErrors.title = 'Title is required';
-    }
-    
-    if (!formData.url.trim()) {
-      newErrors.url = 'Video URL is required';
-    } else {
-      try {
-        new URL(formData.url);
-      } catch {
-        newErrors.url = 'Please enter a valid URL';
-      }
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    if (!validateForm()) return;
-    
-    const tags = formData.tags
-      .split(',')
-      .map(tag => tag.trim())
-      .filter(tag => tag !== '');
-    
-    const youtubeInfo = getYouTubeInfo(formData.url);
-    
-    const newVideo = {
-      id: `video-${Date.now()}`,
-      title: formData.title.trim(),
-      description: formData.description.trim(),
-      url: formData.url.trim(),
-      tags,
-      thumbnail: youtubeInfo?.thumbnailUrl,
-      dateAdded: new Date().toLocaleDateString(),
-      isYouTube: !!youtubeInfo,
-      duration: ''
-    };
-    
-    onAddVideo(newVideo);
-    onClose();
-  };
-
   if (!isOpen) return null;
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const yt = getYouTubeInfo(url);
+      
+      const excelData = {
+        userId: '100001',       
+        title: title.trim(),        
+        description: description.trim(),  
+        url: url.trim(),            
+        tags: tags.trim()           
+      };
+
+      console.log('Sending data to Excel:', excelData);
+
+      const response = await fetch(WRITE_API_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(excelData)
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Failed to save video: HTTP ${response.status} - ${errorText}`);
+      }
+
+      const result = await response.json();
+      console.log('Excel write response:', result);
+
+      const newVideo = {
+        id: `video-${Date.now()}`,
+        title: title.trim(),
+        description: description.trim(),
+        url: url.trim(),
+        tags: tags
+          .split(',')
+          .map(t => t.trim())
+          .filter(Boolean),
+        thumbnail: yt?.thumbnailUrl || '',
+        dateAdded: new Date().toLocaleDateString(),
+        isYouTube: !!yt,
+        duration: '',
+      };
+
+      onAddVideo(newVideo);
+      onClose();
+
+    } catch (error) {
+      console.error('Error saving video:', error);
+      setSubmitError(error.message || 'Failed to save video to Excel');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <div className="flex items-center">
-            <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mr-3">
-              <Video size={20} className="text-purple-600" />
-            </div>
-            <h2 className="text-xl font-semibold text-gray-900">Add New Exercise Video</h2>
-          </div>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-gray-100 transition-colors"
+    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
+      <div className="bg-white rounded-xl shadow-lg w-full max-w-lg">
+        <div className="flex items-center justify-between p-4 border-b">
+          <h2 className="text-lg font-semibold">Add New Video</h2>
+          <button 
+            onClick={onClose} 
+            className="text-gray-500 hover:text-gray-700"
+            disabled={isSubmitting}
           >
-            <X size={20} className="text-gray-500" />
+            <X size={20} />
           </button>
         </div>
         
-        <form onSubmit={handleSubmit} className="p-6">
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Title *
-            </label>
+        <form onSubmit={handleSubmit} className="p-4 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
             <input
-              type="text"
-              value={formData.title}
-              onChange={(e) => handleChange('title', e.target.value)}
-              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors ${
-                errors.title ? 'border-red-300 bg-red-50' : 'border-gray-300'
-              }`}
-              placeholder="Enter video title"
-            />
-            {errors.title && (
-              <p className="text-red-500 text-sm mt-1 flex items-center">
-                <span className="w-4 h-4 rounded-full bg-red-500 text-white text-xs flex items-center justify-center mr-2">!</span>
-                {errors.title}
-              </p>
-            )}
-          </div>
-
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Description
-            </label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => handleChange('description', e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors resize-none"
-              rows="3"
-              placeholder="Describe the video content"
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="Video title"
+              required
+              disabled={isSubmitting}
             />
           </div>
-
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Video URL (YouTube or Direct Link) *
-            </label>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">URL</label>
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Link size={18} className="text-gray-400" />
-              </div>
+              <Link size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
-                type="url"
-                value={formData.url}
-                onChange={(e) => handleChange('url', e.target.value)}
-                className={`w-full pl-10 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors ${
-                  errors.url ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                }`}
-                placeholder="https://www.youtube.com/watch?v=..."
+                className="w-full border rounded-lg pl-9 pr-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                placeholder="https://..."
+                required
+                disabled={isSubmitting}
               />
             </div>
-            {errors.url && (
-              <p className="text-red-500 text-sm mt-1 flex items-center">
-                <span className="w-4 h-4 rounded-full bg-red-500 text-white text-xs flex items-center justify-center mr-2">!</span>
-                {errors.url}
-              </p>
-            )}
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+              rows={3}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Short description"
+              disabled={isSubmitting}
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Tags (comma separated)</label>
+            <input
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-purple-500"
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
+              placeholder="e.g. legs, mobility"
+              disabled={isSubmitting}
+            />
           </div>
 
-          {previewData && (
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Preview
-              </label>
-              <div className="border border-gray-200 rounded-xl overflow-hidden">
-                <img
-                  src={previewData.thumbnailUrl}
-                  alt="Video preview"
-                  className="w-full h-48 object-cover"
-                  onError={(e) => {
-                    e.target.src = 'https://via.placeholder.com/320x180/e5e7eb/6b7280?text=Preview+Error';
-                  }}
-                />
-              </div>
+          {submitError && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-red-700 text-sm">
+              {submitError}
             </div>
           )}
 
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Tags (comma-separated)
-            </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Tag size={18} className="text-gray-400" />
-              </div>
-              <input
-                type="text"
-                value={formData.tags}
-                onChange={(e) => handleChange('tags', e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
-                placeholder="strength, beginner, upper body"
-              />
-            </div>
-          </div>
-
-          <div className="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+          <div className="flex justify-end gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-3 border border-gray-300 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+              className="px-4 py-2 rounded-lg border text-gray-700 hover:bg-gray-50"
+              disabled={isSubmitting}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-3 bg-purple-600 text-white rounded-xl font-medium hover:bg-purple-700 transition-colors flex items-center"
+              className="px-4 py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700 flex items-center disabled:bg-gray-400 disabled:cursor-not-allowed"
+              disabled={isSubmitting}
             >
-              <Plus size={18} className="mr-2" />
-              Add Video
+              {isSubmitting ? (
+                <>
+                  <div className="animate-spin mr-2 w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
+                  Saving...
+                </>
+              ) : (
+                'Add Video'
+              )}
             </button>
           </div>
         </form>
@@ -329,114 +296,91 @@ const AddVideoModal = ({ isOpen, onClose, onAddVideo }) => {
   );
 };
 
-// Main Library component with MORE top padding to prevent cropping
+// Main Library component - FIXED FIELD MAPPING!
 const Library = () => {
   const [showAddModal, setShowAddModal] = useState(false);
-  const [videos, setVideos] = useState([
-    {
-      id: 'real-1',
-      title: 'Perfect Squat Form - Complete Guide',
-      description: 'Learn proper squat technique with detailed form cues and common mistakes to avoid.',
-      url: 'https://www.youtube.com/watch?v=Dy28eq2PjcM',
-      tags: ['strength', 'legs', 'beginner', 'form'],
-      thumbnail: 'https://img.youtube.com/vi/Dy28eq2PjcM/hqdefault.jpg',
-      dateAdded: '2024-01-15',
-      isYouTube: true,
-      duration: '8:42'
-    },
-    {
-      id: 'real-2',
-      title: '10-Minute Morning Stretch Routine',
-      description: 'Full body stretching routine perfect for starting your day with energy and flexibility.',
-      url: 'https://www.youtube.com/watch?v=g_tea8ZNk5A',
-      tags: ['stretching', 'morning', 'flexibility', 'beginner'],
-      thumbnail: 'https://img.youtube.com/vi/g_tea8ZNk5A/hqdefault.jpg',
-      dateAdded: '2024-01-20',
-      isYouTube: true,
-      duration: '10:15'
-    },
-    {
-      id: 'real-3',
-      title: 'HIIT Cardio Workout - No Equipment',
-      description: 'High-intensity interval training workout that requires no equipment. Burn calories fast!',
-      url: 'https://www.youtube.com/watch?v=ml6cT4AZdqI',
-      tags: ['hiit', 'cardio', 'no-equipment', 'fat-loss'],
-      thumbnail: 'https://img.youtube.com/vi/ml6cT4AZdqI/hqdefault.jpg',
-      dateAdded: '2024-01-25',
-      isYouTube: true,
-      duration: '15:30'
-    },
-    {
-      id: 'real-4',
-      title: 'Push Up Variations for All Levels',
-      description: 'Master different push-up variations from beginner to advanced levels.',
-      url: 'https://www.youtube.com/watch?v=0GsVJsS6474',
-      tags: ['push-ups', 'upper-body', 'strength', 'bodyweight'],
-      thumbnail: 'https://img.youtube.com/vi/0GsVJsS6474/hqdefault.jpg',
-      dateAdded: '2024-02-01',
-      isYouTube: true,
-      duration: '12:20'
-    },
-    {
-      id: 'real-5',
-      title: 'Yoga Flow for Beginners',
-      description: 'Gentle yoga flow perfect for beginners. Improve flexibility and reduce stress.',
-      url: 'https://www.youtube.com/watch?v=v7AYKMP6rOE',
-      tags: ['yoga', 'beginner', 'flexibility', 'relaxation'],
-      thumbnail: 'https://img.youtube.com/vi/v7AYKMP6rOE/hqdefault.jpg',
-      dateAdded: '2024-02-05',
-      isYouTube: true,
-      duration: '20:45'
-    },
-    {
-      id: 'real-6',
-      title: 'Core Strength Workout - 15 Minutes',
-      description: 'Intense core workout to build abdominal strength and stability.',
-      url: 'https://www.youtube.com/watch?v=1919oeGACbE',
-      tags: ['core', 'abs', 'strength', 'intermediate'],
-      thumbnail: 'https://img.youtube.com/vi/1919oeGACbE/hqdefault.jpg',
-      dateAdded: '2024-02-10',
-      isYouTube: true,
-      duration: '15:00'
-    },
-    {
-      id: 'real-7',
-      title: 'Resistance Band Full Body Workout',
-      description: 'Complete full body workout using only resistance bands. Perfect for home or travel.',
-      url: 'https://www.youtube.com/watch?v=6hwUUXJGIGQ',
-      tags: ['resistance-bands', 'full-body', 'home-workout', 'equipment'],
-      thumbnail: 'https://img.youtube.com/vi/6hwUUXJGIGQ/hqdefault.jpg',
-      dateAdded: '2024-02-15',
-      isYouTube: true,
-      duration: '25:30'
-    },
-    {
-      id: 'real-8',
-      title: 'Proper Deadlift Technique',
-      description: 'Learn the fundamentals of deadlifting with proper form and safety tips.',
-      url: 'https://www.youtube.com/watch?v=op9kVnSso6Q',
-      tags: ['deadlift', 'strength', 'form', 'powerlifting'],
-      thumbnail: 'https://img.youtube.com/vi/op9kVnSso6Q/hqdefault.jpg',
-      dateAdded: '2024-02-20',
-      isYouTube: true,
-      duration: '11:15'
-    }
-  ]);
+  const [videos, setVideos] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const handleAddVideo = (newVideo) => {
+  const READ_API_URL =
+    'https://prod-12.uksouth.logic.azure.com:443/workflows/2c67864498554457a3aeb0b9b9998230/triggers/manual/paths/invoke' +
+    '?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0' +
+    '&sig=lMgmbftXayVUeoQRDjHogTikDGevMi6ZPNh2qMfiWPw';
+
+  // FIXED: Now looks for the correct column name "Videourl"
+  const fetchVideos = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const res = await fetch(READ_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: '100001' })
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error ${res.status}`);
+      }
+
+      const data = await res.json();
+      const rows = Array.isArray(data) ? data : [];
+
+      const formatted = rows.map((r, i) => {
+        const title = r.Title ?? r.title ?? '';
+        const description = r.Description ?? r.description ?? '';
+        // 🎯 THE FIX: Now correctly looks for "Videourl" (exact match!)
+        const url = r.Videourl ?? r.VideoUrl ?? r.videoUrl ?? r.Url ?? r.url ?? '';
+        const tagsRaw = r.Tags ?? r.tags ?? '';
+        
+        console.log(`Processing video from Excel: ${title}, URL: ${url}`);
+        
+        // Generate YouTube info for Excel data
+        const yt = url ? getYouTubeInfo(url) : null;
+        
+        return {
+          id: r.ItemInternalId ?? r.Id ?? r.id ?? `video-${i}`,
+          title,
+          description,
+          url,
+          tags: typeof tagsRaw === 'string'
+            ? tagsRaw.split(',').map(t => t.trim()).filter(Boolean)
+            : Array.isArray(tagsRaw) ? tagsRaw : [],
+          thumbnail: yt?.thumbnailUrl || r.Thumbnail || r.thumbnail || '',
+          dateAdded: r.DateAdded || r.dateAdded || new Date().toLocaleDateString(),
+          isYouTube: !!yt,
+          duration: r.Duration || r.duration || ''
+        };
+      });
+
+      console.log('Formatted videos with thumbnails:', formatted);
+      setVideos(formatted);
+    } catch (err) {
+      console.error('Error fetching videos:', err);
+      setError('Failed to load videos.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchVideos();
+  }, []);
+
+  const handleAddVideo = async (newVideo) => {
     setVideos(prev => [...prev, newVideo]);
   };
 
   const handlePlayVideo = (video) => {
-    if (video.isYouTube) {
+    if (video.url) {
       window.open(video.url, '_blank');
     }
   };
 
   const handleEditVideo = (video) => {
     console.log('Edit video:', video);
-    // Implement edit functionality
   };
 
   const handleDeleteVideo = (videoId) => {
@@ -446,14 +390,13 @@ const Library = () => {
   };
 
   const filteredVideos = videos.filter(video =>
-    video.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    video.description.toLowerCase().includes(searchTerm.toLowerCase())
+    (video.title || '').toLowerCase().includes((searchTerm || '').toLowerCase()) ||
+    (video.description || '').toLowerCase().includes((searchTerm || '').toLowerCase())
   );
 
   return (
     <div className="min-h-screen bg-gray-50 pt-16 px-6 pb-6">
       <div className="max-w-7xl mx-auto">
-        {/* Header - increased top padding from pt-8 to pt-16 */}
         <div className="bg-white rounded-xl shadow-sm p-8 mb-6">
           <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
             <div>
@@ -465,7 +408,7 @@ const Library = () => {
                 Manage your collection of exercise videos ({videos.length} videos)
               </p>
             </div>
-            
+
             <button
               onClick={() => setShowAddModal(true)}
               className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 flex items-center font-medium shadow-sm"
@@ -476,7 +419,6 @@ const Library = () => {
           </div>
         </div>
 
-        {/* Search Bar */}
         <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
           <div className="relative">
             <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
@@ -490,8 +432,15 @@ const Library = () => {
           </div>
         </div>
 
-        {/* Video Grid */}
-        {filteredVideos.length > 0 ? (
+        {loading ? (
+          <div className="bg-white rounded-xl shadow-sm p-12 text-center text-gray-500">
+            Loading videos...
+          </div>
+        ) : error ? (
+          <div className="bg-white rounded-xl shadow-sm p-12 text-center text-red-500">
+            {error}
+          </div>
+        ) : filteredVideos.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredVideos.map(video => (
               <VideoCard
@@ -515,7 +464,6 @@ const Library = () => {
           </div>
         )}
 
-        {/* Add Video Modal */}
         <AddVideoModal
           isOpen={showAddModal}
           onClose={() => setShowAddModal(false)}
