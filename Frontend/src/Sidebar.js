@@ -23,7 +23,7 @@ const Sidebar = ({ isExpanded, setIsExpanded }) => {
           { to: '/lab', label: 'Research Labs', icon: faFlask },
           { to: '/monetization', label: 'Revenue', icon: faDollarSign  },
           { to: '/dashboard_v2', label: 'dashboard_v2', icon: faTachometerAlt  },
-          { to: '/library', label: 'Library', icon: faVideo },
+          // { to: '/library', label: 'Library', icon: faVideo },
           { to: '/goals-plans', label: 'Goals & Plans', icon: faBullseye  }, 
         ];
       case 'Researcher':
