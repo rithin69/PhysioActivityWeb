@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, FileText, Send, CheckCircle, AlertCircle, Target, BookOpen, Plus, Save } from 'lucide-react';
 
 const ProgramsTab = ({ userId }) => {
-  // New state for Goals & Plans templates
+  // Updated state for program templates from the new URL
   const [templates, setTemplates] = useState([]);
   const [templatesLoading, setTemplatesLoading] = useState(true);
   const [templatesError, setTemplatesError] = useState(null);
   
-  // New state for program assignment
+  // Program assignment state
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [assignmentDate, setAssignmentDate] = useState('');
   const [assignmentType, setAssignmentType] = useState('Assessment');
@@ -15,18 +15,19 @@ const ProgramsTab = ({ userId }) => {
   const [assignmentSubmitting, setAssignmentSubmitting] = useState(false);
   const [assignmentMessage, setAssignmentMessage] = useState('');
 
-  // URLs for API calls
-  const READ_TEMPLATES_URL = 'https://prod-10.uksouth.logic.azure.com:443/workflows/54232e860fb94f078eb3094f85dc6385/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=qEACM65Dv52-l1uKqYtDOzc1ZrF36XPHL_BSWlJ0bvA';
+  // Updated URL to fetch programs from your new endpoint
+  const READ_PROGRAMS_URL = 'https://prod-12.uksouth.logic.azure.com:443/workflows/2c67864498554457a3aeb0b9b9998230/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=lMgmbftXayVUeoQRDjHogTikDGevMi6ZPNh2qMfiWPw';
+  
   const WRITE_ASSIGNMENT_URL = 'https://prod-38.uksouth.logic.azure.com:443/workflows/1ff55ae4f3fd4fdd99a441b96321cb4f/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=2DEpLbR77vs3qhojeFAYNCtMB4Q4G3_cYwQFf8SG_Uw';
 
-  // Fetch Goals & Plans templates on component mount
+  // Fetch programs from the new URL
   useEffect(() => {
-    const fetchTemplates = async () => {
+    const fetchPrograms = async () => {
       try {
         setTemplatesLoading(true);
         setTemplatesError(null);
 
-        const response = await fetch(READ_TEMPLATES_URL, {
+        const response = await fetch(READ_PROGRAMS_URL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -38,31 +39,35 @@ const ProgramsTab = ({ userId }) => {
           throw new Error(`HTTP error ${response.status}`);
         }
 
-        const data = await response.json();
-        console.log('Templates data received:', data);
+        const text = await response.text();
+        const data = JSON.parse(text || '[]');
+        console.log('Programs data received:', data);
         
         const rows = Array.isArray(data) ? data : [];
 
-        // Map Excel data to template format
-        const formattedTemplates = rows.map((row, index) => ({
-          id: row.ItemInternalId ?? row.Id ?? row.id ?? `template-${index}`,
-          name: row.templateName ?? row.TemplateName ?? row.name ?? 'Untitled Template',
-          description: row.templateDescription ?? row.TemplateDescription ?? row.description ?? 'No description provided',
-          difficulty: row.Difficultylevel ?? row.DifficultyLevel ?? row.difficulty ?? 'Beginner',
+        // Map Excel program data to template format
+        const formattedPrograms = rows.map((row, index) => ({
+          id: row.ItemInternalId ?? row.Id ?? row.id ?? `program-${index}`,
+          name: row.programName ?? row.name ?? 'Untitled Program',
+          description: row.programDescription ?? row.description ?? 'No description provided',
+          difficulty: row.difficulty ?? 'Beginner',
+          goals: row.goals ?? '',
+          selectedAssets: row.selectedAssets ?? '',
+          dateCreated: row.DateCreated ?? row.dateCreated ?? new Date().toLocaleDateString()
         }));
 
-        console.log('Formatted templates:', formattedTemplates);
-        setTemplates(formattedTemplates);
+        console.log('Formatted programs:', formattedPrograms);
+        setTemplates(formattedPrograms);
       } catch (err) {
-        console.error('Error fetching templates:', err);
-        setTemplatesError('Failed to load Goals & Plans templates.');
+        console.error('Error fetching programs:', err);
+        setTemplatesError('Failed to load program templates.');
         setTemplates([]);
       } finally {
         setTemplatesLoading(false);
       }
     };
 
-    fetchTemplates();
+    fetchPrograms();
   }, []);
 
   // Handle program assignment submission
@@ -81,7 +86,7 @@ const ProgramsTab = ({ userId }) => {
     setAssignmentMessage('');
 
     const payload = {
-      "userId": "100001",
+      "userId": userId || "100001",
       "program name": template.name,
       "date": assignmentDate,
       "type": assignmentType,
@@ -97,7 +102,7 @@ const ProgramsTab = ({ userId }) => {
       });
 
       if (response.ok) {
-        // setAssignmentMessage('Program assigned successfully!');
+        setAssignmentMessage('Program assigned successfully!');
         setSelectedTemplate(null);
         setAssignmentDate('');
         setAssignmentType('Assessment');
@@ -125,20 +130,20 @@ const ProgramsTab = ({ userId }) => {
 
   return (
     <div className="max-w-6xl space-y-8">
-      {/* Goals & Plans Templates Section */}
+      {/* Program Templates Section */}
       <div>
         <div className="mb-6">
           <h3 className="text-xl font-semibold text-gray-900 mb-2 flex items-center">
             <Target className="w-5 h-5 mr-2 text-purple-600" />
-            Available Goals & Plans Templates
+            Available Program Templates
           </h3>
-          <p className="text-gray-600">Select a template to assign to your patient.</p>
+          <p className="text-gray-600">Select a program template to assign to your patient.</p>
         </div>
 
         {templatesLoading ? (
           <div className="text-center py-8">
             <div className="animate-spin mx-auto mb-4 w-8 h-8 border-2 border-purple-600 border-t-transparent rounded-full"></div>
-            <p className="text-gray-500">Loading templates...</p>
+            <p className="text-gray-500">Loading program templates...</p>
           </div>
         ) : templatesError ? (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
@@ -169,19 +174,41 @@ const ProgramsTab = ({ userId }) => {
                     </div>
                   </div>
                 </div>
-                <p className="text-gray-600 text-xs line-clamp-2">{template.description}</p>
+                <p className="text-gray-600 text-xs line-clamp-2 mb-2">{template.description}</p>
+                
+                {/* Show goals if available */}
+                {template.goals && (
+                  <div className="mb-2">
+                    <p className="text-xs font-medium text-gray-700 mb-1">Goals:</p>
+                    <div className="flex flex-wrap gap-1">
+                      {template.goals.split(',').map((goal, idx) => (
+                        <span key={idx} className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded">
+                          {goal.trim()}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Show assigned assets if available */}
+                {template.selectedAssets && (
+                  <div className="mb-2">
+                    <p className="text-xs font-medium text-gray-700 mb-1">Assets:</p>
+                    <p className="text-xs text-gray-600 line-clamp-2">{template.selectedAssets}</p>
+                  </div>
+                )}
               </div>
             ))}
           </div>
         ) : (
           <div className="text-center py-8">
             <Target size={48} className="mx-auto text-gray-300 mb-4" />
-            <p className="text-gray-500">No templates available</p>
+            <p className="text-gray-500">No program templates available</p>
           </div>
         )}
       </div>
 
-      {/* Program Assignment Section with Type and Notes */}
+      {/* Program Assignment Section */}
       {selectedTemplate && (
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
@@ -192,9 +219,22 @@ const ProgramsTab = ({ userId }) => {
           <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-6">
             <h4 className="font-medium text-purple-900 mb-2">{selectedTemplate.name}</h4>
             <p className="text-purple-700 text-sm mb-2">{selectedTemplate.description}</p>
-            <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(selectedTemplate.difficulty)}`}>
-              {selectedTemplate.difficulty}
-            </span>
+            <div className="flex flex-wrap gap-2 mb-2">
+              <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(selectedTemplate.difficulty)}`}>
+                {selectedTemplate.difficulty}
+              </span>
+              {selectedTemplate.goals && (
+                <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded">
+                  Goals: {selectedTemplate.goals}
+                </span>
+              )}
+            </div>
+            {selectedTemplate.selectedAssets && (
+              <div>
+                <p className="text-xs font-medium text-purple-800 mb-1">Included Assets:</p>
+                <p className="text-xs text-purple-600">{selectedTemplate.selectedAssets}</p>
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
