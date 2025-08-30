@@ -40,13 +40,12 @@ const extractYouTubeVideoID = (url) => {
   return match ? match[1] : null;
 };
 
-// Create New Asset Modal Component (unchanged)
+// Create New Asset Modal Component
 const CreateAssetModal = ({ isOpen, onClose, onCreateAsset }) => {
   const [assetData, setAssetData] = useState({
     name: '',
     description: '',
     type: 'exercise',
-    content: '',
     youtubeUrl: '',
     tags: '',
     difficulty: 'Beginner'
@@ -62,7 +61,6 @@ const CreateAssetModal = ({ isOpen, onClose, onCreateAsset }) => {
         name: '',
         description: '',
         type: 'exercise',
-        content: '',
         youtubeUrl: '',
         tags: '',
         difficulty: 'Beginner'
@@ -85,7 +83,6 @@ const CreateAssetModal = ({ isOpen, onClose, onCreateAsset }) => {
         assetType: assetData.type,
         assetName: assetData.name.trim(),
         assetDescription: assetData.description.trim(),
-        assetContent: assetData.content.trim(),
         youtubeUrl: assetData.youtubeUrl.trim(),
         tags: assetData.tags.trim(),
         difficulty: assetData.difficulty
@@ -149,6 +146,18 @@ const CreateAssetModal = ({ isOpen, onClose, onCreateAsset }) => {
         </div>
         
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Asset Name</label>
+            <input
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+              value={assetData.name}
+              onChange={(e) => setAssetData(prev => ({ ...prev, name: e.target.value }))}
+              placeholder="Enter asset name"
+              required
+              disabled={isSubmitting}
+            />
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Asset Type</label>
@@ -178,18 +187,6 @@ const CreateAssetModal = ({ isOpen, onClose, onCreateAsset }) => {
               </select>
             </div>
           </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Asset Name</label>
-            <input
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
-              value={assetData.name}
-              onChange={(e) => setAssetData(prev => ({ ...prev, name: e.target.value }))}
-              placeholder="Enter asset name"
-              required
-              disabled={isSubmitting}
-            />
-          </div>
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
@@ -198,8 +195,22 @@ const CreateAssetModal = ({ isOpen, onClose, onCreateAsset }) => {
               rows={3}
               value={assetData.description}
               onChange={(e) => setAssetData(prev => ({ ...prev, description: e.target.value }))}
-              placeholder="Describe the asset"
+              placeholder="Add description"
               required
+              disabled={isSubmitting}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Tags (Optional)
+              <span className="text-sm text-gray-500 ml-2">Comma-separated for easy filtering</span>
+            </label>
+            <input
+              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+              value={assetData.tags}
+              onChange={(e) => setAssetData(prev => ({ ...prev, tags: e.target.value }))}
+              placeholder="strength, flexibility, cardio, assessment..."
               disabled={isSubmitting}
             />
           </div>
@@ -222,42 +233,6 @@ const CreateAssetModal = ({ isOpen, onClose, onCreateAsset }) => {
               </div>
             </div>
           )}
-          
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              {assetData.type === 'exercise' && !assetData.youtubeUrl ? 'Exercise Instructions' : 'Content'}
-            </label>
-            <textarea
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
-              rows={6}
-              value={assetData.content}
-              onChange={(e) => setAssetData(prev => ({ ...prev, content: e.target.value }))}
-              placeholder={
-                assetData.type === 'exercise' ? 
-                  (assetData.youtubeUrl ? 'Additional notes or instructions...' : 'Detailed exercise instructions...') :
-                assetData.type === 'question' ? 'Enter your question here...' :
-                assetData.type === 'followup' ? 'Follow-up instructions or questions...' :
-                assetData.type === 'form' ? 'Form fields and structure...' :
-                'Survey questions and options...'
-              }
-              required
-              disabled={isSubmitting}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Tags (Optional)
-              <span className="text-sm text-gray-500 ml-2">Comma-separated for easy filtering</span>
-            </label>
-            <input
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
-              value={assetData.tags}
-              onChange={(e) => setAssetData(prev => ({ ...prev, tags: e.target.value }))}
-              placeholder="strength, flexibility, cardio, assessment..."
-              disabled={isSubmitting}
-            />
-          </div>
 
           {submitError && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 text-sm">
@@ -553,16 +528,27 @@ const AssetCard = ({ asset, onEdit, onDelete }) => {
           </div>
           <div>
             <h3 className="font-semibold text-gray-800 text-lg">{asset.name}</h3>
-            <div className="flex items-center space-x-2 mt-1">
-              <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(asset.type)}`}>
-                {asset.type}
-              </span>
-              <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(asset.difficulty)}`}>
-                {asset.difficulty}
-              </span>
-            </div>
           </div>
         </div>
+      </div>
+      
+      {asset.tags && (
+        <div className="flex flex-wrap gap-1 mb-4">
+          {asset.tags.split(',').map((tag, index) => (
+            <span key={index} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
+              {tag.trim()}
+            </span>
+          ))}
+        </div>
+      )}
+
+      <div className="flex items-center space-x-2 mb-4">
+        <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(asset.type)}`}>
+          {asset.type}
+        </span>
+        <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${getDifficultyColor(asset.difficulty)}`}>
+          {asset.difficulty}
+        </span>
       </div>
       
       <p className="text-gray-600 text-sm mb-4 line-clamp-3">{asset.description}</p>
@@ -599,16 +585,6 @@ const AssetCard = ({ asset, onEdit, onDelete }) => {
             <Youtube size={14} />
             <span>Click to watch video</span>
           </div>
-        </div>
-      )}
-      
-      {asset.tags && (
-        <div className="flex flex-wrap gap-1 mb-4">
-          {asset.tags.split(',').map((tag, index) => (
-            <span key={index} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-              {tag.trim()}
-            </span>
-          ))}
         </div>
       )}
       
@@ -740,7 +716,6 @@ const GoalsAndPlans = () => {
           name: row.assetName ?? 'Untitled Asset',
           description: row.assetDescription ?? 'No description provided',
           type: row.assetType ?? 'exercise',
-          content: row.assetContent ?? '',
           youtubeUrl: row.youtubeUrl ?? '',
           tags: row.tags ?? '',
           difficulty: row.difficulty ?? 'Beginner',
