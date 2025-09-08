@@ -425,14 +425,14 @@ const ProfileEditor = () => {
                   placeholder="Describe your service offering..."
                 />
               </div>
-              <div className="w-full md:w-40">
+              {/* <div className="w-full md:w-40">
                 <EditableText
                   label="Display Price"
                   value={servicePrice}
                   onSave={setServicePrice}
                   placeholder="e.g. £50"
-                />
-              </div>
+                /> */}
+              {/* </div> */}
               {/* NEW: Service Charge for Stripe Payments */}
               <div className="w-full md:w-40">
                 <EditableText
