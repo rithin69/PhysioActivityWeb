@@ -5,7 +5,7 @@ import { Elements, CardNumberElement, CardExpiryElement, CardCvcElement, useStri
 import { MapPin, Award, Stethoscope, Facebook, Instagram, Twitter, Linkedin, CreditCard, CheckCircle, X, AlertCircle } from "lucide-react";
 
 // Replace with your actual Stripe publishable key
-const stripePromise = loadStripe('pk_test_YOUR_STRIPE_PUBLISHABLE_KEY_HERE');
+const stripePromise = loadStripe('pk_test_51S527DGclgQ44teMIt40jAVSBlFzW9zUwk0TvzWDCMtDGJsUMn1e9jO2TRopOk7Gaxmxv7PSzC3FOE0bO4ePE6Op009DZkIwDi');
 
 // Payment Form Component with Simplified Fields
 const PaymentForm = ({ amount, profileId, profileName, onPaymentSuccess, onCancel }) => {
