@@ -1,18 +1,37 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { loadStripe } from '@stripe/stripe-js';
-import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
+import { Elements, CardNumberElement, CardExpiryElement, CardCvcElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { MapPin, Award, Stethoscope, Facebook, Instagram, Twitter, Linkedin, CreditCard, CheckCircle, X, AlertCircle } from "lucide-react";
 
 // Replace with your actual Stripe publishable key
-const stripePromise = loadStripe('pk_test_51S527DGclgQ44teMIt40jAVSBlFzW9zUwk0TvzWDCMtDGJsUMn1e9jO2TRopOk7Gaxmxv7PSzC3FOE0bO4ePE6Op009DZkIwDi');
+const stripePromise = loadStripe('pk_test_YOUR_STRIPE_PUBLISHABLE_KEY_HERE');
 
-// Payment Form Component
+// Payment Form Component with Simplified Fields
 const PaymentForm = ({ amount, profileId, profileName, onPaymentSuccess, onCancel }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
   const [paymentError, setPaymentError] = useState('');
+  const [cardholderName, setCardholderName] = useState('');
+
+  // Common styling for Stripe Elements
+  const elementStyles = {
+    style: {
+      base: {
+        fontSize: '16px',
+        color: '#424770',
+        '::placeholder': {
+          color: '#aab7c4',
+        },
+        padding: '12px',
+      },
+      invalid: {
+        color: '#fa755a',
+        iconColor: '#fa755a'
+      }
+    },
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -43,12 +62,12 @@ const PaymentForm = ({ amount, profileId, profileName, onPaymentSuccess, onCance
 
       const { clientSecret } = await response.json();
 
-      // Confirm payment with Stripe (no redirect)
+      // Confirm payment with Stripe using CardNumberElement
       const result = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
-          card: elements.getElement(CardElement),
+          card: elements.getElement(CardNumberElement),
           billing_details: {
-            name: `Payment for ${profileName}`,
+            name: cardholderName,
           },
         }
       });
@@ -83,25 +102,49 @@ const PaymentForm = ({ amount, profileId, profileName, onPaymentSuccess, onCance
         </div>
       </div>
       
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Cardholder Name */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Card Information
+            Cardholder Name
           </label>
-          <div className="border border-gray-300 rounded-lg p-4 bg-white">
-            <CardElement
-              options={{
-                style: {
-                  base: {
-                    fontSize: '16px',
-                    color: '#424770',
-                    '::placeholder': {
-                      color: '#aab7c4',
-                    },
-                  },
-                },
-              }}
-            />
+          <input
+            type="text"
+            value={cardholderName}
+            onChange={(e) => setCardholderName(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-[#4cb6c3] focus:border-transparent"
+            placeholder="John Doe"
+            required
+          />
+        </div>
+
+        {/* Card Number */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Card Number
+          </label>
+          <div className="border border-gray-300 rounded-lg p-3 bg-white">
+            <CardNumberElement options={elementStyles} />
+          </div>
+        </div>
+
+        {/* Expiry and CVC in the same row */}
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Expiry Date
+            </label>
+            <div className="border border-gray-300 rounded-lg p-3 bg-white">
+              <CardExpiryElement options={elementStyles} />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              CVC
+            </label>
+            <div className="border border-gray-300 rounded-lg p-3 bg-white">
+              <CardCvcElement options={elementStyles} />
+            </div>
           </div>
         </div>
         
@@ -112,7 +155,7 @@ const PaymentForm = ({ amount, profileId, profileName, onPaymentSuccess, onCance
           </div>
         )}
         
-        <div className="flex gap-3">
+        <div className="flex gap-3 pt-4">
           <button
             type="submit"
             disabled={!stripe || isProcessing}
