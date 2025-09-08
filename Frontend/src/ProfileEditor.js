@@ -108,6 +108,8 @@ const ImageUpload = ({ src, alt, onUpload, className, label }) => {
 const ProfileEditor = () => {
   const [name, setName] = useState("Ashley Thompson");
   const [servicePrice, setServicePrice] = useState("£50");
+  // NEW: Added separate service charge field for Stripe payments (numeric value only)
+  const [serviceCharge, setServiceCharge] = useState("50");
   const [title, setTitle] = useState("Feel strong, capable, and confident in your body.");
   const [bio, setBio] = useState("I help women reconnect with their bodies through evidence-based physiotherapy and personalized training. My approach combines movement science with compassionate care to help you feel stronger, more confident, and in control of your wellness journey.");
   const [location, setLocation] = useState("London, UK");
@@ -154,6 +156,7 @@ const ProfileEditor = () => {
       ctaText,
       services,
       servicePrice,
+      serviceCharge, // NEW: Include service charge in profile data
       philosophy,
       testimonials,
       socialMedia
@@ -412,7 +415,7 @@ const ProfileEditor = () => {
             What I Offer
           </h2>
           <div className="flex flex-col items-center gap-4">
-            <div className="flex flex-col md:flex-row items-center gap-4 w-full max-w-xl">
+            <div className="flex flex-col md:flex-row items-center gap-4 w-full max-w-2xl">
               <div className="flex-1 w-full">
                 <EditableText
                   label="Service"
@@ -424,11 +427,23 @@ const ProfileEditor = () => {
               </div>
               <div className="w-full md:w-40">
                 <EditableText
-                  label="Price"
+                  label="Display Price"
                   value={servicePrice}
                   onSave={setServicePrice}
                   placeholder="e.g. £50"
                 />
+              </div>
+              {/* NEW: Service Charge for Stripe Payments */}
+              <div className="w-full md:w-40">
+                <EditableText
+                  label="Payment Amount"
+                  value={serviceCharge}
+                  onSave={setServiceCharge}
+                  placeholder="50"
+                />
+                <div className="text-xs text-gray-500 mt-1">
+                  Numeric value for payments (e.g., 50 for £50)
+                </div>
               </div>
             </div>
           </div>
