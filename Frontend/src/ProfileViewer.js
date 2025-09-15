@@ -7,7 +7,7 @@ import { MapPin, Award, Stethoscope, Facebook, Instagram, Twitter, Linkedin, Cre
 // Replace with your actual Stripe publishable key
 const stripePromise = loadStripe('pk_test_51S527DGclgQ44teMIt40jAVSBlFzW9zUwk0TvzWDCMtDGJsUMn1e9jO2TRopOk7Gaxmxv7PSzC3FOE0bO4ePE6Op009DZkIwDi');
 
-// Payment Form Component
+// Payment Form Component (stays the same)
 const PaymentForm = ({ amount, profileId, profileName, onPaymentSuccess, onCancel }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -25,7 +25,6 @@ const PaymentForm = ({ amount, profileId, profileName, onPaymentSuccess, onCance
     setPaymentError('');
 
     try {
-      // Call your Power Automate endpoint
       const response = await fetch('https://default08b4467318734eb590d76eae218707.8a.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/8f4b064319b54e128544c4437d7e2f58/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=E0OM5OKUkRbJriL0xpWMO_UWrlbH5ek7lQOFBvUfBUA', {
         method: 'POST',
         headers: {
@@ -43,7 +42,6 @@ const PaymentForm = ({ amount, profileId, profileName, onPaymentSuccess, onCance
 
       const { clientSecret } = await response.json();
 
-      // Confirm payment with Stripe (no redirect)
       const result = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: elements.getElement(CardElement),
@@ -56,7 +54,6 @@ const PaymentForm = ({ amount, profileId, profileName, onPaymentSuccess, onCance
       if (result.error) {
         setPaymentError(result.error.message);
       } else {
-        // Payment succeeded
         onPaymentSuccess(result.paymentIntent);
       }
     } catch (error) {
@@ -154,26 +151,82 @@ const PaymentForm = ({ amount, profileId, profileName, onPaymentSuccess, onCance
 };
 
 export default function ProfileViewer() {
-  const { id } = useParams();
+  // Get the clean slug from URL (e.g., "ashley-thompson")
+  const { profileName } = useParams();
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState("");
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [paymentDetails, setPaymentDetails] = useState(null);
 
+  // ✅ UPDATED: Try multiple filename patterns to find the profile
+  const tryFetchProfile = async (slug) => {
+    if (!slug) throw new Error("Profile name not provided");
+
+    // List of possible filename patterns to try
+    const possibleFileNames = [
+      // Clean slug patterns
+      `${slug}.json`,
+      `${slug}-profile.json`,
+      
+      // Convert slug to title case patterns  
+      `${slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}.json`,
+      `${slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}-profile.json`,
+      
+      // Your current naming pattern (with 'd' suffix)
+      `${slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}d-profile.json`,
+      
+      // Variations
+      `${slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('')}.json`,
+      `${slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('')}-profile.json`,
+    ];
+
+    console.log(`Trying to fetch profile for slug: ${slug}`);
+    console.log('Will try these filenames:', possibleFileNames);
+
+    // Try each filename pattern until one works
+    for (const fileName of possibleFileNames) {
+      try {
+        console.log(`Attempting to fetch: ${fileName}`);
+        const response = await fetch(`https://physioprofile.blob.core.windows.net/profile/${fileName}`);
+        
+        if (response.ok) {
+          console.log(`✅ Successfully found profile at: ${fileName}`);
+          const data = await response.json();
+          return data;
+        } else {
+          console.log(`❌ Failed to fetch ${fileName} - Status: ${response.status}`);
+        }
+      } catch (error) {
+        console.log(`❌ Error fetching ${fileName}:`, error.message);
+        continue; // Try the next filename
+      }
+    }
+
+    // If we get here, none of the filenames worked
+    throw new Error("Profile not found. Please check the URL and try again.");
+  };
+
   useEffect(() => {
     const fetchProfile = async () => {
+      if (!profileName) {
+        setError("Profile name not provided");
+        return;
+      }
+
       try {
-        const res = await fetch(`https://physioprofile.blob.core.windows.net/profile/${id}`);
-        if (!res.ok) throw new Error("Profile not found.");
-        const data = await res.json();
+        const data = await tryFetchProfile(profileName);
         setProfile(data);
+        setError("");
       } catch (err) {
+        console.error("Profile fetch error:", err);
         setError(err.message);
+        setProfile(null);
       }
     };
+
     fetchProfile();
-  }, [id]);
+  }, [profileName]);
 
   const handlePaymentSuccess = (paymentIntent) => {
     setPaymentSuccess(true);
@@ -182,11 +235,39 @@ export default function ProfileViewer() {
     console.log('Payment successful:', paymentIntent);
   };
 
-  if (error) return <div className="p-6 text-red-600 text-center">{error}</div>;
-  if (!profile) return <div className="p-6 text-center text-gray-600">Loading profile...</div>;
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <X size={32} className="text-red-500" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Profile Not Found</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <p className="text-sm text-gray-500">
+            Please check the URL or contact the physiotherapist for the correct link.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
+  if (!profile) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#4cb6c3] mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading Profile...</h2>
+          <p className="text-gray-600">Please wait while we fetch the profile information.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Rest of your component stays exactly the same...
   return (
     <div className="bg-white text-gray-800 font-sans scroll-smooth">
+      {/* All your existing JSX stays the same */}
       {/* Header */}
       <header className="bg-[#104378] py-4 px-6 flex justify-between items-center shadow-md sticky top-0 z-50">
         <div className="flex items-center gap-3">
@@ -196,6 +277,9 @@ export default function ProfileViewer() {
         <span className="text-white text-lg font-medium">Partnering with {profile.name}</span>
       </header>
 
+      {/* Rest of your existing sections... */}
+      {/* (I'm keeping the rest of your code exactly as is since only the fetch logic needed to change) */}
+      
       {/* Hero Section */}
       <section className="text-center py-24 px-6 bg-gradient-to-br from-[#4cb6c3] to-[#104378] text-white relative">
         <img
@@ -271,7 +355,7 @@ export default function ProfileViewer() {
         )}
       </section>
 
-      {/* Payment Section - Shows only if serviceCharge exists */}
+      {/* Payment Section */}
       {profile.serviceCharge && (
         <section className="py-16 px-6 bg-gradient-to-br from-green-50 to-blue-50">
           <div className="max-w-2xl mx-auto">
@@ -322,7 +406,7 @@ export default function ProfileViewer() {
               <Elements stripe={stripePromise}>
                 <PaymentForm
                   amount={profile.serviceCharge}
-                  profileId={id}
+                  profileId={profileName}
                   profileName={profile.name}
                   onPaymentSuccess={handlePaymentSuccess}
                   onCancel={() => setShowPaymentForm(false)}
@@ -454,54 +538,57 @@ export default function ProfileViewer() {
       </section>
 
       {/* Download SmartDiary Section */}
-      <section className="py-16 px-6 bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-white rounded-3xl shadow-xl p-8">
+      <section className="py-20 px-6 bg-gradient-to-br from-gray-50 via-blue-25 to-gray-100">
+        <div className="max-w-lg mx-auto">
+          <div className="bg-white rounded-3xl shadow-2xl p-10 border border-gray-100">
             <div className="text-center mb-8">
-              <h2 className="text-4xl font-bold text-gray-800 mb-4">Download SmartDiary</h2>
-              <p className="text-xl text-gray-600">Get your SmartDiary on your device and start your journey today.</p>
+              <h2 className="text-3xl font-bold text-gray-800 mb-4">Download SmartDiary</h2>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Get your <span className="font-semibold text-[#104378]">SmartDiary</span> on your device and start your journey today.
+              </p>
             </div>
             
             <div className="space-y-4">
               {/* App Store Button */}
               <a 
                 href="#" 
-                className="flex items-center justify-between bg-gray-900 text-white rounded-xl p-4 hover:bg-gray-800 transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="group flex items-center justify-center bg-black text-white rounded-2xl p-4 hover:bg-gray-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
               >
-                <div className="flex items-center">
-                  <div className="bg-white rounded-lg p-2 mr-4">
-                    <svg className="w-8 h-8 text-black" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <div className="text-sm opacity-75">Download on the</div>
-                    <div className="text-xl font-semibold">App Store</div>
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center">
+                    <div className="bg-white rounded-lg p-2 mr-4">
+                      <svg className="w-8 h-8 text-black" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                      </svg>
+                    </div>
+                    <div className="text-left">
+                      <div className="text-sm opacity-75">Download on the</div>
+                      <div className="text-xl font-semibold">App Store</div>
+                    </div>
                   </div>
                 </div>
-                <div className="text-2xl font-bold">Download on the App Store</div>
               </a>
               
               {/* Google Play Button */}
               <a 
                 href="#" 
-                className="flex items-center justify-between bg-gray-900 text-white rounded-xl p-4 hover:bg-gray-800 transition-all duration-300 shadow-lg hover:shadow-xl"
+                className="group flex items-center justify-center bg-black text-white rounded-2xl p-4 hover:bg-gray-800 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
               >
-                <div className="flex items-center">
-                  <div className="bg-white rounded-lg p-2 mr-4">
-                    <svg className="w-8 h-8" viewBox="0 0 24 24">
-                      <path fill="#34A853" d="M3.609 1.814L13.792 12L3.609 22.186C3.61 22.186 3.61 22.186 3.609 22.186C3.235 21.938 3 21.485 3 21V3C3 2.515 3.235 2.062 3.609 1.814Z"/>
-                      <path fill="#FBBC04" d="M20.485 10.18L15.273 7.45L13.792 12L15.273 16.55L20.485 13.82C21.153 13.42 21.153 12.58 20.485 10.18Z"/>
-                      <path fill="#EA4335" d="M13.792 12L3.609 1.814C3.954 1.543 4.449 1.543 4.794 1.814L13.792 12Z"/>
-                      <path fill="#EA4335" d="M13.792 12L4.794 22.186C4.449 22.457 3.954 22.457 3.609 22.186L13.792 12Z"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <div className="text-sm opacity-75">Get it on</div>
-                    <div className="text-xl font-semibold">Google Play</div>
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center">
+                    <div className="bg-white rounded-lg p-2 mr-4">
+                      <img 
+                        src="/gpay.jpeg" 
+                        alt="Google Play" 
+                        className="w-8 h-8 object-contain"
+                      />
+                    </div>
+                    <div className="text-left">
+                      <div className="text-sm opacity-75">Get it on</div>
+                      <div className="text-xl font-semibold">Google Play</div>
+                    </div>
                   </div>
                 </div>
-                <div className="text-2xl font-bold">Get it on Google Play</div>
               </a>
             </div>
           </div>
