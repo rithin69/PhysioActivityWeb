@@ -263,12 +263,12 @@ const ProfileEditor = () => {
                   <div className="flex-1">
                     <h1 className="text-2xl font-bold text-gray-900">{name}</h1>
                     {/* Show preview of clean URL and filename */}
-                    <div className="text-sm text-gray-500 mt-1">
+                    {/* <div className="text-sm text-gray-500 mt-1">
                       Profile URL: {createCleanUrl(name)}
                     </div>
                     <div className="text-xs text-gray-400 mt-1">
                       Filename: {name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim()}.json
-                    </div>
+                    </div> */}
                   </div>
                   <div className="flex items-center gap-2">
                     {isPublished && profileUrl && (
@@ -550,7 +550,7 @@ const ProfileEditor = () => {
               </h2>
               <p className="text-gray-600 mb-6">Your professional profile is now live and ready to share with patients.</p>
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                <div className="text-sm text-gray-600 mb-2">Your Clean Profile URL:</div>
+            
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
@@ -565,9 +565,7 @@ const ProfileEditor = () => {
                     <Copy size={16} />
                   </button>
                 </div>
-                <div className="text-xs text-green-600 mt-2">
-                  ✨ This clean URL is perfect for sharing with patients!
-                </div>
+               
               </div>
               <div className="flex gap-3">
                 <a
