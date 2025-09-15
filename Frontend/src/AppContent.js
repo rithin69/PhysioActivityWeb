@@ -91,7 +91,9 @@ const AppContent = () => {
             <Route path="/goals-plans" element={<GoalsAndPlans/>} />
             {/* <Route path="/settings" element={<Settings />} /> */}
             {/* <Route path="/exercise" element={<Exercise />} /> */}
-            <Route path="/profile/:id" element={<ProfileViewer />} />
+            {/* <Route path="/profile/:profileName" element={<ProfileViewer />} /> */}
+            <Route path="/profile/:profileName" element={<ProfileViewer />} />
+
             {/* ...other routes... */}
             <Route
               path="/Dashboard_v2"

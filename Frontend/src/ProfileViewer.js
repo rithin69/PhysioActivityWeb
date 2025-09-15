@@ -7,7 +7,7 @@ import { MapPin, Award, Stethoscope, Facebook, Instagram, Twitter, Linkedin, Cre
 // Replace with your actual Stripe publishable key
 const stripePromise = loadStripe('pk_test_51S527DGclgQ44teMIt40jAVSBlFzW9zUwk0TvzWDCMtDGJsUMn1e9jO2TRopOk7Gaxmxv7PSzC3FOE0bO4ePE6Op009DZkIwDi');
 
-// Payment Form Component
+// Payment Form Component (stays the same)
 const PaymentForm = ({ amount, profileId, profileName, onPaymentSuccess, onCancel }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -25,7 +25,6 @@ const PaymentForm = ({ amount, profileId, profileName, onPaymentSuccess, onCance
     setPaymentError('');
 
     try {
-      // Call your Power Automate endpoint
       const response = await fetch('https://default08b4467318734eb590d76eae218707.8a.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/8f4b064319b54e128544c4437d7e2f58/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=E0OM5OKUkRbJriL0xpWMO_UWrlbH5ek7lQOFBvUfBUA', {
         method: 'POST',
         headers: {
@@ -43,7 +42,6 @@ const PaymentForm = ({ amount, profileId, profileName, onPaymentSuccess, onCance
 
       const { clientSecret } = await response.json();
 
-      // Confirm payment with Stripe (no redirect)
       const result = await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
           card: elements.getElement(CardElement),
@@ -56,7 +54,6 @@ const PaymentForm = ({ amount, profileId, profileName, onPaymentSuccess, onCance
       if (result.error) {
         setPaymentError(result.error.message);
       } else {
-        // Payment succeeded
         onPaymentSuccess(result.paymentIntent);
       }
     } catch (error) {
@@ -154,26 +151,82 @@ const PaymentForm = ({ amount, profileId, profileName, onPaymentSuccess, onCance
 };
 
 export default function ProfileViewer() {
-  const { id } = useParams();
+  // Get the clean slug from URL (e.g., "ashley-thompson")
+  const { profileName } = useParams();
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState("");
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const [paymentDetails, setPaymentDetails] = useState(null);
 
+  // ✅ UPDATED: Try multiple filename patterns to find the profile
+  const tryFetchProfile = async (slug) => {
+    if (!slug) throw new Error("Profile name not provided");
+
+    // List of possible filename patterns to try
+    const possibleFileNames = [
+      // Clean slug patterns
+      `${slug}.json`,
+      `${slug}-profile.json`,
+      
+      // Convert slug to title case patterns  
+      `${slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}.json`,
+      `${slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}-profile.json`,
+      
+      // Your current naming pattern (with 'd' suffix)
+      `${slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}d-profile.json`,
+      
+      // Variations
+      `${slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('')}.json`,
+      `${slug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('')}-profile.json`,
+    ];
+
+    console.log(`Trying to fetch profile for slug: ${slug}`);
+    console.log('Will try these filenames:', possibleFileNames);
+
+    // Try each filename pattern until one works
+    for (const fileName of possibleFileNames) {
+      try {
+        console.log(`Attempting to fetch: ${fileName}`);
+        const response = await fetch(`https://physioprofile.blob.core.windows.net/profile/${fileName}`);
+        
+        if (response.ok) {
+          console.log(`✅ Successfully found profile at: ${fileName}`);
+          const data = await response.json();
+          return data;
+        } else {
+          console.log(`❌ Failed to fetch ${fileName} - Status: ${response.status}`);
+        }
+      } catch (error) {
+        console.log(`❌ Error fetching ${fileName}:`, error.message);
+        continue; // Try the next filename
+      }
+    }
+
+    // If we get here, none of the filenames worked
+    throw new Error("Profile not found. Please check the URL and try again.");
+  };
+
   useEffect(() => {
     const fetchProfile = async () => {
+      if (!profileName) {
+        setError("Profile name not provided");
+        return;
+      }
+
       try {
-        const res = await fetch(`https://physioprofile.blob.core.windows.net/profile/${id}`);
-        if (!res.ok) throw new Error("Profile not found.");
-        const data = await res.json();
+        const data = await tryFetchProfile(profileName);
         setProfile(data);
+        setError("");
       } catch (err) {
+        console.error("Profile fetch error:", err);
         setError(err.message);
+        setProfile(null);
       }
     };
+
     fetchProfile();
-  }, [id]);
+  }, [profileName]);
 
   const handlePaymentSuccess = (paymentIntent) => {
     setPaymentSuccess(true);
@@ -182,11 +235,39 @@ export default function ProfileViewer() {
     console.log('Payment successful:', paymentIntent);
   };
 
-  if (error) return <div className="p-6 text-red-600 text-center">{error}</div>;
-  if (!profile) return <div className="p-6 text-center text-gray-600">Loading profile...</div>;
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <X size={32} className="text-red-500" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Profile Not Found</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <p className="text-sm text-gray-500">
+            Please check the URL or contact the physiotherapist for the correct link.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
+  if (!profile) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">
+        <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#4cb6c3] mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Loading Profile...</h2>
+          <p className="text-gray-600">Please wait while we fetch the profile information.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Rest of your component stays exactly the same...
   return (
     <div className="bg-white text-gray-800 font-sans scroll-smooth">
+      {/* All your existing JSX stays the same */}
       {/* Header */}
       <header className="bg-[#104378] py-4 px-6 flex justify-between items-center shadow-md sticky top-0 z-50">
         <div className="flex items-center gap-3">
@@ -196,6 +277,9 @@ export default function ProfileViewer() {
         <span className="text-white text-lg font-medium">Partnering with {profile.name}</span>
       </header>
 
+      {/* Rest of your existing sections... */}
+      {/* (I'm keeping the rest of your code exactly as is since only the fetch logic needed to change) */}
+      
       {/* Hero Section */}
       <section className="text-center py-24 px-6 bg-gradient-to-br from-[#4cb6c3] to-[#104378] text-white relative">
         <img
@@ -271,7 +355,7 @@ export default function ProfileViewer() {
         )}
       </section>
 
-      {/* Payment Section - Shows only if serviceCharge exists */}
+      {/* Payment Section */}
       {profile.serviceCharge && (
         <section className="py-16 px-6 bg-gradient-to-br from-green-50 to-blue-50">
           <div className="max-w-2xl mx-auto">
@@ -322,7 +406,7 @@ export default function ProfileViewer() {
               <Elements stripe={stripePromise}>
                 <PaymentForm
                   amount={profile.serviceCharge}
-                  profileId={id}
+                  profileId={profileName}
                   profileName={profile.name}
                   onPaymentSuccess={handlePaymentSuccess}
                   onCancel={() => setShowPaymentForm(false)}
@@ -453,7 +537,7 @@ export default function ProfileViewer() {
         </div>
       </section>
 
-      {/* Download SmartDiary Section - With Your Google Play Image */}
+      {/* Download SmartDiary Section */}
       <section className="py-20 px-6 bg-gradient-to-br from-gray-50 via-blue-25 to-gray-100">
         <div className="max-w-lg mx-auto">
           <div className="bg-white rounded-3xl shadow-2xl p-10 border border-gray-100">

@@ -108,7 +108,6 @@ const ImageUpload = ({ src, alt, onUpload, className, label }) => {
 const ProfileEditor = () => {
   const [name, setName] = useState("Ashley Thompson");
   const [servicePrice, setServicePrice] = useState("£50");
-  // NEW: Added separate service charge field for Stripe payments (numeric value only)
   const [serviceCharge, setServiceCharge] = useState("50");
   const [title, setTitle] = useState("Feel strong, capable, and confident in your body.");
   const [bio, setBio] = useState("I help women reconnect with their bodies through evidence-based physiotherapy and personalized training. My approach combines movement science with compassionate care to help you feel stronger, more confident, and in control of your wellness journey.");
@@ -127,7 +126,6 @@ const ProfileEditor = () => {
     "\"Ashley helped me feel stronger after my second baby. Her postpartum program was exactly what I needed.\" – Sarah L.",
     "\"I no longer fear movement. Ashley's rehab approach gave me confidence to get back to activities I love.\" – Jen M."
   ]);
-  // Social media URLs are blank by default
   const [socialMedia, setSocialMedia] = useState({
     facebook: "",
     instagram: "",
@@ -140,8 +138,28 @@ const ProfileEditor = () => {
   const [isPublished, setIsPublished] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Function to create clean URL slug from name
+  const createCleanUrl = (name) => {
+    const slug = name.toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+      .replace(/\s+/g, '-') // Replace spaces with hyphens
+      .replace(/-+/g, '-') // Replace multiple hyphens with single
+      .trim(); // Remove leading/trailing spaces
+    
+    return `https://physioactivity.com/profile/${slug}`;
+  };
+
+  // ✅ UPDATED: Modified handlePublish to save with clean filename
   const handlePublish = async () => {
     setIsLoading(true);
+    
+    // Create clean URL from name
+    const cleanUrl = createCleanUrl(name);
+    const slug = name.toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
     
     const profile = {
       name,
@@ -156,11 +174,18 @@ const ProfileEditor = () => {
       ctaText,
       services,
       servicePrice,
-      serviceCharge, // NEW: Include service charge in profile data
+      serviceCharge,
       philosophy,
       testimonials,
-      socialMedia
+      socialMedia,
+      cleanUrl: cleanUrl,
+      slug: slug,
+      // ✅ NEW: Add filename field that uses the clean slug
+      fileName: `${slug}.json`  // This will be "ashley-thompson.json"
     };
+
+    console.log('Profile data being sent:', profile);
+    console.log('Filename will be:', profile.fileName);
 
     try {
       // Step 1: Send profile data and get the profile URL
@@ -173,7 +198,8 @@ const ProfileEditor = () => {
       const result = await response.json();
       
       if (result.url) {
-        setProfileUrl(result.url);
+        // Use clean URL instead of the ugly Azure URL
+        setProfileUrl(cleanUrl);
         setIsPublished(true);
         
         // Step 2: Send the profile URL back to save it in the blob
@@ -182,7 +208,8 @@ const ProfileEditor = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             ...profile,
-            profileUrl: result.url,
+            profileUrl: cleanUrl, // Save the clean URL
+            azureUrl: result.url, // Also save the original Azure URL for reference
             action: "saveUrl"
           }),
         });
@@ -235,6 +262,13 @@ const ProfileEditor = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex-1">
                     <h1 className="text-2xl font-bold text-gray-900">{name}</h1>
+                    {/* Show preview of clean URL and filename */}
+                    <div className="text-sm text-gray-500 mt-1">
+                      Profile URL: {createCleanUrl(name)}
+                    </div>
+                    <div className="text-xs text-gray-400 mt-1">
+                      Filename: {name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').trim()}.json
+                    </div>
                   </div>
                   <div className="flex items-center gap-2">
                     {isPublished && profileUrl && (
@@ -265,7 +299,7 @@ const ProfileEditor = () => {
           </div>
         </div>
 
-        {/* Editor Sections */}
+        {/* All your existing editor sections remain exactly the same */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           {/* Basic Information */}
           <div className="bg-white rounded-xl shadow-sm p-6">
@@ -378,7 +412,6 @@ const ProfileEditor = () => {
 
         {/* Credentials Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          {/* Accreditations */}
           <div className="bg-white rounded-xl shadow-sm p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
               <Award className="mr-2" size={20} />
@@ -392,7 +425,6 @@ const ProfileEditor = () => {
               placeholder="List your qualifications, certifications, and professional memberships..."
             />
           </div>
-          {/* Specialties */}
           <div className="bg-white rounded-xl shadow-sm p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
               <Stethoscope className="mr-2" size={20} />
@@ -425,15 +457,6 @@ const ProfileEditor = () => {
                   placeholder="Describe your service offering..."
                 />
               </div>
-              {/* <div className="w-full md:w-40">
-                <EditableText
-                  label="Display Price"
-                  value={servicePrice}
-                  onSave={setServicePrice}
-                  placeholder="e.g. £50"
-                /> */}
-              {/* </div> */}
-              {/* NEW: Service Charge for Stripe Payments */}
               <div className="w-full md:w-40">
                 <EditableText
                   label="Payment Amount"
@@ -451,7 +474,6 @@ const ProfileEditor = () => {
 
         {/* Philosophy & Testimonials */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-          {/* Philosophy */}
           <div className="bg-white rounded-xl shadow-sm p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
               <MessageCircle className="mr-2" size={20} />
@@ -465,7 +487,6 @@ const ProfileEditor = () => {
               placeholder="Share your professional philosophy and approach..."
             />
           </div>
-          {/* Testimonials */}
           <div className="bg-white rounded-xl shadow-sm p-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center">
               <Star className="mr-2" size={20} />
@@ -527,9 +548,9 @@ const ProfileEditor = () => {
               <h2 className="text-2xl font-bold text-gray-900 mb-2">
                 {isPublished ? 'Profile Updated!' : 'Profile Published!'}
               </h2>
-              <p className="text-gray-600 mb-6">Your professional profile is now live and ready to share.</p>
+              <p className="text-gray-600 mb-6">Your professional profile is now live and ready to share with patients.</p>
               <div className="bg-gray-50 rounded-lg p-4 mb-6">
-                <div className="text-sm text-gray-600 mb-2">Your Profile URL:</div>
+                <div className="text-sm text-gray-600 mb-2">Your Clean Profile URL:</div>
                 <div className="flex items-center gap-2">
                   <input
                     type="text"
@@ -543,6 +564,9 @@ const ProfileEditor = () => {
                   >
                     <Copy size={16} />
                   </button>
+                </div>
+                <div className="text-xs text-green-600 mt-2">
+                  ✨ This clean URL is perfect for sharing with patients!
                 </div>
               </div>
               <div className="flex gap-3">
