@@ -5,7 +5,7 @@ import { Elements, CardElement, useStripe, useElements } from '@stripe/react-str
 import { MapPin, Award, Stethoscope, Facebook, Instagram, Twitter, Linkedin, CreditCard, CheckCircle, X, AlertCircle } from "lucide-react";
 
 // Replace with your actual Stripe publishable key
-const stripePromise = loadStripe('pk_test_51SA6MvFCiZdj8JNQmZFQl0X7BXkm7ZTlkFNKyfNemuxhCIJX6U2gE7hIgyfVuUBK5EMEdz1Q34z6IQBwgSg9dltF00fM59RNNr');
+const stripePromise = loadStripe('pk_live_51RZ9bxFJrgqo7h8V541vPE0R51TbLl1vQvUxzICb65qwOJhKOLCUVdNE8QoiF3jAuGPwUAKm3Iffwd3hj4605d4A00OF2xKUU8');
 
 // Payment Form Component (stays the same)
 const PaymentForm = ({ amount, profileId, profileName, onPaymentSuccess, onCancel }) => {
