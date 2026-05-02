@@ -1,0 +1,74 @@
+name: Build and deploy Node.js app to Azure Web App - physioactivity-release
+
+on:
+  push:
+    branches:
+      - release  # This triggers the workflow on a push to the master branch
+  workflow_dispatch:  # Allows manual triggering of the workflow
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Set CI to false
+        run: echo "CI=false" >> $GITHUB_ENV
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+
+      - name: npm install, build, and test
+        run: |
+          cd Frontend  # Navigate to the frontend folder where package.json is located
+          npm install
+          npm run build:ci
+          
+          # Check if the build folder exists and list its contents
+          if (Test-Path -Path "build") {
+            Get-ChildItem -Path build  # Verify the build output
+          } else {
+            Write-Host "Build folder does not exist!"
+            exit 1
+          }
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: node-app
+          path: Frontend/build  # Path to the build folder
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+      id-token: write  # Required for requesting the JWT
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: node-app
+
+      - name: List downloaded artifact contents  # Debugging step to list contents
+        run: ls -R .  # This will list everything in the current working directory
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALSV2 }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        id: deploy-to-webapp
+        with:
+          app-name: 'physioactivity-release'
+          slot-name: 'Production'
+          package: . # Update this path after inspecting the artifact structure

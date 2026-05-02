@@ -1,0 +1,73 @@
+{
+  "name": "phyactportal",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@azure/msal-browser": "^4.8.0",
+    "@azure/msal-react": "^3.0.7",
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
+    "@heroicons/react": "^1.0.6",
+    "@lottiefiles/dotlottie-react": "^0.13.5",
+    "@lottiefiles/react-lottie-player": "^3.6.0",
+    "@reduxjs/toolkit": "^2.5.0",
+    "@stripe/react-stripe-js": "^4.0.0",
+    "@stripe/stripe-js": "^7.9.0",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.9.0",
+    "crypto-js": "^4.2.0",
+    "firebase": "^10.12.4",
+    "http-proxy-middleware": "^3.0.0",
+    "jwt-decode": "^4.0.0",
+    "lucide-react": "^0.525.0",
+    "powerbi-client": "^2.23.1",
+    "powerbi-client-react": "^1.4.0",
+    "qrcode.react": "^3.1.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.2.1",
+    "react-modal": "^3.16.1",
+    "react-rating-stars-component": "^2.2.0",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^6.24.1",
+    "react-scripts": "5.0.1",
+    "react-slick": "^0.30.2",
+    "recharts": "^2.15.3",
+    "slick-carousel": "^1.8.1",
+    "slider": "^1.0.4",
+    "uuid": "^11.0.5",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "cross-env CI=false react-scripts build",
+    "build:ci": "cross-env CI=false react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3",
+    "tailwindcss": "^3.4.4"
+  }
+}
