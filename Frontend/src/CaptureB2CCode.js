@@ -31,6 +31,7 @@ function CaptureB2CCode() {
       axios
         .post("https://physioactivitybackend2.azurewebsites.net/api/b2c/token", {
           code: authCode,
+          codeVerifier: "BsGiENfL-w8hIbFR50oUPZJaqux2ULmmEnUcYJzOdqqokA6GXZH_A3tr7-oO5G_t-f0pxAimCph2s0AcaLcyv2ZQuZCKdWd9bxxKMQXo~~dKCKIfvTq6BJN5vAX4Djon",
         })
         .then((res) => {
           const claims = res.data?.claims;
