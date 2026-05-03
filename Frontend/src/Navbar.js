@@ -52,7 +52,7 @@ const Navbar = ({ isSidebarExpanded }) => {
 
   const handleSignupRedirect = () => {
     window.location.href =
-      'https://physioactivityuk.b2clogin.com/physioactivityuk.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_Physioactivityauth&client_id=46873b53-0650-4ae0-bc87-a802c625a33f&nonce=defaultNonce&redirect_uri=https%3A%2F%2Fphysioactivity-release-gxhva6e5htafdbfk.germanywestcentral-01.azurewebsites.net%2Fb2c%2Fback&scope=openid&response_type=code&prompt=login&code_challenge_method=S256&code_challenge=60uPU5IZEIp1K0Vz7vi6XIjAFuTe_PLJsH_f9vIVp4E';
+      'https://physioactivityuk.b2clogin.com/physioactivityuk.onmicrosoft.com/oauth2/v2.0/authorize?p=B2C_1_Physioactivityauth&client_id=46873b53-0650-4ae0-bc87-a802c625a33f&nonce=defaultNonce&redirect_uri=https%3A%2F%2Fphysioactivityfrontend.azurewebsites.net%2Fb2c%2Fback&scope=openid&response_type=code&prompt=login&code_challenge_method=S256&code_challenge=60uPU5IZEIp1K0Vz7vi6XIjAFuTe_PLJsH_f9vIVp4E';
   };
 
   return (
