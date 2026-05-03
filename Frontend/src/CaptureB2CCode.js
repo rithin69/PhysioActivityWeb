@@ -43,11 +43,11 @@ function CaptureB2CCode() {
                 email: claims.emails?.[0],
                 country: claims.country,
                 isAdmin: claims.extension_isAdmin,
-                navpanel: extensions.extension_46873b5306504ae0bc87a802c625a33f_navpanel,
-                user_role:extensions.extension_46873b5306504ae0bc87a802c625a33f_user_role,
-                mypatients:extensions.extension_46873b5306504ae0bc87a802c625a33f_mypatients,
-                newpatients:extensions.extension_46873b5306504ae0bc87a802c625a33f_newpatients,
-                web_user_id:extensions.extension_46873b5306504ae0bc87a802c625a33f_web_user_id
+                navpanel: extensions.extension_5b5b1daacc654a30ab7b333376c40e30_navpanel,
+                user_role:extensions.extension_5b5b1daacc654a30ab7b333376c40e30_user_role,
+                mypatients:extensions.extension_5b5b1daacc654a30ab7b333376c40e30_mypatients,
+                newpatients:extensions.extension_5b5b1daacc654a30ab7b333376c40e30_newpatients,
+                web_user_id:extensions.extension_5b5b1daacc654a30ab7b333376c40e30_web_user_id
               })
             );
           }
