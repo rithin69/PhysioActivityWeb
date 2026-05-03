@@ -42,7 +42,7 @@ function CaptureB2CCode() {
                 name: claims.name,
                 email: claims.emails?.[0],
                 country: claims.country,
-                isAdmin: claims.extension_isAdmin,
+                isAdmin: extensions.extension_5b5b1daacc654a30ab7b333376c40e30_isAdmin,
                 navpanel: extensions.extension_5b5b1daacc654a30ab7b333376c40e30_navpanel,
                 user_role:extensions.extension_5b5b1daacc654a30ab7b333376c40e30_user_role,
                 mypatients:extensions.extension_5b5b1daacc654a30ab7b333376c40e30_mypatients,
