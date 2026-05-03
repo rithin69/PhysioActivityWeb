@@ -3,8 +3,8 @@ name: Build and deploy Node.js app to Azure Web App - physioactivityfrontend
 on:
   push:
     branches:
-      - master  # This triggers the workflow on a push to the master branch
-  workflow_dispatch:  # Allows manual triggering of the workflow
+      - release
+  workflow_dispatch:
 
 jobs:
   build:
