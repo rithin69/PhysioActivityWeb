@@ -1,4 +1,4 @@
-name: Build and deploy Node.js app to Azure Web App - physioactivity-master
+name: Build and deploy Node.js app to Azure Web App - physioactivityfrontend
 
 on:
   push:
@@ -61,7 +61,7 @@ jobs:
         run: ls -R .  # This will list everything in the current working directory
 
       - name: Login to Azure
-        uses: azure/login@v2
+        uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALSV2 }}
 
@@ -69,6 +69,6 @@ jobs:
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'physioactivity-master'
+          app-name: 'physioactivityfrontend'
           slot-name: 'Production'
-          package: . # Update this path after inspecting the artifact Structure
+          package: .
