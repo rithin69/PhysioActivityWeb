@@ -19,6 +19,7 @@ import Otherprofidashboard from './Otherprofidashboard';
 import Library from './Library';
 import PhysioDashboard from './PhysioDashboard';
 import GoalsAndPlans from './GoalsandPlans';
+import CaptureB2CCode from './CaptureB2CCode';
 // import ProfileViewer from './ProfileViewer';
 const AppContent = () => {
   const location = useLocation();
@@ -80,6 +81,7 @@ const AppContent = () => {
         >
           <Routes>
             {/* <Route path="/physio/siri" element={<SiriAdPage />} /> */}
+            <Route path="/b2c/back" element={<CaptureB2CCode />} />
             <Route path="/Patientdashboard" element={<Patientdashboard />} />
             <Route path="/" element={getDashboardComponent()} />
             <Route path="/patients" element={<Patients />} />
