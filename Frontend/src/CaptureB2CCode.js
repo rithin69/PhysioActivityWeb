@@ -34,7 +34,7 @@ function CaptureB2CCode() {
         })
         .then((res) => {
           const claims = res.data?.claims;
-          const extensions = res.data?.extensions;
+          const extensions = res.data?.extensions || {};
 
           if (claims) {
             dispatch(
